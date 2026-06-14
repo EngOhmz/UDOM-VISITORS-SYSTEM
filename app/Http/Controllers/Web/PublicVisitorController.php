@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\VisitRequest;
 use App\Models\Office;
+use App\Models\Department;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Inertia\Inertia;
@@ -15,7 +16,8 @@ class PublicVisitorController extends Controller
     public function showRequestForm()
     {
         $offices = Office::all();
-        return Inertia::render('Public/VisitorRequestForm', ['offices' => $offices]);
+        $departments = Department::all();
+        return Inertia::render('Public/VisitorRequestForm', ['offices' => $offices, 'departments' => $departments]);
     }
 
     public function submitRequest(Request $request)

@@ -33,6 +33,7 @@ const getNavigation = (userRole) => {
     
     const adminNav = [
         { name: 'Offices', href: '/offices', icon: OfficeBuildingIcon, roles: ['admin'] },
+        { name: 'Departments', href: '/departments', icon: OfficeBuildingIcon, roles: ['admin'] },
         { name: 'Visitors', href: '/visitors', icon: UsersIcon, roles: ['admin'] },
         { name: 'Users', href: '/users', icon: UsersIcon, roles: ['admin'] },
         { name: 'Roles & Permissions', href: '/roles', icon: ShieldCheckIcon, roles: ['admin'] },
@@ -40,6 +41,7 @@ const getNavigation = (userRole) => {
     ];
     
     let navigation = [...baseNav, ...visitorNav, ...adminNav].filter(item => item.roles.includes(userRole));
+
     
     // Rename "Visit Requests" to "My Requests" for visitors
     if (userRole === 'visitor') {
@@ -262,6 +264,24 @@ export default function AuthenticatedLayout({ children, title }) {
                         </Menu>
                     </div>
                 </header>
+
+                {/* Flash Messages */}
+                {props.flash.success && (
+                    <div className="px-4 sm:px-6 md:px-8 py-4">
+                        <div className="bg-green-50 border-l-4 border-green-500 text-green-700 p-4 rounded-r-lg flex items-center">
+                            <CheckCircleIcon className="w-5 h-5 mr-2" />
+                            <p>{props.flash.success}</p>
+                        </div>
+                    </div>
+                )}
+                {props.flash.error && (
+                    <div className="px-4 sm:px-6 md:px-8 py-4">
+                        <div className="bg-red-50 border-l-4 border-red-500 text-red-700 p-4 rounded-r-lg flex items-center">
+                            <XCircleIcon className="w-5 h-5 mr-2" />
+                            <p>{props.flash.error}</p>
+                        </div>
+                    </div>
+                )}
 
                 <main className="flex-1">
                     <div className="py-6">

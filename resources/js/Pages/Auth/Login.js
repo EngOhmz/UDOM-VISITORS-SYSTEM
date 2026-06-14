@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Head, useForm } from '@inertiajs/react';
+import { Head, useForm, usePage } from '@inertiajs/react';
+import { CheckCircleIcon, XCircleIcon } from '@heroicons/react/24/outline';
 
 export default function Login() {
     const { data, setData, post, processing, errors } = useForm({
@@ -7,6 +8,7 @@ export default function Login() {
         password: '',
         remember: false,
     });
+    const { props } = usePage();
 
     const submit = (e) => {
         e.preventDefault();
@@ -18,6 +20,18 @@ export default function Login() {
             <Head title="Log in" />
 
             <div className="max-w-md w-full space-y-8 bg-white p-10 rounded-xl shadow-lg border border-gray-200">
+                {props.flash.success && (
+                    <div className="bg-green-50 border-l-4 border-green-500 text-green-700 p-4 rounded-r-lg flex items-center">
+                        <CheckCircleIcon className="w-5 h-5 mr-2" />
+                        <p>{props.flash.success}</p>
+                    </div>
+                )}
+                {props.flash.error && (
+                    <div className="bg-red-50 border-l-4 border-red-500 text-red-700 p-4 rounded-r-lg flex items-center">
+                        <XCircleIcon className="w-5 h-5 mr-2" />
+                        <p>{props.flash.error}</p>
+                    </div>
+                )}
                 <div>
                     <h2 className="mt-6 text-center text-3xl font-extrabold text-indigo-600">
                         UDOM VMS

@@ -9,10 +9,15 @@ class Office extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'department', 'building', 'description'];
+    protected $fillable = ['name', 'department_id', 'building', 'description'];
 
     public function visitRequests()
     {
         return $this->hasMany(VisitRequest::class);
+    }
+
+    public function department()
+    {
+        return $this->belongsTo(Department::class);
     }
 }

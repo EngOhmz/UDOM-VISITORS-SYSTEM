@@ -1,12 +1,13 @@
 import React from 'react';
-import { Head, useForm } from '@inertiajs/react';
-import { PhoneIcon, LockClosedIcon } from '@heroicons/react/24/outline';
+import { Head, useForm, usePage } from '@inertiajs/react';
+import { PhoneIcon, LockClosedIcon, CheckCircleIcon, XCircleIcon } from '@heroicons/react/24/outline';
 
 export default function VisitorLogin() {
   const { data, setData, post, processing, errors } = useForm({
     phone: '',
     password: '',
   });
+  const { props } = usePage();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -29,6 +30,18 @@ export default function VisitorLogin() {
 
         <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
           <div className="bg-white py-8 px-4 shadow-xl rounded-xl border border-gray-200 sm:px-10">
+            {props.flash.success && (
+                <div className="mb-4 bg-green-50 border-l-4 border-green-500 text-green-700 p-4 rounded-r-lg flex items-center">
+                    <CheckCircleIcon className="w-5 h-5 mr-2" />
+                    <p>{props.flash.success}</p>
+                </div>
+            )}
+            {props.flash.error && (
+                <div className="mb-4 bg-red-50 border-l-4 border-red-500 text-red-700 p-4 rounded-r-lg flex items-center">
+                    <XCircleIcon className="w-5 h-5 mr-2" />
+                    <p>{props.flash.error}</p>
+                </div>
+            )}
             <form className="space-y-6" onSubmit={handleSubmit}>
               <div className="space-y-4">
                 <div>

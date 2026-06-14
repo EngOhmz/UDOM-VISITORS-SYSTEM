@@ -1,15 +1,27 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Head, useForm, Link } from '@inertiajs/react';
 import { ArrowLeftIcon, CalendarIcon } from '@heroicons/react/24/outline';
 import AuthenticatedLayout from '../../Layouts/AuthenticatedLayout';
 
-export default function VisitorRequestForm({ offices }) {
+export default function VisitorRequestForm({ offices, departments }) {
+  const [selectedDepartment, setSelectedDepartment] = useState('');
+  const [filteredOffices, setFilteredOffices] = useState([]);
   const { data, setData, post, processing, errors } = useForm({
     office_id: '',
     purpose: '',
     visit_date: '',
     visit_time: '',
   });
+
+  useEffect(() => {
+    if (selectedDepartment) {
+      fetch(`/api/offices-by-department/${selectedDepartment}`)
+        .then(res => res.json())
+        .then(data => setFilteredOffices(data));
+    } else {
+      setFilteredOffices(offices);
+    }
+  }, [selectedDepartment, offices]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -37,16 +49,39 @@ export default function VisitorRequestForm({ offices }) {
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
+                Department *
+              </label>
+              <select
+                value={selectedDepartment}
+                onChange={e => {
+                  setSelectedDepartment(e.target.value);
+                  setData('office_id', '');
+                }}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                required
+              >
+                <option value="">Select a department</option>
+                {departments.map(dept => (
+                  <option key={dept.id} value={dept.id}>
+                    {dept.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
                 Office to Visit *
               </label>
               <select
                 value={data.office_id}
                 onChange={e => setData('office_id', e.target.value)}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                disabled={!selectedDepartment}
                 required
               >
                 <option value="">Select an office</option>
-                {offices.map(office => (
+                {filteredOffices.map(office => (
                   <option key={office.id} value={office.id}>
                     {office.name}
                   </option>

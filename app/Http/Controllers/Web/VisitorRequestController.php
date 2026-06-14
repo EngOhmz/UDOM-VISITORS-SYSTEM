@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Web;
 use App\Http\Controllers\Controller;
 use App\Models\VisitRequest;
 use App\Models\Office;
+use App\Models\Department;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
@@ -14,7 +15,8 @@ class VisitorRequestController extends Controller
     public function showRequestForm()
     {
         $offices = Office::all();
-        return Inertia::render('Visitor/RequestForm', ['offices' => $offices]);
+        $departments = Department::all();
+        return Inertia::render('Visitor/RequestForm', ['offices' => $offices, 'departments' => $departments]);
     }
 
     public function submitRequest(Request $request)

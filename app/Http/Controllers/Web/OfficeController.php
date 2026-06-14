@@ -4,29 +4,36 @@ namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
 use App\Services\OfficeService;
+use App\Services\DepartmentService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class OfficeController extends Controller
 {
     protected $officeService;
+    protected $departmentService;
 
-    public function __construct(OfficeService $officeService)
+    public function __construct(OfficeService $officeService, DepartmentService $departmentService)
     {
         $this->officeService = $officeService;
+        $this->departmentService = $departmentService;
     }
 
     public function index()
     {
         $offices = $this->officeService->getAllOffices();
-        return Inertia::render('Offices', ['offices' => $offices]);
+        $departments = $this->departmentService->getAllDepartmentsWithoutPagination();
+        return Inertia::render('Offices', [
+            'offices' => $offices,
+            'departments' => $departments
+        ]);
     }
 
     public function store(Request $request)
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'department' => 'nullable|string|max:255',
+            'department_id' => 'nullable|exists:departments,id',
             'building' => 'nullable|string|max:255',
             'description' => 'nullable|string',
         ]);
@@ -39,7 +46,7 @@ class OfficeController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'department' => 'nullable|string|max:255',
+            'department_id' => 'nullable|exists:departments,id',
             'building' => 'nullable|string|max:255',
             'description' => 'nullable|string',
         ]);

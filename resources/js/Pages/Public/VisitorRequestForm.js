@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Head, useForm } from '@inertiajs/react';
 
-export default function VisitorRequestForm({ offices }) {
+export default function VisitorRequestForm({ offices, departments }) {
+  const [selectedDepartment, setSelectedDepartment] = useState('');
+  const [filteredOffices, setFilteredOffices] = useState([]);
   const { data, setData, post, processing, errors } = useForm({
     name: '',
     email: '',
@@ -13,6 +15,16 @@ export default function VisitorRequestForm({ offices }) {
     visit_date: '',
     visit_time: '',
   });
+
+  useEffect(() => {
+    if (selectedDepartment) {
+      fetch(`/api/offices-by-department/${selectedDepartment}`)
+        .then(res => res.json())
+        .then(data => setFilteredOffices(data));
+    } else {
+      setFilteredOffices(offices);
+    }
+  }, [selectedDepartment, offices]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -98,15 +110,36 @@ export default function VisitorRequestForm({ offices }) {
               <h2 className="text-lg font-semibold text-gray-900 mb-4">Visit Details</h2>
               <div className="space-y-4">
                 <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Department *</label>
+                  <select
+                    value={selectedDepartment}
+                    onChange={e => {
+                      setSelectedDepartment(e.target.value);
+                      setData('office_id', '');
+                    }}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    required
+                  >
+                    <option value="">Select Department</option>
+                    {departments.map(dept => (
+                      <option key={dept.id} value={dept.id}>
+                        {dept.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Office to Visit *</label>
                   <select
                     value={data.office_id}
                     onChange={e => setData('office_id', e.target.value)}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    disabled={!selectedDepartment}
                     required
                   >
                     <option value="">Select Office</option>
-                    {offices.map(office => (
+                    {filteredOffices.map(office => (
                       <option key={office.id} value={office.id}>
                         {office.name}
                       </option>

@@ -19,6 +19,7 @@ use App\Http\Controllers\Web\VisitorController;
 use App\Http\Controllers\Web\VisitRequestController;
 use App\Http\Controllers\Web\VisitorLogController;
 use App\Http\Controllers\Web\OfficeController;
+use App\Http\Controllers\Web\DepartmentController;
 use App\Http\Controllers\Web\RoleController;
 use App\Http\Controllers\Web\ProfileController;
 use App\Http\Controllers\Web\ReportController;
@@ -50,8 +51,15 @@ Route::middleware('auth')->group(function () {
     Route::middleware('role:admin')->group(function () {
         Route::resource('visitors', VisitorController::class)->except(['show']);
         Route::resource('offices', OfficeController::class)->except(['show']);
+        Route::resource('departments', DepartmentController::class)->except(['show']);
         Route::resource('roles', RoleController::class)->except(['show']);
         Route::resource('users', UserController::class)->except(['show']);
+    });
+
+    // Get offices by department (for frontend select)
+    Route::get('/api/offices-by-department/{departmentId}', function ($departmentId) {
+        $offices = \App\Models\Office::where('department_id', $departmentId)->get();
+        return response()->json($offices);
     });
     
     // Staff & Admin routes

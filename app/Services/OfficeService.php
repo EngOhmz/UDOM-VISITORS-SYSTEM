@@ -8,7 +8,17 @@ class OfficeService
 {
     public function getAllOffices($perPage = 10)
     {
-        return Office::paginate($perPage);
+        return Office::with('department')->paginate($perPage);
+    }
+
+    public function getAllOfficesWithoutPagination()
+    {
+        return Office::all();
+    }
+
+    public function getOfficesByDepartmentId($departmentId)
+    {
+        return Office::where('department_id', $departmentId)->get();
     }
 
     public function getOfficeById($id)

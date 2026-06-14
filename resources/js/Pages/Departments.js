@@ -4,28 +4,26 @@ import { router } from '@inertiajs/react';
 import AuthenticatedLayout from '../Layouts/AuthenticatedLayout';
 import { PlusIcon, PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
 
-export default function Offices({ offices, departments }) {
+export default function Departments({ departments }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [editingOffice, setEditingOffice] = useState(null);
+    const [editingDepartment, setEditingDepartment] = useState(null);
     const [formData, setFormData] = useState({
         name: '',
-        department_id: '',
-        building: '',
         description: '',
     });
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (editingOffice) {
-            router.put(`/offices/${editingOffice.id}`, formData, {
+        if (editingDepartment) {
+            router.put(`/departments/${editingDepartment.id}`, formData, {
                 onSuccess: () => {
                     setIsModalOpen(false);
-                    setEditingOffice(null);
+                    setEditingDepartment(null);
                     resetForm();
                 },
             });
         } else {
-            router.post('/offices', formData, {
+            router.post('/departments', formData, {
                 onSuccess: () => {
                     setIsModalOpen(false);
                     resetForm();
@@ -34,48 +32,44 @@ export default function Offices({ offices, departments }) {
         }
     };
 
-    const handleEdit = (office) => {
-        setEditingOffice(office);
+    const handleEdit = (department) => {
+        setEditingDepartment(department);
         setFormData({
-            name: office.name,
-            department_id: office.department_id || '',
-            building: office.building || '',
-            description: office.description || '',
+            name: department.name,
+            description: department.description || '',
         });
         setIsModalOpen(true);
     };
 
     const handleDelete = (id) => {
-        if (confirm('Are you sure you want to delete this office?')) {
-            router.delete(`/offices/${id}`);
+        if (confirm('Are you sure you want to delete this department?')) {
+            router.delete(`/departments/${id}`);
         }
     };
 
     const resetForm = () => {
         setFormData({
             name: '',
-            department_id: '',
-            building: '',
             description: '',
         });
     };
 
     return (
-        <AuthenticatedLayout title="Offices">
-            <Head title="Offices" />
+        <AuthenticatedLayout title="Departments">
+            <Head title="Departments" />
 
             <div className="mb-6 flex justify-between items-center">
-                <h2 className="text-xl font-bold text-gray-800">All Offices</h2>
+                <h2 className="text-xl font-bold text-gray-800">All Departments</h2>
                 <button
                     onClick={() => {
-                        setEditingOffice(null);
+                        setEditingDepartment(null);
                         resetForm();
                         setIsModalOpen(true);
                     }}
                     className="flex items-center px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
                 >
                     <PlusIcon className="h-5 w-5 mr-2" />
-                    Add Office
+                    Add Department
                 </button>
             </div>
 
@@ -85,37 +79,29 @@ export default function Offices({ offices, departments }) {
                         <thead className="bg-gray-50">
                             <tr>
                                 <th className="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase">Name</th>
-                                <th className="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase">Department</th>
-                                <th className="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase">Building</th>
                                 <th className="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase">Description</th>
                                 <th className="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase">Actions</th>
                             </tr>
                         </thead>
                         <tbody className="bg-white divide-y divide-gray-100">
-                            {offices.data?.map((office) => (
-                                <tr key={office.id} className="hover:bg-gray-50">
+                            {departments.data?.map((department) => (
+                                <tr key={department.id} className="hover:bg-gray-50">
                                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                        {office.name}
-                                    </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                        {office.department?.name || '-'}
-                                    </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                        {office.building || '-'}
+                                        {department.name}
                                     </td>
                                     <td className="px-6 py-4 text-sm text-gray-500 max-w-xs truncate">
-                                        {office.description || '-'}
+                                        {department.description || '-'}
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm">
                                         <div className="flex space-x-2">
                                             <button
-                                                onClick={() => handleEdit(office)}
+                                                onClick={() => handleEdit(department)}
                                                 className="text-indigo-600 hover:text-indigo-900"
                                             >
                                                 <PencilIcon className="h-5 w-5" />
                                             </button>
                                             <button
-                                                onClick={() => handleDelete(office.id)}
+                                                onClick={() => handleDelete(department.id)}
                                                 className="text-red-600 hover:text-red-900"
                                             >
                                                 <TrashIcon className="h-5 w-5" />
@@ -134,13 +120,13 @@ export default function Offices({ offices, departments }) {
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
                     <div className="bg-white rounded-xl p-6 w-full max-w-md">
                         <h3 className="text-lg font-bold text-gray-800 mb-4">
-                            {editingOffice ? 'Edit Office' : 'Add Office'}
+                            {editingDepartment ? 'Edit Department' : 'Add Department'}
                         </h3>
                         <form onSubmit={handleSubmit}>
                             <div className="space-y-4">
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-1">
-                                        Office Name
+                                        Department Name
                                     </label>
                                     <input
                                         type="text"
@@ -148,32 +134,6 @@ export default function Offices({ offices, departments }) {
                                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                                         required
-                                    />
-                                </div>
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                                        Department
-                                    </label>
-                                    <select
-                                        value={formData.department_id}
-                                        onChange={(e) => setFormData({ ...formData, department_id: e.target.value })}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                                    >
-                                        <option value="">Select Department</option>
-                                        {departments.map((dept) => (
-                                            <option key={dept.id} value={dept.id}>{dept.name}</option>
-                                        ))}
-                                    </select>
-                                </div>
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                                        Building
-                                    </label>
-                                    <input
-                                        type="text"
-                                        value={formData.building}
-                                        onChange={(e) => setFormData({ ...formData, building: e.target.value })}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                                     />
                                 </div>
                                 <div>
@@ -193,7 +153,7 @@ export default function Offices({ offices, departments }) {
                                     type="button"
                                     onClick={() => {
                                         setIsModalOpen(false);
-                                        setEditingOffice(null);
+                                        setEditingDepartment(null);
                                         resetForm();
                                     }}
                                     className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition"
@@ -204,7 +164,7 @@ export default function Offices({ offices, departments }) {
                                     type="submit"
                                     className="px-4 py-2 text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition"
                                 >
-                                    {editingOffice ? 'Update' : 'Create'}
+                                    {editingDepartment ? 'Update' : 'Create'}
                                 </button>
                             </div>
                         </form>
