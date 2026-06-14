@@ -106,7 +106,7 @@ Mobile application
 Biometric verification
 📦 Installation Guide
 1. Clone the Repository
-git clone https://github.com/your-repo/univisit-system.git
+git clone git
 2. Setup Database
 CREATE DATABASE univisit_db;
 
@@ -120,33 +120,9 @@ Using XAMPP → Start Apache & MySQL
 Place project in htdocs
 5. Access System
 http://localhost/univisit-system
-🧪 Testing
-Unit Testing for modules
-Login validation
-Request submission
-Code verification
-Database operations
-📅 Project Timeline
-Activity	Duration
-Design	2 Weeks
-Development	1 Month
-Testing	1 Week
-Documentation	1 Month
-💰 Estimated Budget
-Item	Cost (TZS)
-Stationery	20,000
-Internet/Hosting	25,000
-Tools	25,000
-Miscellaneous	20,000
-Printing	50,000
-Total	140,000
-📚 References
-Visitor Management Systems Research (2022–2024)
-Web-based System Development Practices
+🧪
 👨‍💻 Developers
-Sephania L. Alfred
-Fredrick P. Mshana
-Alice K. Matungwa
+
 🏫 Institution
 
 The University of Dodoma (UDOM)
