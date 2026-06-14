@@ -29,7 +29,7 @@ class VisitRequestController extends Controller
     public function approve(Request $request, $id)
     {
         $this->requestService->approveRequest($id, $request->user()->id);
-        return redirect()->back()->with('success', 'Request approved successfully.');
+        return redirect()->route('requests.index')->with('success', 'Request approved successfully.');
     }
 
     public function reject(Request $request, $id)
@@ -39,6 +39,6 @@ class VisitRequestController extends Controller
         ]);
 
         $this->requestService->rejectRequest($id, $request->user()->id, $validated['rejection_reason']);
-        return redirect()->back()->with('success', 'Request rejected successfully.');
+        return redirect()->route('requests.index')->with('success', 'Request rejected successfully.');
     }
 }

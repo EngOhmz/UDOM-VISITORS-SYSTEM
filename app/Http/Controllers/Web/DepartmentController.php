@@ -30,7 +30,7 @@ class DepartmentController extends Controller
         ]);
 
         $this->departmentService->createDepartment($validated);
-        return redirect()->back()->with('success', 'Department created successfully.');
+        return redirect()->route('departments.index')->with('success', 'Department created successfully.');
     }
 
     public function update(Request $request, $id)
@@ -41,12 +41,12 @@ class DepartmentController extends Controller
         ]);
 
         $this->departmentService->updateDepartment($id, $validated);
-        return redirect()->back()->with('success', 'Department updated successfully.');
+        return redirect()->route('departments.index')->with('success', 'Department updated successfully.');
     }
 
     public function destroy($id)
     {
         $this->departmentService->deleteDepartment($id);
-        return redirect()->back()->with('success', 'Department deleted successfully.');
+        return redirect()->route('departments.index')->with('success', 'Department deleted successfully.');
     }
 }

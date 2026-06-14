@@ -38,7 +38,7 @@ class RoleController extends Controller
             $role->permissions()->sync($request->permissions);
         }
 
-        return redirect()->back()->with('success', 'Role created successfully.');
+        return redirect()->route('roles.index')->with('success', 'Role created successfully.');
     }
 
     public function update(Request $request, $id)
@@ -56,7 +56,7 @@ class RoleController extends Controller
 
         $role->permissions()->sync($request->permissions);
 
-        return redirect()->back()->with('success', 'Role updated successfully.');
+        return redirect()->route('roles.index')->with('success', 'Role updated successfully.');
     }
 
     public function destroy($id)
@@ -64,11 +64,11 @@ class RoleController extends Controller
         $role = Role::findOrFail($id);
         
         if ($role->name === 'admin') {
-            return redirect()->back()->with('error', 'Cannot delete the administrator role.');
+            return redirect()->route('roles.index')->with('error', 'Cannot delete the administrator role.');
         }
 
         $role->delete();
 
-        return redirect()->back()->with('success', 'Role deleted successfully.');
+        return redirect()->route('roles.index')->with('success', 'Role deleted successfully.');
     }
 }

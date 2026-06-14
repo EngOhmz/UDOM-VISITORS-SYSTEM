@@ -34,7 +34,7 @@ class VisitorController extends Controller
         ]);
 
         $this->visitorService->createVisitor($validated);
-        return redirect()->back()->with('success', 'Visitor created successfully.');
+        return redirect()->route('visitors.index')->with('success', 'Visitor created successfully.');
     }
 
     public function update(Request $request, $id)
@@ -49,12 +49,12 @@ class VisitorController extends Controller
         ]);
 
         $this->visitorService->updateVisitor($id, $validated);
-        return redirect()->back()->with('success', 'Visitor updated successfully.');
+        return redirect()->route('visitors.index')->with('success', 'Visitor updated successfully.');
     }
 
     public function destroy($id)
     {
         $this->visitorService->deleteVisitor($id);
-        return redirect()->back()->with('success', 'Visitor deleted successfully.');
+        return redirect()->route('visitors.index')->with('success', 'Visitor deleted successfully.');
     }
 }

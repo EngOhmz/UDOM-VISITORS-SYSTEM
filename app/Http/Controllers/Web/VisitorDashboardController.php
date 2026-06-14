@@ -11,7 +11,7 @@ class VisitorDashboardController extends Controller
 {
     public function index()
     {
-        $visitor = Auth::guard('visitor')->user();
+        $visitor = Auth::user();
         $requests = VisitRequest::with(['office', 'visitorLog'])->where('visitor_id', $visitor->id)->latest()->paginate(10);
 
         return Inertia::render('Visitor/Dashboard', ['requests' => $requests]);

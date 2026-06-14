@@ -16,7 +16,9 @@ import {
     ShieldCheckIcon,
     ChevronDownIcon,
     UserCircleIcon,
-    PlusIcon
+    PlusIcon,
+    CheckCircleIcon,
+    XCircleIcon
 } from '@heroicons/react/24/outline';
 import { Menu } from '@headlessui/react';
 

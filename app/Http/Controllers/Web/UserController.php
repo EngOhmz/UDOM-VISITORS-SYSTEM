@@ -49,7 +49,7 @@ class UserController extends Controller
             $user->roles()->attach($role->id);
         }
 
-        return redirect()->back()->with('success', 'User created successfully.');
+        return redirect()->route('users.index')->with('success', 'User created successfully.');
     }
 
     public function update(Request $request, $id)
@@ -83,16 +83,16 @@ class UserController extends Controller
             $user->roles()->sync([$role->id]);
         }
 
-        return redirect()->back()->with('success', 'User updated successfully.');
+        return redirect()->route('users.index')->with('success', 'User updated successfully.');
     }
 
     public function destroy($id)
     {
         $user = User::findOrFail($id);
         if (auth()->id() === $user->id) {
-            return redirect()->back()->with('error', 'You cannot delete your own account.');
+            return redirect()->route('users.index')->with('error', 'You cannot delete your own account.');
         }
         $user->delete();
-        return redirect()->back()->with('success', 'User deleted successfully.');
+        return redirect()->route('users.index')->with('success', 'User deleted successfully.');
     }
 }

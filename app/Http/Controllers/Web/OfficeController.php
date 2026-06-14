@@ -39,7 +39,7 @@ class OfficeController extends Controller
         ]);
 
         $this->officeService->createOffice($validated);
-        return redirect()->back()->with('success', 'Office created successfully.');
+        return redirect()->route('offices.index')->with('success', 'Office created successfully.');
     }
 
     public function update(Request $request, $id)
@@ -52,12 +52,12 @@ class OfficeController extends Controller
         ]);
 
         $this->officeService->updateOffice($id, $validated);
-        return redirect()->back()->with('success', 'Office updated successfully.');
+        return redirect()->route('offices.index')->with('success', 'Office updated successfully.');
     }
 
     public function destroy($id)
     {
         $this->officeService->deleteOffice($id);
-        return redirect()->back()->with('success', 'Office deleted successfully.');
+        return redirect()->route('offices.index')->with('success', 'Office deleted successfully.');
     }
 }

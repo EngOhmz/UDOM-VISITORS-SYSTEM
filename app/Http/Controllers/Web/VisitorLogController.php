@@ -35,15 +35,15 @@ class VisitorLogController extends Controller
         $visitRequest = $this->requestService->verifyCode($validated['verification_code']);
         
         if (!$visitRequest) {
-            return redirect()->back()->with('error', 'Invalid or expired verification code.');
+            return redirect()->route('logs.index')->with('error', 'Invalid or expired verification code.');
         }
 
         if ($visitRequest->visitorLog && $visitRequest->visitorLog->check_in_at) {
-            return redirect()->back()->with('error', 'Visitor already checked in.');
+            return redirect()->route('logs.index')->with('error', 'Visitor already checked in.');
         }
 
         $this->logService->checkIn($visitRequest->id, $request->user()->name, $validated['notes'] ?? null);
-        return redirect()->back()->with('success', 'Visitor checked in successfully.');
+        return redirect()->route('logs.index')->with('success', 'Visitor checked in successfully.');
     }
 
     public function checkOut(Request $request, $logId)
@@ -53,6 +53,6 @@ class VisitorLogController extends Controller
         ]);
 
         $this->logService->checkOut($logId, $request->user()->name, $validated['notes'] ?? null);
-        return redirect()->back()->with('success', 'Visitor checked out successfully.');
+        return redirect()->route('logs.index')->with('success', 'Visitor checked out successfully.');
     }
 }
