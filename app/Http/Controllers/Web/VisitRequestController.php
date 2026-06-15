@@ -26,6 +26,22 @@ class VisitRequestController extends Controller
         return Inertia::render('VisitRequests', ['requests' => $requests]);
     }
 
+    public function verify(Request $request)
+    {
+        $validated = $request->validate([
+            'code' => 'required|string',
+        ]);
+
+        $visitRequest = $this->requestService->verifyCode($validated['code']);
+        
+        if (!$visitRequest) {
+            return response()->json(['error' => 'Invalid or expired verification code.'], 404);
+        }
+
+        $visitRequest->load(['visitor', 'office']);
+        return response()->json(['request' => $visitRequest]);
+    }
+
     public function approve(Request $request, $id)
     {
         $this->requestService->approveRequest($id, $request->user()->id);

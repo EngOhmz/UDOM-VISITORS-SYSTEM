@@ -39,7 +39,7 @@ const getNavigation = (userRole) => {
         { name: 'Visitors', href: '/visitors', icon: UsersIcon, roles: ['admin'] },
         { name: 'Users', href: '/users', icon: UsersIcon, roles: ['admin'] },
         { name: 'Roles & Permissions', href: '/roles', icon: ShieldCheckIcon, roles: ['admin'] },
-        { name: 'Reports', href: '/reports', icon: DocumentReportIcon, roles: ['admin', 'staff'] },
+        { name: 'Reports', href: '/reports', icon: DocumentReportIcon, roles: ['admin', 'staff', 'secretary'] },
     ];
     
     let navigation = [...baseNav, ...visitorNav, ...adminNav].filter(item => item.roles.includes(userRole));

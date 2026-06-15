@@ -25,7 +25,7 @@ class VisitorAuthController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'nullable|email|max:255',
+            'email' => 'nullable|email:rfc,dns|max:255',
             'phone' => 'required|string|max:20|unique:users,phone',
             'id_number' => 'nullable|string|max:50',
             'organization' => 'nullable|string|max:255',

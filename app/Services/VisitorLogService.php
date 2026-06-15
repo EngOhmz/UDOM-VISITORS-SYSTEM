@@ -11,10 +11,10 @@ class VisitorLogService
     public function getAllLogs($perPage = 10)
     {
         $user = Auth::user();
-        $query = VisitorLog::with(['visit_request.visitor', 'visit_request.office']);
+        $query = VisitorLog::with(['visitRequest.visitor', 'visitRequest.office']);
         
-        if ($user->role !== 'admin' && $user->office_id) {
-            $query->whereHas('visit_request', function ($q) use ($user) {
+        if ($user->role === 'staff' && $user->office_id) {
+            $query->whereHas('visitRequest', function ($q) use ($user) {
                 $q->where('office_id', $user->office_id);
             });
         }

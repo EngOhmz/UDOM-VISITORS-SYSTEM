@@ -22,6 +22,8 @@ class VisitorLogController extends Controller
     public function index()
     {
         $logs = $this->logService->getAllLogs();
+        // Temporarily dump the data for debugging
+        // dd($logs->toArray());
         return Inertia::render('VisitorLogs', ['logs' => $logs]);
     }
 

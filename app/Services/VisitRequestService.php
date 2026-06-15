@@ -15,7 +15,7 @@ class VisitRequestService
         
         if ($user->role === 'visitor') {
             $query->where('visitor_id', $user->id);
-        } elseif ($user->role !== 'admin' && $user->office_id) {
+        } elseif ($user->role === 'staff' && $user->office_id) {
             $query->where('office_id', $user->office_id);
         }
         
@@ -69,7 +69,7 @@ class VisitRequestService
     {
         return VisitRequest::where('verification_code', $code)
             ->where('status', 'approved')
-            ->whereDate('visit_date', now()->toDateString())
+            ->whereDate('visit_date', '<=', now()->toDateString())
             ->first();
     }
 }
