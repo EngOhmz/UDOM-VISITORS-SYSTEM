@@ -26,6 +26,7 @@ class User extends Authenticatable
         'office_id',
         'id_number',
         'organization',
+        'avatar',
     ];
 
     /**

@@ -4,7 +4,7 @@ import { router } from '@inertiajs/react';
 import AuthenticatedLayout from '../Layouts/AuthenticatedLayout';
 import { PlusIcon, PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
 
-export default function Users({ users, roles, offices }) {
+export default function Users({ users, roles, offices, departments }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingUser, setEditingUser] = useState(null);
     const [formData, setFormData] = useState({
@@ -13,8 +13,14 @@ export default function Users({ users, roles, offices }) {
         phone: '',
         password: '',
         role: 'staff',
+        department_id: null,
         office_id: null
     });
+    
+    // Filter offices by selected department
+    const filteredOffices = formData.department_id 
+        ? offices.filter(office => office.department_id === formData.department_id)
+        : offices;
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -44,6 +50,7 @@ export default function Users({ users, roles, offices }) {
             phone: user.phone || '',
             password: '',
             role: user.role || 'staff',
+            department_id: user.office?.department_id || null,
             office_id: user.office_id || null
         });
         setIsModalOpen(true);
@@ -62,6 +69,7 @@ export default function Users({ users, roles, offices }) {
             phone: '',
             password: '',
             role: 'staff',
+            department_id: null,
             office_id: null
         });
     };
@@ -107,6 +115,7 @@ export default function Users({ users, roles, offices }) {
                                 <th className="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase">Email</th>
                                 <th className="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase">Phone</th>
                                 <th className="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase">Role</th>
+                                <th className="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase">Department</th>
                                 <th className="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase">Office</th>
                                 <th className="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase">Actions</th>
                             </tr>
@@ -127,6 +136,9 @@ export default function Users({ users, roles, offices }) {
                                         <span className={`px-2 py-1 text-xs font-medium rounded-full ${getRoleBadgeClass(user.role)}`}>
                                             {user.role}
                                         </span>
+                                    </td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        {user.office?.department?.name || '-'}
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                         {user.office?.name || '-'}
@@ -213,23 +225,54 @@ export default function Users({ users, roles, offices }) {
                                         <option value="admin">Admin</option>
                                     </select>
                                 </div>
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                                        Office
-                                    </label>
-                                    <select
-                                        value={formData.office_id || ''}
-                                        onChange={(e) => setFormData({ ...formData, office_id: e.target.value ? Number(e.target.value) : null })}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                                    >
-                                        <option value="">Select Office (Optional)</option>
-                                        {offices.map(office => (
-                                            <option key={office.id} value={office.id}>
-                                                {office.name}
-                                            </option>
-                                        ))}
-                                    </select>
-                                </div>
+                                {formData.role === 'staff' && (
+                                    <>
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                Department
+                                            </label>
+                                            <select
+                                                value={formData.department_id || ''}
+                                                onChange={(e) => {
+                                                    const deptId = e.target.value ? Number(e.target.value) : null;
+                                                    setFormData({ 
+                                                        ...formData, 
+                                                        department_id: deptId, 
+                                                        office_id: null // Reset office when department changes
+                                                    });
+                                                }}
+                                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                                required
+                                            >
+                                                <option value="">Select Department</option>
+                                                {departments.map(department => (
+                                                    <option key={department.id} value={department.id}>
+                                                        {department.name}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                Office
+                                            </label>
+                                            <select
+                                                value={formData.office_id || ''}
+                                                onChange={(e) => setFormData({ ...formData, office_id: e.target.value ? Number(e.target.value) : null })}
+                                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                                disabled={!formData.department_id && departments.length > 0}
+                                                required
+                                            >
+                                                <option value="">Select Office</option>
+                                                {filteredOffices.map(office => (
+                                                    <option key={office.id} value={office.id}>
+                                                        {office.name}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                        </div>
+                                    </>
+                                )}
                                 {!editingUser && (
                                     <div>
                                         <label className="block text-sm font-medium text-gray-700 mb-1">

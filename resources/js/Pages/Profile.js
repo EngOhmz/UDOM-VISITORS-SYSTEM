@@ -1,19 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import { Head, useForm, usePage } from '@inertiajs/react';
 import AuthenticatedLayout from '../Layouts/AuthenticatedLayout';
-import { UserCircleIcon, CheckCircleIcon, KeyIcon, EnvelopeIcon, PhoneIcon } from '@heroicons/react/24/outline';
+import { UserCircleIcon, CheckCircleIcon, KeyIcon, EnvelopeIcon, PhoneIcon, CameraIcon } from '@heroicons/react/24/outline';
 
 export default function Profile({ user }) {
     const { props } = usePage();
     const flash = props.flash || {};
     const [showSuccess, setShowSuccess] = useState(false);
+    const [avatarPreview, setAvatarPreview] = useState(user.avatar);
 
-    const { data, setData, put, processing, reset, errors } = useForm({
+    const { data, setData, post, put, processing, reset, errors } = useForm({
         name: user.name,
         email: user.email,
         phone: user.phone || '',
         password: '',
         password_confirmation: '',
+        avatar: null,
     });
 
     useEffect(() => {
@@ -24,10 +26,32 @@ export default function Profile({ user }) {
         }
     }, [flash.success]);
 
+    const handleAvatarChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            setData('avatar', file);
+            setAvatarPreview(URL.createObjectURL(file));
+        }
+    };
+
     const submit = (e) => {
         e.preventDefault();
-        put('/profile', {
-            onSuccess: () => reset('password', 'password_confirmation'),
+        const formData = new FormData();
+        formData.append('name', data.name);
+        formData.append('email', data.email);
+        formData.append('phone', data.phone);
+        if (data.password) {
+            formData.append('password', data.password);
+            formData.append('password_confirmation', data.password_confirmation);
+        }
+        if (data.avatar) {
+            formData.append('avatar', data.avatar);
+        }
+        
+        post('/profile', {
+            data: formData,
+            forceFormData: true,
+            onSuccess: () => reset('password', 'password_confirmation', 'avatar'),
         });
     };
 
@@ -51,6 +75,38 @@ export default function Profile({ user }) {
                         <h3 className="text-lg font-bold text-gray-800">Profile Information</h3>
                     </div>
                     <form onSubmit={submit} className="p-6 space-y-6">
+                        {/* Avatar Upload */}
+                        <div className="flex flex-col items-center border-b border-gray-100 pb-6">
+                            <div className="mb-4">
+                                <div className="relative w-32 h-32 rounded-full overflow-hidden border-4 border-gray-200 shadow-lg">
+                                    {avatarPreview ? (
+                                        <img 
+                                            src={avatarPreview} 
+                                            alt={user.name} 
+                                            className="w-full h-full object-cover"
+                                        />
+                                    ) : (
+                                        <img 
+                                            src={`https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=6366f1&color=fff&size=128`}
+                                            alt={user.name} 
+                                            className="w-full h-full object-cover"
+                                        />
+                                    )}
+                                    <label className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center text-white cursor-pointer transition hover:bg-opacity-70">
+                                        <CameraIcon className="h-8 w-8" />
+                                        <input 
+                                            type="file" 
+                                            accept="image/*" 
+                                            className="hidden"
+                                            onChange={handleAvatarChange}
+                                        />
+                                    </label>
+                                </div>
+                            </div>
+                            <p className="text-sm text-gray-500">Click to change profile picture</p>
+                            {errors.avatar && <div className="text-red-500 text-xs mt-1">{errors.avatar}</div>}
+                        </div>
+
                         <div className="grid grid-cols-1 gap-6">
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>

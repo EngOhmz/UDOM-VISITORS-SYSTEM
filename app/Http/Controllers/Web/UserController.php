@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\Role;
 use App\Models\Office;
+use App\Models\Department;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Inertia\Inertia;
@@ -14,13 +15,15 @@ class UserController extends Controller
 {
     public function index()
     {
-        $users = User::with(['roles', 'office'])->paginate(10);
+        $users = User::with(['roles', 'office', 'office.department'])->paginate(10);
         $roles = Role::all();
-        $offices = Office::all();
+        $offices = Office::with('department')->get();
+        $departments = Department::all();
         return Inertia::render('Users', [
             'users' => $users,
             'roles' => $roles,
-            'offices' => $offices
+            'offices' => $offices,
+            'departments' => $departments
         ]);
     }
 
@@ -34,6 +37,11 @@ class UserController extends Controller
             'role' => 'required|in:admin,staff,secretary',
             'office_id' => 'nullable|exists:offices,id'
         ]);
+
+        // Require office_id for staff
+        if ($request->role === 'staff' && !$request->office_id) {
+            return back()->withErrors(['office_id' => 'Office is required for staff']);
+        }
 
         $user = User::create([
             'name' => $request->name,
@@ -62,6 +70,11 @@ class UserController extends Controller
             'role' => 'required|in:admin,staff,secretary',
             'office_id' => 'nullable|exists:offices,id'
         ]);
+
+        // Require office_id for staff
+        if ($request->role === 'staff' && !$request->office_id) {
+            return back()->withErrors(['office_id' => 'Office is required for staff']);
+        }
 
         $user = User::findOrFail($id);
         $userData = [

@@ -26,7 +26,7 @@ const getNavigation = (userRole) => {
     const baseNav = [
         { name: 'Dashboard', href: '/', icon: HomeIcon, roles: ['admin', 'staff', 'secretary', 'visitor'] },
         { name: 'Visit Requests', href: '/requests', icon: CalendarIcon, roles: ['admin', 'staff', 'secretary', 'visitor'] },
-        { name: 'Visitor Logs', href: '/logs', icon: ClipboardDocumentCheckIcon, roles: ['admin', 'staff', 'secretary'] },
+        { name: 'Visitor Confirmation', href: '/logs', icon: ClipboardDocumentCheckIcon, roles: ['admin', 'staff', 'secretary'] },
     ];
     
     const visitorNav = [

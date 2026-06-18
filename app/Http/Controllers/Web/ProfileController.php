@@ -25,13 +25,21 @@ class ProfileController extends Controller
             'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
             'phone' => 'nullable|string|max:255|unique:users,phone,' . $user->id,
             'password' => 'nullable|string|min:8|confirmed',
+            'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        $user->update([
+        $updateData = [
             'name' => $request->name,
             'email' => $request->email,
             'phone' => $request->phone,
-        ]);
+        ];
+
+        if ($request->hasFile('avatar')) {
+            $avatarPath = $request->file('avatar')->store('avatars', 'public');
+            $updateData['avatar'] = '/storage/' . $avatarPath;
+        }
+
+        $user->update($updateData);
 
         if ($request->password) {
             $user->update([

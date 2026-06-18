@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Head, useForm, usePage } from '@inertiajs/react';
-import { CheckCircleIcon, XCircleIcon } from '@heroicons/react/24/outline';
+import { CheckCircleIcon, XCircleIcon, UserPlusIcon } from '@heroicons/react/24/outline';
 
 export default function Login() {
     const { data, setData, post, processing, errors } = useForm({
@@ -16,10 +16,10 @@ export default function Login() {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 to-gray-100 py-12 px-4 sm:px-6 lg:px-8">
             <Head title="Log in" />
 
-            <div className="max-w-md w-full space-y-8 bg-white p-10 rounded-xl shadow-lg border border-gray-200">
+            <div className="max-w-md w-full space-y-8 bg-white p-12 rounded-2xl shadow-xl border border-gray-200">
                 {props.flash.success && (
                     <div className="bg-green-50 border-l-4 border-green-500 text-green-700 p-4 rounded-r-lg flex items-center">
                         <CheckCircleIcon className="w-5 h-5 mr-2" />
@@ -37,7 +37,7 @@ export default function Login() {
                         UDOM VMS
                     </h2>
                     <p className="mt-2 text-center text-sm text-gray-600">
-                        Login
+                        Staff Login
                     </p>
                 </div>
                 <form className="mt-8 space-y-6" onSubmit={submit}>
@@ -51,7 +51,7 @@ export default function Login() {
                                 name="login"
                                 type="text"
                                 required
-                                className="appearance-none block w-full px-4 py-2.5 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm bg-white"
+                                className="appearance-none block w-full px-4 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm bg-white transition"
                                 placeholder="Email or phone number"
                                 value={data.login}
                                 onChange={(e) => setData('login', e.target.value)}
@@ -68,7 +68,7 @@ export default function Login() {
                                 type="password"
                                 autoComplete="current-password"
                                 required
-                                className="appearance-none block w-full px-4 py-2.5 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm bg-white"
+                                className="appearance-none block w-full px-4 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm bg-white transition"
                                 placeholder="Password"
                                 value={data.password}
                                 onChange={(e) => setData('password', e.target.value)}
@@ -93,7 +93,7 @@ export default function Login() {
                         </div>
 
                         <div className="text-sm">
-                            <a href="#" className="font-medium text-indigo-600 hover:text-indigo-500">
+                            <a href="#" className="font-medium text-indigo-600 hover:text-indigo-500 transition">
                                 Forgot your password?
                             </a>
                         </div>
@@ -103,25 +103,21 @@ export default function Login() {
                         <button
                             type="submit"
                             disabled={processing}
-                            className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150 ease-in-out"
+                            className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-semibold rounded-xl text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150 ease-in-out shadow-md hover:shadow-lg"
                         >
                             {processing ? 'Logging in...' : 'Sign in'}
                         </button>
                     </div>
                 </form>
 
-                <div className="mt-6 pt-6 border-t border-gray-200">
-                    <div className="text-center space-y-3">
-                        <a
-                            href={route('visitor.login')}
-                            className="block text-sm font-medium text-indigo-600 hover:text-indigo-500"
-                        >
-                            Visitor Login
-                        </a>
+                <div className="mt-8 pt-6 border-t border-gray-200">
+                    <div className="text-center space-y-4">
+                        <p className="text-sm text-gray-500">Don't have an account?</p>
                         <a
                             href={route('visitor.register')}
-                            className="block text-sm font-medium text-gray-600 hover:text-gray-800"
+                            className="inline-flex items-center gap-2 px-6 py-3 bg-green-600 text-white rounded-xl font-semibold hover:bg-green-700 transition duration-150 ease-in-out shadow-md hover:shadow-lg"
                         >
+                            <UserPlusIcon className="w-5 h-5" />
                             Register as Visitor
                         </a>
                     </div>

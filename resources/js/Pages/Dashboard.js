@@ -27,7 +27,7 @@ export default function Dashboard({ stats }) {
                     </div>
                     <Link
                         href={route('visitor.request.form')}
-                        className="flex items-center gap-2 px-6 py-3 bg-indigo-600 text-white rounded-lg font-semibold hover:bg-indigo-700 transition"
+                        className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-indigo-600 to-indigo-700 text-white rounded-xl font-semibold hover:from-indigo-700 hover:to-indigo-800 transition shadow-md hover:shadow-lg"
                     >
                         <PlusIcon className="w-5 h-5" />
                         New Request
@@ -68,15 +68,15 @@ export default function Dashboard({ stats }) {
 
                 <div className="space-y-4">
                     {stats.requests.data.length === 0 ? (
-                        <div className="bg-white rounded-xl shadow border border-gray-200 p-12 text-center">
-                            <CalendarIcon className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                            <h3 className="text-xl font-semibold text-gray-900 mb-2">No requests yet</h3>
-                            <p className="text-gray-600 mb-6">Submit your first visit request to get started.</p>
+                        <div className="bg-white rounded-2xl shadow border border-gray-100 p-12 text-center">
+                            <CalendarIcon className="w-20 h-20 text-gray-200 mx-auto mb-6" />
+                            <h3 className="text-2xl font-bold text-gray-800 mb-3">No requests yet</h3>
+                            <p className="text-gray-600 mb-8 max-w-md mx-auto">Submit your first visit request to get started with UDOM Visitor Management System.</p>
                             <Link
                                 href={route('visitor.request.form')}
-                                className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
+                                className="inline-flex items-center gap-2 px-8 py-3 bg-gradient-to-r from-indigo-600 to-indigo-700 text-white rounded-xl font-semibold hover:from-indigo-700 hover:to-indigo-800 transition shadow-md hover:shadow-lg"
                             >
-                                <PlusIcon className="w-4 h-4" />
+                                <PlusIcon className="w-5 h-5" />
                                 Create Request
                             </Link>
                         </div>
@@ -98,9 +98,9 @@ export default function Dashboard({ stats }) {
                             };
                             const getStatusBadge = (status) => {
                                 switch (status) {
-                                    case 'approved': return 'bg-green-100 text-green-800 border-green-300';
-                                    case 'rejected': return 'bg-red-100 text-red-800 border-red-300';
-                                    default: return 'bg-yellow-100 text-yellow-800 border-yellow-300';
+                                    case 'approved': return 'bg-green-50 text-green-700 border border-green-200';
+                                    case 'rejected': return 'bg-red-50 text-red-700 border border-red-200';
+                                    default: return 'bg-yellow-50 text-yellow-700 border border-yellow-200';
                                 }
                             };
 
@@ -108,25 +108,25 @@ export default function Dashboard({ stats }) {
                             return (
                                 <div
                                     key={request.id}
-                                    className="bg-white rounded-xl shadow border border-gray-200 p-6"
+                                    className="bg-white rounded-2xl shadow border border-gray-100 p-8 hover:shadow-lg transition-all"
                                 >
-                                    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4">
+                                    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-6">
                                         <div className="flex-1">
-                                            <div className="flex items-center gap-3 mb-2">
-                                                <StatusIcon className={`w-6 h-6 ${getStatusColor(request.status)}`} />
-                                                <h3 className="text-lg font-semibold text-gray-900">
+                                            <div className="flex items-center gap-4 mb-4">
+                                                <StatusIcon className={`w-8 h-8 ${getStatusColor(request.status)}`} />
+                                                <h3 className="text-xl font-bold text-gray-800">
                                                     {request.office?.name || 'Unknown Office'}
                                                 </h3>
                                                 <span
-                                                    className={`px-3 py-1 text-sm font-medium rounded-full border ${getStatusBadge(request.status)}`}
+                                                    className={`px-4 py-1.5 text-sm font-semibold rounded-full ${getStatusBadge(request.status)}`}
                                                 >
                                                     {request.status.charAt(0).toUpperCase() + request.status.slice(1)}
                                                 </span>
                                             </div>
-                                            <p className="text-gray-600 mb-4">{request.purpose}</p>
-                                            <div className="flex flex-wrap gap-4 text-sm text-gray-500">
-                                                <div className="flex items-center gap-2">
-                                                    <CalendarIcon className="w-4 h-4" />
+                                            <p className="text-gray-700 mb-6 text-lg">{request.purpose}</p>
+                                            <div className="flex flex-wrap gap-6 text-sm text-gray-500">
+                                                <div className="flex items-center gap-2 bg-gray-50 px-4 py-2 rounded-xl">
+                                                    <CalendarIcon className="w-5 h-5" />
                                                     <span>
                                                         {new Date(request.visit_date).toLocaleDateString()}
                                                         {request.visit_time && ` at ${request.visit_time}`}
@@ -136,16 +136,16 @@ export default function Dashboard({ stats }) {
                                         </div>
 
                                         {request.verification_code && (
-                                            <div className="w-full sm:w-auto bg-indigo-50 rounded-lg p-4 border border-indigo-200">
-                                                <h4 className="text-sm font-semibold text-indigo-900 mb-1">Verification Code</h4>
-                                                <p className="text-2xl font-mono font-bold text-indigo-700">{request.verification_code}</p>
+                                            <div className="w-full sm:w-auto bg-gradient-to-r from-indigo-50 to-blue-50 rounded-xl p-6 border border-indigo-100">
+                                                <h4 className="text-sm font-semibold text-indigo-800 mb-2">Verification Code</h4>
+                                                <p className="text-3xl font-mono font-bold text-indigo-700">{request.verification_code}</p>
                                             </div>
                                         )}
 
                                         {request.rejection_reason && (
-                                            <div className="w-full sm:w-auto bg-red-50 rounded-lg p-4 border border-red-200">
-                                                <h4 className="text-sm font-semibold text-red-900 mb-1">Rejection Reason</h4>
-                                                <p className="text-gray-900">{request.rejection_reason}</p>
+                                            <div className="w-full sm:w-auto bg-gradient-to-r from-red-50 to-orange-50 rounded-xl p-6 border border-red-100">
+                                                <h4 className="text-sm font-semibold text-red-800 mb-2">Rejection Reason</h4>
+                                                <p className="text-gray-800">{request.rejection_reason}</p>
                                             </div>
                                         )}
                                     </div>
@@ -156,15 +156,15 @@ export default function Dashboard({ stats }) {
                 </div>
 
                 {stats.requests.links.length > 3 && (
-                    <div className="mt-8">
-                        <div className="flex justify-center gap-1">
+                    <div className="mt-10">
+                        <div className="flex justify-center gap-2">
                             {stats.requests.links.map((link, index) => {
                                 if (link.url === null) {
                                     return (
                                         <button
                                             key={index}
                                             disabled
-                                            className="px-3 py-2 bg-gray-100 text-gray-400 rounded-lg cursor-not-allowed"
+                                            className="px-4 py-2 bg-gray-100 text-gray-400 rounded-xl cursor-not-allowed font-medium"
                                         >
                                             {link.label}
                                         </button>
@@ -174,10 +174,10 @@ export default function Dashboard({ stats }) {
                                     <Link
                                         key={index}
                                         href={link.url}
-                                        className={`px-3 py-2 rounded-lg font-medium ${
+                                        className={`px-4 py-2 rounded-xl font-medium transition-all ${
                                             link.active
-                                                ? 'bg-indigo-600 text-white'
-                                                : 'bg-white text-gray-600 border border-gray-300 hover:bg-gray-50'
+                                                ? 'bg-gradient-to-r from-indigo-600 to-indigo-700 text-white shadow-md'
+                                                : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50 hover:shadow-sm'
                                         }`}
                                         dangerouslySetInnerHTML={{ __html: link.label }}
                                     />
@@ -195,7 +195,7 @@ export default function Dashboard({ stats }) {
             <Head title="Dashboard" />
 
             {/* Stats Grid */}
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4 mb-8">
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4 mb-10">
                 <StatCard 
                     title="Total Visitors" 
                     value={stats.total_visitors} 
@@ -228,27 +228,27 @@ export default function Dashboard({ stats }) {
 
             <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
                 {/* Recent Requests */}
-                <div className="bg-white shadow-sm border border-gray-200 rounded-xl overflow-hidden">
-                    <div className="px-6 py-4 border-b border-gray-100">
-                        <h3 className="text-lg font-bold text-gray-800">Recent Visit Requests</h3>
+                <div className="bg-white shadow-sm border border-gray-100 rounded-2xl overflow-hidden hover:shadow-md transition-shadow">
+                    <div className="px-6 py-5 border-b border-gray-100 bg-gradient-to-r from-gray-50 to-white">
+                        <h3 className="text-xl font-bold text-gray-800">Recent Visit Requests</h3>
                     </div>
                     <div className="divide-y divide-gray-100">
                         {stats.recent_requests && stats.recent_requests.length > 0 ? (
                             stats.recent_requests.map((request) => (
-                                <div key={request.id} className="px-6 py-4 hover:bg-gray-50 transition-colors">
+                                <div key={request.id} className="px-6 py-5 hover:bg-gradient-to-r from-gray-50 to-white transition-all">
                                     <div className="flex items-center justify-between">
                                         <div>
-                                            <p className="text-sm font-semibold text-gray-900">
+                                            <p className="text-base font-semibold text-gray-800">
                                                 {request.visitor?.name || 'Unknown Visitor'}
                                             </p>
-                                            <p className="text-xs text-gray-500">
+                                            <p className="text-sm text-gray-500">
                                                 {request.office?.name || 'Unknown Office'} • {new Date(request.visit_date).toLocaleDateString()}
                                             </p>
                                         </div>
-                                        <span className={`px-2 py-1 text-xs font-medium rounded-full ${
-                                            request.status === 'approved' ? 'bg-green-100 text-green-800' :
-                                            request.status === 'rejected' ? 'bg-red-100 text-red-800' :
-                                            'bg-yellow-100 text-yellow-800'
+                                        <span className={`px-3 py-1.5 text-xs font-semibold rounded-full ${
+                                            request.status === 'approved' ? 'bg-green-50 text-green-700 border border-green-200' :
+                                            request.status === 'rejected' ? 'bg-red-50 text-red-700 border border-red-200' :
+                                            'bg-yellow-50 text-yellow-700 border border-yellow-200'
                                         }`}>
                                             {request.status}
                                         </span>
@@ -256,7 +256,7 @@ export default function Dashboard({ stats }) {
                                 </div>
                             ))
                         ) : (
-                            <div className="px-6 py-8 text-center text-gray-500">
+                            <div className="px-6 py-12 text-center text-gray-500">
                                 No recent requests
                             </div>
                         )}
@@ -264,26 +264,26 @@ export default function Dashboard({ stats }) {
                 </div>
 
                 {/* Recent Logs */}
-                <div className="bg-white shadow-sm border border-gray-200 rounded-xl overflow-hidden">
-                    <div className="px-6 py-4 border-b border-gray-100">
-                        <h3 className="text-lg font-bold text-gray-800">Recent Visitor Logs</h3>
+                <div className="bg-white shadow-sm border border-gray-100 rounded-2xl overflow-hidden hover:shadow-md transition-shadow">
+                    <div className="px-6 py-5 border-b border-gray-100 bg-gradient-to-r from-gray-50 to-white">
+                        <h3 className="text-xl font-bold text-gray-800">Recent Visitor Logs</h3>
                     </div>
                     <div className="divide-y divide-gray-100">
                         {stats.recent_logs && stats.recent_logs.length > 0 ? (
                             stats.recent_logs.map((log) => (
-                                <div key={log.id} className="px-6 py-4 hover:bg-gray-50 transition-colors">
+                                <div key={log.id} className="px-6 py-5 hover:bg-gradient-to-r from-gray-50 to-white transition-all">
                                     <div className="flex items-center justify-between">
                                         <div>
-                                            <p className="text-sm font-semibold text-gray-900">
+                                            <p className="text-base font-semibold text-gray-800">
                                                 {log.visit_request?.visitor?.name || 'Unknown Visitor'}
                                             </p>
-                                            <p className="text-xs text-gray-500">
+                                            <p className="text-sm text-gray-500">
                                                 {log.visit_request?.office?.name || 'Unknown Office'}
                                             </p>
                                         </div>
-                                        <span className={`px-2 py-1 text-xs font-medium rounded-full ${
-                                            log.check_out_at ? 'bg-gray-100 text-gray-800' :
-                                            'bg-green-100 text-green-800'
+                                        <span className={`px-3 py-1.5 text-xs font-semibold rounded-full ${
+                                            log.check_out_at ? 'bg-gray-50 text-gray-700 border border-gray-200' :
+                                            'bg-green-50 text-green-700 border border-green-200'
                                         }`}>
                                             {log.check_out_at ? 'Checked Out' : 'Currently In'}
                                         </span>
@@ -291,7 +291,7 @@ export default function Dashboard({ stats }) {
                                 </div>
                             ))
                         ) : (
-                            <div className="px-6 py-8 text-center text-gray-500">
+                            <div className="px-6 py-12 text-center text-gray-500">
                                 No recent logs
                             </div>
                         )}
@@ -304,25 +304,32 @@ export default function Dashboard({ stats }) {
 
 function StatCard({ title, value, icon: Icon, color, trend }) {
     const colorVariants = {
-        blue: 'bg-blue-50 text-blue-600',
-        yellow: 'bg-yellow-50 text-yellow-600',
-        green: 'bg-green-50 text-green-600',
-        indigo: 'bg-indigo-50 text-indigo-600',
+        blue: 'bg-gradient-to-br from-blue-50 to-blue-100 text-blue-700',
+        yellow: 'bg-gradient-to-br from-yellow-50 to-yellow-100 text-yellow-700',
+        green: 'bg-gradient-to-br from-green-50 to-green-100 text-green-700',
+        indigo: 'bg-gradient-to-br from-indigo-50 to-indigo-100 text-indigo-700',
+    };
+
+    const bgVariants = {
+        blue: 'from-blue-50 to-blue-50',
+        yellow: 'from-yellow-50 to-yellow-50',
+        green: 'from-green-50 to-green-50',
+        indigo: 'from-indigo-50 to-indigo-50',
     };
 
     return (
-        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
-            <div className="flex items-center justify-between mb-4">
-                <div className={`p-3 rounded-xl ${colorVariants[color]}`}>
-                    <Icon className="h-6 w-6" />
+        <div className="bg-white p-7 rounded-2xl shadow-sm border border-gray-100 hover:shadow-lg transition-all hover:-translate-y-1">
+            <div className="flex items-center justify-between mb-5">
+                <div className={`p-4 rounded-2xl ${colorVariants[color]}`}>
+                    <Icon className="h-7 w-7" />
                 </div>
-                <span className="text-xs font-medium text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
+                <span className="text-xs font-semibold text-gray-600 bg-gray-100 px-3 py-1.5 rounded-full">
                     {trend}
                 </span>
             </div>
             <div>
-                <p className="text-sm font-medium text-gray-500 mb-1">{title}</p>
-                <h3 className="text-2xl font-bold text-gray-900">{value}</h3>
+                <p className="text-sm font-medium text-gray-600 mb-2">{title}</p>
+                <h3 className="text-3xl font-bold text-gray-800">{value}</h3>
             </div>
         </div>
     );
