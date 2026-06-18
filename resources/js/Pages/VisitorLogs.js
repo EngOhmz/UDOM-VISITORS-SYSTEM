@@ -86,89 +86,101 @@ export default function VisitorLogs({ logs }) {
     };
 
     return (
-        <AuthenticatedLayout title="Visitor Logs">
-            <Head title="Visitor Logs" />
+        <AuthenticatedLayout title="Visitor Confirmation">
+            <Head title="Visitor Confirmation" />
 
             <div className="mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
-                    <h2 className="text-3xl font-bold text-gray-900">Visitor Logs</h2>
+                    <h2 className="text-3xl font-bold text-gray-900">Visitor Confirmation</h2>
                     <p className="mt-2 text-gray-600">Manage visitor check-ins and check-outs</p>
                 </div>
                 <button
                     onClick={() => setIsCheckInModalOpen(true)}
-                    className="flex items-center gap-2 px-6 py-3 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition shadow-sm"
+                    className="flex items-center gap-2 px-6 py-3 bg-green-600 text-white rounded-xl font-semibold hover:bg-green-700 transition shadow-md"
                 >
                     <CheckIcon className="h-5 w-5" />
                     Check In Visitor
                 </button>
             </div>
 
-            <div className="bg-white shadow-sm border border-gray-200 rounded-xl overflow-hidden">
+            <div className="bg-white shadow-sm border border-gray-200 rounded-2xl overflow-hidden">
                 <div className="overflow-x-auto">
                     <table className="min-w-full divide-y divide-gray-200">
-                        <thead className="bg-gray-50">
+                        <thead className="bg-gradient-to-r from-gray-50 to-gray-100">
                             <tr>
-                                <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase">Visitor</th>
-                                <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase">Office</th>
-                                <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase">Check In</th>
-                                <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase">Check Out</th>
-                                <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase">Duration</th>
-                                <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase">Status</th>
-                                <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase">Actions</th>
+                                <th className="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Visitor</th>
+                                <th className="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Office</th>
+                                <th className="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Check In</th>
+                                <th className="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Check Out</th>
+                                <th className="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Duration</th>
+                                <th className="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Status</th>
+                                <th className="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Actions</th>
                             </tr>
                         </thead>
                         <tbody className="bg-white divide-y divide-gray-100">
                             {logs.data?.map((log) => (
-                                <tr key={log.id} className="hover:bg-gray-50 transition">
+                                <tr key={log.id} className="hover:bg-gradient-to-r from-gray-50 to-indigo-50 transition-all">
                                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                                         <div className="flex items-center gap-3">
-                                            <div className="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center">
-                                                <UserIcon className="w-5 h-5 text-indigo-600" />
+                                            <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-indigo-100 shadow-sm">
+                                                {log.visit_request?.visitor?.avatar ? (
+                                                    <img 
+                                                        src={log.visit_request.visitor.avatar} 
+                                                        alt={log.visit_request.visitor?.name} 
+                                                        className="w-full h-full object-cover"
+                                                    />
+                                                ) : (
+                                                    <img 
+                                                        src={`https://ui-avatars.com/api/?name=${encodeURIComponent(log.visit_request?.visitor?.name || 'Visitor')}&background=6366f1&color=fff&size=48`}
+                                                        alt={log.visit_request.visitor?.name} 
+                                                        className="w-full h-full object-cover"
+                                                    />
+                                                )}
                                             </div>
                                             <div>
-                                                <div>{log.visitRequest?.visitor?.name || '-'}</div>
+                                                <div className="font-semibold text-gray-800">{log.visit_request?.visitor?.name || '-'}</div>
                                                 {log.check_in_notes && (
                                                     <div className="text-xs text-gray-500 mt-1">{log.check_in_notes}</div>
                                                 )}
                                             </div>
                                         </div>
                                     </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
                                         <div className="flex items-center gap-2">
-                                            <BuildingOfficeIcon className="w-4 h-4" />
-                                            {log.visitRequest?.office?.name || '-'}
+                                            <BuildingOfficeIcon className="w-5 h-5 text-indigo-500" />
+                                            {log.visit_request?.office?.name || '-'}
                                         </div>
                                     </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
                                         {log.check_in_at ? (
                                             <div>
-                                                <div className="font-medium">{new Date(log.check_in_at).toLocaleDateString()}</div>
-                                                <div className="text-xs text-gray-400">{new Date(log.check_in_at).toLocaleTimeString()}</div>
+                                                <div className="font-medium text-gray-800">{new Date(log.check_in_at).toLocaleDateString()}</div>
+                                                <div className="text-xs text-gray-500">{new Date(log.check_in_at).toLocaleTimeString()}</div>
                                             </div>
                                         ) : '-'}
                                     </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
                                         {log.check_out_at ? (
                                             <div>
-                                                <div className="font-medium">{new Date(log.check_out_at).toLocaleDateString()}</div>
-                                                <div className="text-xs text-gray-400">{new Date(log.check_out_at).toLocaleTimeString()}</div>
+                                                <div className="font-medium text-gray-800">{new Date(log.check_out_at).toLocaleDateString()}</div>
+                                                <div className="text-xs text-gray-500">{new Date(log.check_out_at).toLocaleTimeString()}</div>
                                                 {log.check_out_notes && (
                                                     <div className="text-xs text-gray-500 mt-1">{log.check_out_notes}</div>
                                                 )}
                                             </div>
                                         ) : '-'}
                                     </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
                                         <div className="flex items-center gap-2">
-                                            <ClockIcon className="w-4 h-4" />
+                                            <ClockIcon className="w-5 h-5 text-indigo-500" />
                                             {log.duration || '-'}
                                         </div>
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm">
-                                        <span className={`px-3 py-1 text-xs font-medium rounded-full ${
+                                        <span className={`px-4 py-1.5 text-xs font-semibold rounded-full border ${
                                             log.check_out_at 
-                                                ? 'bg-gray-100 text-gray-800 border border-gray-200' 
-                                                : 'bg-green-100 text-green-800 border border-green-200'
+                                                ? 'bg-gray-100 text-gray-700 border-gray-300' 
+                                                : 'bg-green-100 text-green-700 border-green-300'
                                         }`}>
                                             {log.check_out_at ? 'Completed' : 'Checked In'}
                                         </span>
@@ -177,9 +189,9 @@ export default function VisitorLogs({ logs }) {
                                         {log.check_in_at && !log.check_out_at && (
                                             <button
                                                 onClick={() => setIsCheckOutModalOpen(log.id)}
-                                                className="flex items-center gap-2 px-3 py-1.5 text-orange-700 bg-orange-50 rounded-lg hover:bg-orange-100 transition border border-orange-200"
+                                                className="flex items-center gap-2 px-4 py-2 text-orange-700 bg-orange-50 rounded-xl hover:bg-orange-100 transition border border-orange-200 font-medium shadow-sm"
                                             >
-                                                <ArrowRightOnRectangleIcon className="h-4 w-4" />
+                                                <ArrowRightOnRectangleIcon className="h-5 w-5" />
                                                 Check Out
                                             </button>
                                         )}
@@ -190,10 +202,10 @@ export default function VisitorLogs({ logs }) {
                     </table>
                 </div>
                 {logs.data?.length === 0 && (
-                    <div className="p-12 text-center">
-                        <ClockIcon className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                        <h3 className="text-xl font-semibold text-gray-900 mb-2">No visitor logs yet</h3>
-                        <p className="text-gray-600">Check in your first visitor to get started.</p>
+                    <div className="p-16 text-center">
+                        <ClockIcon className="w-20 h-20 text-gray-300 mx-auto mb-6" />
+                        <h3 className="text-2xl font-bold text-gray-800 mb-3">No visitor logs yet</h3>
+                        <p className="text-gray-600 text-lg">Check in your first visitor to get started.</p>
                     </div>
                 )}
             </div>
@@ -201,9 +213,9 @@ export default function VisitorLogs({ logs }) {
             {/* Check In Modal */}
             {isCheckInModalOpen && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-                    <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg">
-                        <div className="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
-                            <h3 className="text-xl font-bold text-gray-900">Check In Visitor</h3>
+                    <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl">
+                        <div className="px-8 py-5 border-b border-gray-200 flex justify-between items-center bg-gradient-to-r from-indigo-50 to-white">
+                            <h3 className="text-2xl font-bold text-gray-800">Check In Visitor</h3>
                             <button
                                 onClick={() => {
                                     setIsCheckInModalOpen(false);
@@ -212,80 +224,101 @@ export default function VisitorLogs({ logs }) {
                                     setVisitRequestPreview(null);
                                     setErrorMessage('');
                                 }}
-                                className="text-gray-400 hover:text-gray-600 transition"
+                                className="text-gray-500 hover:text-gray-700 transition"
                             >
-                                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                                 </svg>
                             </button>
                         </div>
                         
-                        <div className="p-6">
+                        <div className="p-8">
                             <form onSubmit={handleCheckIn}>
-                                <div className="space-y-5">
+                                <div className="space-y-6">
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        <label className="block text-sm font-semibold text-gray-700 mb-3">
                                             Verification Code
                                         </label>
                                         <input
                                             type="text"
                                             value={verificationCode}
                                             onChange={handleCodeInput}
-                                            className={`w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 transition ${
-                                                errorMessage ? 'border-red-300 focus:ring-red-500' : 'border-gray-300'
-                                            }`}
+                                            className={`w-full px-5 py-4 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-indigo-100 transition-all ${
+                                                errorMessage ? 'border-red-300 focus:ring-red-100' : 'border-gray-200 focus:border-indigo-500'
+                                            } bg-white shadow-sm`}
                                             placeholder="Enter verification code (e.g. ABC123)"
                                             autoFocus
                                             required
                                         />
                                         {errorMessage && (
-                                            <p className="text-sm text-red-600 mt-2">{errorMessage}</p>
+                                            <p className="text-sm text-red-600 mt-3 font-medium">{errorMessage}</p>
                                         )}
                                     </div>
 
                                     {/* Visitor Preview */}
                                     {visitRequestPreview && (
-                                        <div className="bg-gradient-to-r from-indigo-50 to-blue-50 rounded-xl p-5 border border-indigo-100">
-                                            <h4 className="text-sm font-semibold text-indigo-900 mb-3 flex items-center gap-2">
-                                                <UserIcon className="w-4 h-4" />
+                                        <div className="bg-gradient-to-r from-indigo-50 to-blue-50 rounded-2xl p-6 border-2 border-indigo-100 shadow-sm">
+                                            <h4 className="text-sm font-bold text-indigo-800 mb-4 flex items-center gap-2">
+                                                <UserIcon className="w-5 h-5" />
                                                 Visitor Details
                                             </h4>
-                                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                                <div>
-                                                    <label className="text-xs font-medium text-gray-500 uppercase">Name</label>
-                                                    <p className="text-sm font-medium text-gray-900">{visitRequestPreview.visitor?.name || '-'}</p>
+                                            <div className="flex items-center gap-6 mb-6">
+                                                <div className="w-24 h-24 rounded-full overflow-hidden border-4 border-white shadow-md">
+                                                    {visitRequestPreview.visitor?.avatar ? (
+                                                        <img 
+                                                            src={visitRequestPreview.visitor.avatar} 
+                                                            alt={visitRequestPreview.visitor?.name} 
+                                                            className="w-full h-full object-cover"
+                                                        />
+                                                    ) : (
+                                                        <img 
+                                                            src={`https://ui-avatars.com/api/?name=${encodeURIComponent(visitRequestPreview.visitor?.name || 'Visitor')}&background=6366f1&color=fff&size=96`}
+                                                            alt={visitRequestPreview.visitor?.name} 
+                                                            className="w-full h-full object-cover"
+                                                        />
+                                                    )}
                                                 </div>
-                                                <div>
-                                                    <label className="text-xs font-medium text-gray-500 uppercase">Office</label>
-                                                    <p className="text-sm font-medium text-gray-900">{visitRequestPreview.office?.name || '-'}</p>
+                                                <div className="flex-1">
+                                                    <p className="text-xl font-bold text-gray-800">{visitRequestPreview.visitor?.name || '-'}</p>
+                                                    <p className="text-sm text-gray-600 mt-1">{visitRequestPreview.visitor?.email || '-'}</p>
                                                 </div>
-                                                <div>
-                                                    <label className="text-xs font-medium text-gray-500 uppercase">Purpose</label>
-                                                    <p className="text-sm font-medium text-gray-900">{visitRequestPreview.purpose}</p>
+                                            </div>
+                                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                                                <div className="bg-white p-4 rounded-xl border border-indigo-100">
+                                                    <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 block">Office</label>
+                                                    <p className="text-base font-semibold text-gray-800">{visitRequestPreview.office?.name || '-'}</p>
                                                 </div>
-                                                <div>
-                                                    <label className="text-xs font-medium text-gray-500 uppercase">Visit Date</label>
-                                                    <p className="text-sm font-medium text-gray-900">{new Date(visitRequestPreview.visit_date).toLocaleDateString()}</p>
+                                                <div className="bg-white p-4 rounded-xl border border-indigo-100">
+                                                    <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 block">Purpose</label>
+                                                    <p className="text-base font-semibold text-gray-800">{visitRequestPreview.purpose}</p>
+                                                </div>
+                                                <div className="bg-white p-4 rounded-xl border border-indigo-100">
+                                                    <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 block">Visit Date</label>
+                                                    <p className="text-base font-semibold text-gray-800">{new Date(visitRequestPreview.visit_date).toLocaleDateString()}</p>
+                                                </div>
+                                                <div className="bg-white p-4 rounded-xl border border-indigo-100">
+                                                    <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 block">Visit Time</label>
+                                                    <p className="text-base font-semibold text-gray-800">{visitRequestPreview.visit_time || '-'}</p>
                                                 </div>
                                             </div>
                                         </div>
                                     )}
 
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        <label className="block text-sm font-semibold text-gray-700 mb-3">
                                             Notes (Optional)
                                         </label>
                                         <textarea
                                             value={checkInNotes}
                                             onChange={(e) => setCheckInNotes(e.target.value)}
                                             rows={3}
-                                            className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
+                                            className="w-full px-5 py-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-indigo-100 focus:border-indigo-500 transition-all bg-white shadow-sm"
                                             placeholder="Add any notes about this check-in"
                                         />
                                     </div>
                                 </div>
 
-                                <div className="flex justify-end space-x-3 mt-8">
+                                <div className="flex justify-end space-x-4 mt-10">
                                     <button
                                         type="button"
                                         onClick={() => {
@@ -295,16 +328,16 @@ export default function VisitorLogs({ logs }) {
                                             setVisitRequestPreview(null);
                                             setErrorMessage('');
                                         }}
-                                        className="px-5 py-2.5 text-gray-700 bg-gray-100 rounded-xl hover:bg-gray-200 transition font-medium"
+                                        className="px-7 py-3 text-gray-700 bg-gray-100 rounded-xl hover:bg-gray-200 transition font-semibold shadow-sm"
                                     >
                                         Cancel
                                     </button>
                                     <button
                                         type="submit"
                                         disabled={!visitRequestPreview}
-                                        className={`px-5 py-2.5 text-white rounded-xl font-semibold transition ${
+                                        className={`px-7 py-3 text-white rounded-xl font-semibold transition-all shadow-md ${
                                             visitRequestPreview 
-                                                ? 'bg-green-600 hover:bg-green-700 shadow-sm' 
+                                                ? 'bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800' 
                                                 : 'bg-gray-400 cursor-not-allowed'
                                         }`}
                                     >
@@ -320,52 +353,52 @@ export default function VisitorLogs({ logs }) {
             {/* Check Out Modal */}
             {isCheckOutModalOpen && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-                    <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md">
-                        <div className="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
-                            <h3 className="text-xl font-bold text-gray-900">Check Out Visitor</h3>
+                    <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg">
+                        <div className="px-8 py-5 border-b border-gray-200 flex justify-between items-center bg-gradient-to-r from-orange-50 to-white">
+                            <h3 className="text-2xl font-bold text-gray-800">Check Out Visitor</h3>
                             <button
                                 onClick={() => {
                                     setIsCheckOutModalOpen(null);
                                     setCheckOutNotes('');
                                 }}
-                                className="text-gray-400 hover:text-gray-600 transition"
+                                className="text-gray-500 hover:text-gray-700 transition"
                             >
-                                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                                 </svg>
                             </button>
                         </div>
                         
-                        <div className="p-6">
-                            <div className="space-y-5">
+                        <div className="p-8">
+                            <div className="space-y-6">
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    <label className="block text-sm font-semibold text-gray-700 mb-3">
                                         Notes (Optional)
                                     </label>
                                     <textarea
                                         value={checkOutNotes}
                                         onChange={(e) => setCheckOutNotes(e.target.value)}
                                         rows={4}
-                                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 transition"
+                                        className="w-full px-5 py-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-orange-100 focus:border-orange-500 transition-all bg-white shadow-sm"
                                         placeholder="Add any notes about this check-out"
                                     />
                                 </div>
                             </div>
 
-                            <div className="flex justify-end space-x-3 mt-8">
+                            <div className="flex justify-end space-x-4 mt-10">
                                 <button
                                     type="button"
                                     onClick={() => {
                                         setIsCheckOutModalOpen(null);
                                         setCheckOutNotes('');
                                     }}
-                                    className="px-5 py-2.5 text-gray-700 bg-gray-100 rounded-xl hover:bg-gray-200 transition font-medium"
+                                    className="px-7 py-3 text-gray-700 bg-gray-100 rounded-xl hover:bg-gray-200 transition font-semibold shadow-sm"
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     onClick={handleCheckOut}
-                                    className="px-5 py-2.5 text-white bg-orange-600 rounded-xl hover:bg-orange-700 transition font-semibold shadow-sm"
+                                    className="px-7 py-3 text-white bg-gradient-to-r from-orange-600 to-orange-700 rounded-xl hover:from-orange-700 hover:to-orange-800 transition font-semibold shadow-md"
                                 >
                                     Check Out
                                 </button>
@@ -377,14 +410,14 @@ export default function VisitorLogs({ logs }) {
 
             {/* Pagination */}
             {logs.links && logs.links.length > 3 && (
-                <div className="mt-8 flex justify-center gap-2">
+                <div className="mt-10 flex justify-center gap-3">
                     {logs.links.map((link, index) => {
                         if (link.url === null) {
                             return (
                                 <button
                                     key={index}
                                     disabled
-                                    className="px-4 py-2 bg-gray-100 text-gray-400 rounded-lg cursor-not-allowed border border-gray-200"
+                                    className="px-5 py-3 bg-gray-100 text-gray-400 rounded-xl cursor-not-allowed border border-gray-200 font-semibold"
                                     dangerouslySetInnerHTML={{ __html: link.label }}
                                 />
                             );
@@ -393,10 +426,10 @@ export default function VisitorLogs({ logs }) {
                             <button
                                 key={index}
                                 onClick={() => router.get(link.url, {}, { preserveState: true })}
-                                className={`px-4 py-2 rounded-lg font-medium transition ${
+                                className={`px-5 py-3 rounded-xl font-semibold transition-all shadow-sm ${
                                     link.active
-                                        ? 'bg-indigo-600 text-white shadow-sm'
-                                        : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
+                                        ? 'bg-gradient-to-r from-indigo-600 to-indigo-700 text-white'
+                                        : 'bg-white text-gray-700 border border-gray-200 hover:bg-gradient-to-r from-gray-50 to-indigo-50 hover:border-indigo-200'
                                 }`}
                                 dangerouslySetInnerHTML={{ __html: link.label }}
                             />
