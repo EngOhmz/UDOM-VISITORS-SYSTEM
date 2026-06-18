@@ -36,9 +36,9 @@ class VisitorLogService
         return $log;
     }
 
-    public function checkOut($visitRequestId, $checkedOutBy, $notes = null)
+    public function checkOut($logId, $checkedOutBy, $notes = null)
     {
-        $log = VisitorLog::where('visit_request_id', $visitRequestId)
+        $log = VisitorLog::where('id', $logId)
             ->whereNotNull('check_in_at')
             ->whereNull('check_out_at')
             ->firstOrFail();

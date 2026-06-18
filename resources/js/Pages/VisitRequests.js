@@ -3,7 +3,7 @@ import { Head, Link } from '@inertiajs/react';
 import { router, usePage } from '@inertiajs/react';
 import AuthenticatedLayout from '../Layouts/AuthenticatedLayout';
 import { CheckIcon, XMarkIcon, CheckCircleIcon, XCircleIcon, ClockIcon, CalendarIcon, PlusIcon, ArrowDownTrayIcon, UserIcon, BuildingOfficeIcon } from '@heroicons/react/24/outline';
-import { jsPDF } from 'jspdf';
+import { generateVisitPass } from '../utils/generateVisitPass';
 
 export default function VisitRequests({ requests }) {
     const { props } = usePage();
@@ -13,62 +13,17 @@ export default function VisitRequests({ requests }) {
     const [approveModal, setApproveModal] = useState(null);
     const [rejectModal, setRejectModal] = useState(null);
     const [rejectionReason, setRejectionReason] = useState('');
+    const [downloadingId, setDownloadingId] = useState(null);
 
-    const downloadVerificationCode = (request) => {
-        const doc = new jsPDF();
-        const pageWidth = doc.internal.pageSize.getWidth();
-        const pageHeight = doc.internal.pageSize.getHeight();
-
-        // Add header
-        doc.setFillColor(99, 102, 241); // Indigo color
-        doc.rect(0, 0, pageWidth, 40, 'F');
-        doc.setTextColor(255, 255, 255);
-        doc.setFontSize(20);
-        doc.setFont('helvetica', 'bold');
-        doc.text('UDOM VISITOR MANAGEMENT', pageWidth / 2, 25, { align: 'center' });
-
-        // Add title
-        doc.setTextColor(0, 0, 0);
-        doc.setFontSize(16);
-        doc.text('Visit Verification Pass', pageWidth / 2, 60, { align: 'center' });
-
-        // Add visitor info
-        doc.setFontSize(12);
-        doc.setFont('helvetica', 'normal');
-        const startY = 80;
-        doc.text(`Visitor Name: ${request.visitor?.name || 'N/A'}`, 20, startY);
-        doc.text(`Office: ${request.office?.name || 'N/A'}`, 20, startY + 10);
-        doc.text(`Purpose: ${request.purpose}`, 20, startY + 20);
-        doc.text(`Visit Date: ${new Date(request.visit_date).toLocaleDateString()}`, 20, startY + 30);
-        if (request.visit_time) {
-            doc.text(`Visit Time: ${request.visit_time}`, 20, startY + 40);
+    const downloadVerificationCode = async (request) => {
+        setDownloadingId(request.id);
+        try {
+            await generateVisitPass(request);
+        } catch {
+            alert('Failed to generate visit pass. Please try again.');
+        } finally {
+            setDownloadingId(null);
         }
-
-        // Add verification code box
-        const codeBoxY = startY + 60;
-        doc.setFillColor(240, 240, 240);
-        doc.rect(20, codeBoxY, pageWidth - 40, 50, 'F');
-        doc.setDrawColor(99, 102, 241);
-        doc.setLineWidth(2);
-        doc.rect(20, codeBoxY, pageWidth - 40, 50, 'S');
-        
-        doc.setTextColor(99, 102, 241);
-        doc.setFontSize(28);
-        doc.setFont('helvetica', 'bold');
-        doc.text(request.verification_code, pageWidth / 2, codeBoxY + 32, { align: 'center' });
-        
-        doc.setTextColor(0, 0, 0);
-        doc.setFontSize(12);
-        doc.setFont('helvetica', 'normal');
-        doc.text('VERIFICATION CODE', pageWidth / 2, codeBoxY + 45, { align: 'center' });
-
-        // Add footer
-        doc.setTextColor(128, 128, 128);
-        doc.setFontSize(10);
-        doc.text('Present this code to the receptionist upon arrival', pageWidth / 2, pageHeight - 30, { align: 'center' });
-
-        // Download the PDF
-        doc.save(`UDOM-Visit-Pass-${request.verification_code}.pdf`);
     };
 
     const handleFilterChange = (status) => {
@@ -140,7 +95,7 @@ export default function VisitRequests({ requests }) {
                     </div>
                     <Link
                         href={route('visitor.request.form')}
-                        className="flex items-center gap-2 px-6 py-3 bg-indigo-600 text-white rounded-lg font-semibold hover:bg-indigo-700 transition shadow-sm"
+                        className="flex items-center gap-2 px-6 py-3 bg-udom-700 text-white rounded-lg font-semibold hover:bg-udom-800 transition shadow-sm"
                     >
                         <PlusIcon className="w-5 h-5" />
                         New Request
@@ -155,7 +110,7 @@ export default function VisitRequests({ requests }) {
                             <p className="text-gray-600 mb-6">Submit your first visit request to get started.</p>
                             <Link
                                 href={route('visitor.request.form')}
-                                className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition shadow-sm"
+                                className="inline-flex items-center gap-2 px-4 py-2 bg-udom-700 text-white rounded-lg hover:bg-udom-800 transition shadow-sm"
                             >
                                 <PlusIcon className="w-4 h-4" />
                                 Create Request
@@ -196,16 +151,17 @@ export default function VisitRequests({ requests }) {
 
                                         {request.verification_code && (
                                             <div className="flex flex-col sm:flex-row gap-3">
-                                                <div className="w-full sm:w-auto bg-indigo-50 rounded-lg p-4 border border-indigo-200">
-                                                    <h4 className="text-sm font-semibold text-indigo-900 mb-1">Verification Code</h4>
-                                                    <p className="text-2xl font-mono font-bold text-indigo-700">{request.verification_code}</p>
+                                                <div className="w-full sm:w-auto bg-udom-50 rounded-lg p-4 border border-udom-200">
+                                                    <h4 className="text-sm font-semibold text-udom-900 mb-1">Verification Code</h4>
+                                                    <p className="text-2xl font-mono font-bold text-udom-800">{request.verification_code}</p>
                                                 </div>
                                                 <button
                                                     onClick={() => downloadVerificationCode(request)}
-                                                    className="self-end flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition shadow-sm"
+                                                    disabled={downloadingId === request.id}
+                                                    className="self-end flex items-center gap-2 px-4 py-2 bg-udom-700 text-white rounded-lg hover:bg-udom-800 transition shadow-sm disabled:opacity-60"
                                                 >
                                                     <ArrowDownTrayIcon className="h-5 w-5" />
-                                                    Download Pass
+                                                    {downloadingId === request.id ? 'Generating...' : 'Download Pass'}
                                                 </button>
                                             </div>
                                         )}
@@ -242,7 +198,7 @@ export default function VisitRequests({ requests }) {
                                         href={link.url}
                                         className={`px-4 py-2 rounded-lg font-medium transition ${
                                             link.active
-                                                ? 'bg-indigo-600 text-white shadow-sm'
+                                                ? 'bg-udom-700 text-white shadow-sm'
                                                 : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
                                         }`}
                                         dangerouslySetInnerHTML={{ __html: link.label }}
@@ -269,7 +225,7 @@ export default function VisitRequests({ requests }) {
                     <button
                         onClick={() => handleFilterChange('')}
                         className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
-                            !filterStatus ? 'bg-indigo-600 text-white shadow-sm' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                            !filterStatus ? 'bg-udom-700 text-white shadow-sm' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                         }`}
                     >
                         All
@@ -277,7 +233,7 @@ export default function VisitRequests({ requests }) {
                     <button
                         onClick={() => handleFilterChange('pending')}
                         className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
-                            filterStatus === 'pending' ? 'bg-indigo-600 text-white shadow-sm' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                            filterStatus === 'pending' ? 'bg-udom-700 text-white shadow-sm' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                         }`}
                     >
                         Pending
@@ -285,7 +241,7 @@ export default function VisitRequests({ requests }) {
                     <button
                         onClick={() => handleFilterChange('approved')}
                         className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
-                            filterStatus === 'approved' ? 'bg-indigo-600 text-white shadow-sm' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                            filterStatus === 'approved' ? 'bg-udom-700 text-white shadow-sm' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                         }`}
                     >
                         Approved
@@ -293,7 +249,7 @@ export default function VisitRequests({ requests }) {
                     <button
                         onClick={() => handleFilterChange('rejected')}
                         className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
-                            filterStatus === 'rejected' ? 'bg-indigo-600 text-white shadow-sm' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                            filterStatus === 'rejected' ? 'bg-udom-700 text-white shadow-sm' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                         }`}
                     >
                         Rejected
@@ -321,8 +277,8 @@ export default function VisitRequests({ requests }) {
                                 <tr key={request.id} className="hover:bg-gray-50 transition">
                                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                                         <div className="flex items-center gap-3">
-                                            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-100 to-blue-100 flex items-center justify-center">
-                                                <UserIcon className="w-5 h-5 text-indigo-600" />
+                                            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-udom-100 to-emerald-100 flex items-center justify-center">
+                                                <UserIcon className="w-5 h-5 text-udom-700" />
                                             </div>
                                             <div>
                                                 <div className="font-medium text-gray-900">{request.visitor?.name || '-'}</div>
@@ -350,9 +306,9 @@ export default function VisitRequests({ requests }) {
                                             {request.status.charAt(0).toUpperCase() + request.status.slice(1)}
                                         </span>
                                     </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm font-mono text-indigo-600">
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm font-mono text-udom-700">
                                         {request.verification_code ? (
-                                            <span className="bg-indigo-50 px-2 py-1 rounded border border-indigo-200">
+                                            <span className="bg-udom-50 px-2 py-1 rounded border border-udom-200">
                                                 {request.verification_code}
                                             </span>
                                         ) : '-'}
@@ -410,7 +366,7 @@ export default function VisitRequests({ requests }) {
                                 href={link.url}
                                 className={`px-4 py-2 rounded-lg font-medium transition ${
                                     link.active
-                                        ? 'bg-indigo-600 text-white shadow-sm'
+                                        ? 'bg-udom-700 text-white shadow-sm'
                                         : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
                                 }`}
                                 dangerouslySetInnerHTML={{ __html: link.label }}
@@ -453,7 +409,7 @@ export default function VisitRequests({ requests }) {
                                 </button>
                                 <button
                                     onClick={handleApprove}
-                                    className="px-5 py-2.5 text-white bg-green-600 rounded-xl hover:bg-green-700 transition font-semibold shadow-sm"
+                                    className="px-5 py-2.5 text-white bg-udom-700 rounded-xl hover:bg-udom-800 transition font-semibold shadow-sm"
                                 >
                                     Yes, Approve
                                 </button>

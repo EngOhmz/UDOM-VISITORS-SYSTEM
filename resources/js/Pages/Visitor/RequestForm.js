@@ -36,7 +36,7 @@ export default function VisitorRequestForm({ offices, departments }) {
         <div className="mb-6">
           <Link
             href={route('requests.index')}
-            className="inline-flex items-center gap-2 text-indigo-600 hover:text-indigo-800 font-medium"
+            className="inline-flex items-center gap-2 text-udom-700 hover:text-udom-800 font-medium"
           >
             <ArrowLeftIcon className="w-4 h-4" />
             Back to Requests
@@ -57,7 +57,7 @@ export default function VisitorRequestForm({ offices, departments }) {
                   setSelectedDepartment(e.target.value);
                   setData('office_id', '');
                 }}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-udom-500"
                 required
               >
                 <option value="">Select a department</option>
@@ -76,7 +76,7 @@ export default function VisitorRequestForm({ offices, departments }) {
               <select
                 value={data.office_id}
                 onChange={e => setData('office_id', e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-udom-500"
                 disabled={!selectedDepartment}
                 required
               >
@@ -100,7 +100,7 @@ export default function VisitorRequestForm({ offices, departments }) {
                   type="date"
                   value={data.visit_date}
                   onChange={e => setData('visit_date', e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-udom-500"
                   required
                 />
                 {errors.visit_date && <p className="mt-2 text-sm text-red-600">{errors.visit_date}</p>}
@@ -114,7 +114,7 @@ export default function VisitorRequestForm({ offices, departments }) {
                   type="time"
                   value={data.visit_time}
                   onChange={e => setData('visit_time', e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-udom-500"
                 />
               </div>
             </div>
@@ -127,7 +127,7 @@ export default function VisitorRequestForm({ offices, departments }) {
                 value={data.purpose}
                 onChange={e => setData('purpose', e.target.value)}
                 rows={5}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-udom-500"
                 required
               />
               {errors.purpose && <p className="mt-2 text-sm text-red-600">{errors.purpose}</p>}
@@ -143,7 +143,7 @@ export default function VisitorRequestForm({ offices, departments }) {
               <button
                 type="submit"
                 disabled={processing}
-                className="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 font-medium transition disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-6 py-2 bg-udom-700 text-white rounded-lg hover:bg-udom-800 font-medium transition disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {processing ? 'Submitting...' : 'Submit Request'}
               </button>

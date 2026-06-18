@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Head, useForm, usePage } from '@inertiajs/react';
 import AuthenticatedLayout from '../Layouts/AuthenticatedLayout';
 import { UserCircleIcon, CheckCircleIcon, KeyIcon, EnvelopeIcon, PhoneIcon, CameraIcon } from '@heroicons/react/24/outline';
+import PasswordInput from '../Components/PasswordInput';
 
 export default function Profile({ user }) {
     const { props } = usePage();
@@ -61,7 +62,7 @@ export default function Profile({ user }) {
 
             {showSuccess && (
                 <div className="fixed top-4 right-4 z-50 animate-bounce">
-                    <div className="bg-green-600 text-white px-6 py-3 rounded-lg shadow-2xl flex items-center">
+                    <div className="bg-udom-700 text-white px-6 py-3 rounded-lg shadow-2xl flex items-center">
                         <CheckCircleIcon className="h-5 w-5 mr-2" />
                         <span className="font-bold mr-2">✓ Success:</span> {flash.success}
                     </div>
@@ -71,7 +72,7 @@ export default function Profile({ user }) {
             <div className="max-w-3xl mx-auto space-y-6">
                 <div className="bg-white shadow-sm border border-gray-200 rounded-xl overflow-hidden">
                     <div className="px-6 py-4 border-b border-gray-100 bg-gray-50 flex items-center">
-                        <UserCircleIcon className="h-6 w-6 text-indigo-600 mr-2" />
+                        <UserCircleIcon className="h-6 w-6 text-udom-700 mr-2" />
                         <h3 className="text-lg font-bold text-gray-800">Profile Information</h3>
                     </div>
                     <form onSubmit={submit} className="p-6 space-y-6">
@@ -87,7 +88,7 @@ export default function Profile({ user }) {
                                         />
                                     ) : (
                                         <img 
-                                            src={`https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=6366f1&color=fff&size=128`}
+                                            src={`https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=0a5c3c&color=fff&size=128`}
                                             alt={user.name} 
                                             className="w-full h-full object-cover"
                                         />
@@ -116,7 +117,7 @@ export default function Profile({ user }) {
                                     </div>
                                     <input 
                                         type="text" 
-                                        className="block w-full pl-10 px-4 py-2.5 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-sm bg-white"
+                                        className="block w-full pl-10 px-4 py-2.5 border border-gray-300 rounded-lg shadow-sm focus:ring-udom-500 focus:border-udom-500 text-sm bg-white"
                                         value={data.name}
                                         onChange={e => setData('name', e.target.value)}
                                     />
@@ -133,7 +134,7 @@ export default function Profile({ user }) {
                                         </div>
                                         <input 
                                             type="email" 
-                                            className="block w-full pl-10 px-4 py-2.5 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-sm bg-white"
+                                            className="block w-full pl-10 px-4 py-2.5 border border-gray-300 rounded-lg shadow-sm focus:ring-udom-500 focus:border-udom-500 text-sm bg-white"
                                             value={data.email}
                                             onChange={e => setData('email', e.target.value)}
                                         />
@@ -148,7 +149,7 @@ export default function Profile({ user }) {
                                         </div>
                                         <input 
                                             type="text" 
-                                            className="block w-full pl-10 px-4 py-2.5 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-sm bg-white"
+                                            className="block w-full pl-10 px-4 py-2.5 border border-gray-300 rounded-lg shadow-sm focus:ring-udom-500 focus:border-udom-500 text-sm bg-white"
                                             value={data.phone}
                                             onChange={e => setData('phone', e.target.value)}
                                         />
@@ -159,15 +160,14 @@ export default function Profile({ user }) {
 
                             <div className="pt-6 border-t border-gray-100">
                                 <h4 className="text-sm font-bold text-gray-900 mb-4 flex items-center">
-                                    <KeyIcon className="h-5 w-5 mr-2 text-indigo-600" />
+                                    <KeyIcon className="h-5 w-5 mr-2 text-udom-700" />
                                     Change Password
                                 </h4>
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                                     <div>
                                         <label className="block text-sm font-medium text-gray-700 mb-1">New Password</label>
-                                        <input 
-                                            type="password" 
-                                            className="block w-full px-4 py-2.5 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-sm bg-white"
+                                        <PasswordInput 
+                                            className="block w-full px-4 py-2.5 border border-gray-300 rounded-lg shadow-sm focus:ring-udom-500 focus:border-udom-500 text-sm bg-white"
                                             value={data.password}
                                             onChange={e => setData('password', e.target.value)}
                                             placeholder="Leave blank to keep current"
@@ -176,9 +176,8 @@ export default function Profile({ user }) {
                                     </div>
                                     <div>
                                         <label className="block text-sm font-medium text-gray-700 mb-1">Confirm New Password</label>
-                                        <input 
-                                            type="password" 
-                                            className="block w-full px-4 py-2.5 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-sm bg-white"
+                                        <PasswordInput 
+                                            className="block w-full px-4 py-2.5 border border-gray-300 rounded-lg shadow-sm focus:ring-udom-500 focus:border-udom-500 text-sm bg-white"
                                             value={data.password_confirmation}
                                             onChange={e => setData('password_confirmation', e.target.value)}
                                         />
@@ -191,7 +190,7 @@ export default function Profile({ user }) {
                             <button 
                                 type="submit"
                                 disabled={processing}
-                                className="w-full sm:w-auto px-6 py-2.5 bg-indigo-600 text-white rounded-lg text-sm font-bold hover:bg-indigo-700 transition disabled:opacity-50 shadow-md"
+                                className="w-full sm:w-auto px-6 py-2.5 bg-udom-700 text-white rounded-lg text-sm font-bold hover:bg-udom-800 transition disabled:opacity-50 shadow-md"
                             >
                                 {processing ? 'Updating Profile...' : 'Save Changes'}
                             </button>

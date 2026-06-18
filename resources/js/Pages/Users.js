@@ -3,6 +3,7 @@ import { Head } from '@inertiajs/react';
 import { router } from '@inertiajs/react';
 import AuthenticatedLayout from '../Layouts/AuthenticatedLayout';
 import { PlusIcon, PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
+import PasswordInput from '../Components/PasswordInput';
 
 export default function Users({ users, roles, offices, departments }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -77,13 +78,13 @@ export default function Users({ users, roles, offices, departments }) {
     const getRoleBadgeClass = (role) => {
         switch (role) {
             case 'admin':
-                return 'bg-red-100 text-red-800';
+                return 'bg-udom-200 text-udom-900';
             case 'staff':
-                return 'bg-blue-100 text-blue-800';
+                return 'bg-udom-100 text-udom-800';
             case 'secretary':
-                return 'bg-green-100 text-green-800';
+                return 'bg-udom-50 text-udom-700';
             default:
-                return 'bg-gray-100 text-gray-800';
+                return 'bg-slate-100 text-slate-700';
         }
     };
 
@@ -99,7 +100,7 @@ export default function Users({ users, roles, offices, departments }) {
                         resetForm();
                         setIsModalOpen(true);
                     }}
-                    className="flex items-center px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
+                    className="flex items-center px-4 py-2 bg-udom-700 text-white rounded-lg hover:bg-udom-800 transition"
                 >
                     <PlusIcon className="h-5 w-5 mr-2" />
                     Add User
@@ -147,7 +148,7 @@ export default function Users({ users, roles, offices, departments }) {
                                         <div className="flex space-x-2">
                                             <button
                                                 onClick={() => handleEdit(user)}
-                                                className="text-indigo-600 hover:text-indigo-900"
+                                                className="text-udom-700 hover:text-udom-900"
                                             >
                                                 <PencilIcon className="h-5 w-5" />
                                             </button>
@@ -183,7 +184,7 @@ export default function Users({ users, roles, offices, departments }) {
                                         type="text"
                                         value={formData.name}
                                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-udom-500"
                                         required
                                     />
                                 </div>
@@ -195,7 +196,7 @@ export default function Users({ users, roles, offices, departments }) {
                                         type="email"
                                         value={formData.email}
                                         onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-udom-500"
                                         required
                                     />
                                 </div>
@@ -207,7 +208,7 @@ export default function Users({ users, roles, offices, departments }) {
                                         type="text"
                                         value={formData.phone}
                                         onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-udom-500"
                                     />
                                 </div>
                                 <div>
@@ -217,7 +218,7 @@ export default function Users({ users, roles, offices, departments }) {
                                     <select
                                         value={formData.role}
                                         onChange={(e) => setFormData({ ...formData, role: e.target.value })}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-udom-500"
                                         required
                                     >
                                         <option value="staff">Staff</option>
@@ -241,7 +242,7 @@ export default function Users({ users, roles, offices, departments }) {
                                                         office_id: null // Reset office when department changes
                                                     });
                                                 }}
-                                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-udom-500"
                                                 required
                                             >
                                                 <option value="">Select Department</option>
@@ -259,7 +260,7 @@ export default function Users({ users, roles, offices, departments }) {
                                             <select
                                                 value={formData.office_id || ''}
                                                 onChange={(e) => setFormData({ ...formData, office_id: e.target.value ? Number(e.target.value) : null })}
-                                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-udom-500"
                                                 disabled={!formData.department_id && departments.length > 0}
                                                 required
                                             >
@@ -278,11 +279,10 @@ export default function Users({ users, roles, offices, departments }) {
                                         <label className="block text-sm font-medium text-gray-700 mb-1">
                                             Password
                                         </label>
-                                        <input
-                                            type="password"
+                                        <PasswordInput
                                             value={formData.password}
                                             onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-udom-500"
                                             required
                                         />
                                     </div>
@@ -302,7 +302,7 @@ export default function Users({ users, roles, offices, departments }) {
                                 </button>
                                 <button
                                     type="submit"
-                                    className="px-4 py-2 text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition"
+                                    className="px-4 py-2 text-white bg-udom-700 rounded-lg hover:bg-udom-800 transition"
                                 >
                                     {editingUser ? 'Update' : 'Create'}
                                 </button>

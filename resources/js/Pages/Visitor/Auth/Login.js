@@ -1,125 +1,120 @@
 import React from 'react';
 import { Head, useForm, usePage } from '@inertiajs/react';
-import { PhoneIcon, LockClosedIcon, CheckCircleIcon, XCircleIcon } from '@heroicons/react/24/outline';
+import { PhoneIcon, LockClosedIcon, CheckCircleIcon, XCircleIcon, AcademicCapIcon } from '@heroicons/react/24/outline';
+import PasswordInput from '../../../Components/PasswordInput';
 
 export default function VisitorLogin() {
-  const { data, setData, post, processing, errors } = useForm({
-    phone: '',
-    password: '',
-  });
-  const { props } = usePage();
+    const { data, setData, post, processing, errors } = useForm({
+        phone: '',
+        password: '',
+    });
+    const { props } = usePage();
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    post(route('visitor.login'));
-  };
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        post(route('visitor.login'));
+    };
 
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-white flex">
-      <Head title="Visitor Login" />
-      
-      <div className="flex-1 flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8">
-        <div className="sm:mx-auto sm:w-full sm:max-w-md">
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-indigo-600">
-            UDOM VMS
-          </h2>
-          <p className="mt-2 text-center text-sm text-gray-600">
-            Visitor Login
-          </p>
-        </div>
+    return (
+        <div className="min-h-screen flex">
+            <Head title="Visitor Login" />
 
-        <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-          <div className="bg-white py-8 px-4 shadow-xl rounded-xl border border-gray-200 sm:px-10">
-            {props.flash.success && (
-                <div className="mb-4 bg-green-50 border-l-4 border-green-500 text-green-700 p-4 rounded-r-lg flex items-center">
-                    <CheckCircleIcon className="w-5 h-5 mr-2" />
-                    <p>{props.flash.success}</p>
+            <div className="hidden lg:flex lg:w-2/5 bg-gradient-to-br from-udom-900 via-udom-800 to-udom-950 relative overflow-hidden">
+                <div className="absolute inset-0 opacity-10">
+                    <div className="absolute top-20 right-10 w-64 h-64 rounded-full bg-gold-400" />
                 </div>
-            )}
-            {props.flash.error && (
-                <div className="mb-4 bg-red-50 border-l-4 border-red-500 text-red-700 p-4 rounded-r-lg flex items-center">
-                    <XCircleIcon className="w-5 h-5 mr-2" />
-                    <p>{props.flash.error}</p>
-                </div>
-            )}
-            <form className="space-y-6" onSubmit={handleSubmit}>
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">
-                    Phone Number
-                  </label>
-                  <div className="mt-1 relative rounded-md shadow-sm">
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <PhoneIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
+                <div className="relative flex flex-col justify-center px-12 text-white">
+                    <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-gold-400 to-gold-600 flex items-center justify-center shadow-xl mb-6">
+                        <AcademicCapIcon className="w-8 h-8 text-white" />
                     </div>
-                    <input
-                      type="text"
-                      value={data.phone}
-                      onChange={e => setData('phone', e.target.value)}
-                      className="appearance-none block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                      placeholder="e.g. 255712345678"
-                      required
-                    />
-                  </div>
-                  {errors.phone && <p className="mt-2 text-sm text-red-600">{errors.phone}</p>}
+                    <h1 className="text-3xl font-bold mb-3">Visitor Portal</h1>
+                    <p className="text-emerald-100/70 leading-relaxed">
+                        Sign in to manage your campus visit requests at the University of Dodoma.
+                    </p>
                 </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">
-                    Password
-                  </label>
-                  <div className="mt-1 relative rounded-md shadow-sm">
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <LockClosedIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
-                    </div>
-                    <input
-                      type="password"
-                      value={data.password}
-                      onChange={e => setData('password', e.target.value)}
-                      className="appearance-none block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                      required
-                    />
-                  </div>
-                  {errors.password && <p className="mt-2 text-sm text-red-600">{errors.password}</p>}
-                </div>
-              </div>
-
-              <div>
-                <button
-                  type="submit"
-                  disabled={processing}
-                  className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {processing ? 'Signing in...' : 'Sign in'}
-                </button>
-              </div>
-            </form>
-
-            <div className="mt-6 pt-6 border-t border-gray-200">
-              <div className="text-center">
-                <p className="text-sm text-gray-600">
-                  Don't have an account?{' '}
-                  <a
-                    href={route('visitor.register')}
-                    className="font-medium text-indigo-600 hover:text-indigo-500"
-                  >
-                    Register here
-                  </a>
-                </p>
-              </div>
-
-              <div className="mt-4 text-center">
-                <a
-                  href={route('login')}
-                  className="text-sm text-gray-500 hover:text-gray-700"
-                >
-                  Staff Login →
-                </a>
-              </div>
             </div>
-          </div>
+
+            <div className="flex-1 flex items-center justify-center bg-slate-50 py-12 px-4 sm:px-6">
+                <div className="w-full max-w-md">
+                    <div className="lg:hidden flex items-center gap-3 mb-8 justify-center">
+                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-gold-400 to-gold-600 flex items-center justify-center">
+                            <AcademicCapIcon className="w-6 h-6 text-white" />
+                        </div>
+                        <div>
+                            <h2 className="text-lg font-bold text-udom-800">UDOM VMS</h2>
+                            <p className="text-xs text-slate-500">Visitor Portal</p>
+                        </div>
+                    </div>
+
+                    <div className="bg-white p-8 rounded-2xl shadow-udom-lg border border-slate-200/80">
+                        {props.flash?.success && (
+                            <div className="mb-6 flex items-center gap-3 bg-emerald-50 border border-emerald-200 text-emerald-800 px-4 py-3 rounded-xl text-sm">
+                                <CheckCircleIcon className="w-5 h-5 shrink-0" />
+                                <p>{props.flash.success}</p>
+                            </div>
+                        )}
+                        {props.flash?.error && (
+                            <div className="mb-6 flex items-center gap-3 bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-xl text-sm">
+                                <XCircleIcon className="w-5 h-5 shrink-0" />
+                                <p>{props.flash.error}</p>
+                            </div>
+                        )}
+
+                        <div className="mb-8">
+                            <h2 className="text-2xl font-bold text-slate-900">Visitor Login</h2>
+                            <p className="mt-1 text-sm text-slate-500">Access your visit requests</p>
+                        </div>
+
+                        <form className="space-y-5" onSubmit={handleSubmit}>
+                            <div>
+                                <label className="block text-sm font-semibold text-slate-700 mb-1.5">Phone Number</label>
+                                <div className="relative">
+                                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <PhoneIcon className="h-5 w-5 text-slate-400" />
+                                    </div>
+                                    <input
+                                        type="text"
+                                        value={data.phone}
+                                        onChange={e => setData('phone', e.target.value)}
+                                        className="block w-full pl-10 pr-3 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-udom-500 focus:border-udom-500 text-sm"
+                                        placeholder="e.g. 255712345678"
+                                        required
+                                    />
+                                </div>
+                                {errors.phone && <p className="mt-1.5 text-sm text-red-600">{errors.phone}</p>}
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-semibold text-slate-700 mb-1.5">Password</label>
+                                <PasswordInput
+                                    leftIcon={LockClosedIcon}
+                                    value={data.password}
+                                    onChange={e => setData('password', e.target.value)}
+                                    className="block w-full py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-udom-500 focus:border-udom-500 text-sm"
+                                    required
+                                />
+                                {errors.password && <p className="mt-1.5 text-sm text-red-600">{errors.password}</p>}
+                            </div>
+
+                            <button type="submit" disabled={processing} className="udom-btn-primary w-full py-3">
+                                {processing ? 'Signing in...' : 'Sign In'}
+                            </button>
+                        </form>
+
+                        <div className="mt-8 pt-6 border-t border-slate-100 space-y-3 text-center">
+                            <p className="text-sm text-slate-500">
+                                Don't have an account?{' '}
+                                <a href={route('visitor.register')} className="font-semibold text-udom-600 hover:text-udom-700">
+                                    Register here
+                                </a>
+                            </p>
+                            <a href={route('login')} className="inline-block text-sm text-slate-400 hover:text-slate-600">
+                                Staff Login →
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
-  );
+    );
 }

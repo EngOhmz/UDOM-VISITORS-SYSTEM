@@ -1,3 +1,69 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+    body {
+        @apply antialiased text-slate-800;
+    }
+}
+
+@layer components {
+    .udom-card {
+        @apply bg-white rounded-2xl border border-slate-200/80 shadow-udom hover:shadow-udom-lg transition-all duration-300;
+    }
+
+    .udom-card-header {
+        @apply px-6 py-4 border-b border-slate-100 bg-gradient-to-r from-slate-50 to-white;
+    }
+
+    .udom-btn-primary {
+        @apply inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-gradient-to-r from-udom-700 to-udom-600 text-white font-semibold rounded-xl hover:from-udom-800 hover:to-udom-700 focus:outline-none focus:ring-2 focus:ring-udom-500 focus:ring-offset-2 shadow-md hover:shadow-lg transition-all duration-200;
+    }
+
+    .udom-btn-secondary {
+        @apply inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-white text-slate-700 font-semibold rounded-xl border border-slate-200 hover:bg-slate-50 hover:border-slate-300 focus:outline-none focus:ring-2 focus:ring-udom-500 focus:ring-offset-2 transition-all duration-200;
+    }
+
+    .udom-input {
+        @apply block w-full px-3 py-2.5 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-udom-500 focus:border-udom-500 text-sm bg-white transition;
+    }
+
+    .udom-filter-active {
+        @apply px-4 py-2 rounded-xl text-sm font-medium bg-udom-700 text-white shadow-sm;
+    }
+
+    .udom-filter-inactive {
+        @apply px-4 py-2 rounded-xl text-sm font-medium bg-slate-100 text-slate-700 hover:bg-slate-200 transition;
+    }
+
+    .udom-link {
+        @apply font-semibold text-udom-700 hover:text-udom-800 transition;
+    }
+
+    .udom-badge {
+        @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold;
+    }
+
+    .udom-nav-active {
+        @apply bg-white/15 text-white shadow-sm border-l-2 border-gold-400;
+    }
+
+    .udom-nav-inactive {
+        @apply text-emerald-100/90 hover:bg-white/10 hover:text-white border-l-2 border-transparent;
+    }
+}
+
+/* Custom scrollbar for sidebar */
+.udom-scrollbar::-webkit-scrollbar {
+    width: 4px;
+}
+.udom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+}
+.udom-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+}

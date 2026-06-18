@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EMASUITE API | Bank Marketing & Agent Performance</title>
+    <title>UDOM VISITORS SYSTEM</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -15,8 +15,8 @@
         <!-- Header -->
         <header class="bg-indigo-700 text-white py-12 px-6 shadow-lg">
             <div class="max-w-5xl mx-auto">
-                <h1 class="text-4xl font-bold mb-2">EMASUITE Backend</h1>
-                <p class="text-indigo-100 text-lg">Bank Marketing & Agent Performance Management System API</p>
+                <h1 class="text-4xl font-bold mb-2">UDOM VISITORS SYSTEM</h1>
+                <p class="text-indigo-100 text-lg">University of Dodoma Visitor Management System</p>
                 <div class="mt-6 flex gap-4">
                     <span class="bg-indigo-600 px-3 py-1 rounded-full text-sm font-medium border border-indigo-400">v1.0.0</span>
                     <span class="bg-green-500 px-3 py-1 rounded-full text-sm font-medium">System Online</span>
@@ -34,7 +34,7 @@
                     Getting Started
                 </h2>
                 <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-                    <p class="text-gray-600 mb-4">This API is designed for Flutter mobile integration. All responses are returned in JSON format.</p>
+      
                     <div class="bg-gray-900 rounded-lg p-4 font-mono text-sm text-indigo-300">
                         <span class="text-gray-500"># Base URL</span><br>
                         {{ url('/api') }}

@@ -12,6 +12,8 @@ export default function VisitorLogs({ logs }) {
     const [checkOutNotes, setCheckOutNotes] = useState('');
     const [visitRequestPreview, setVisitRequestPreview] = useState(null);
     const [errorMessage, setErrorMessage] = useState('');
+    const [checkOutProcessing, setCheckOutProcessing] = useState(false);
+    const [checkOutError, setCheckOutError] = useState('');
 
     const handleCodeInput = (e) => {
         const code = e.target.value;
@@ -75,13 +77,19 @@ export default function VisitorLogs({ logs }) {
 
     const handleCheckOut = () => {
         if (!isCheckOutModalOpen) return;
-        router.put(`/logs/${isCheckOutModalOpen}/check-out`, {
+        setCheckOutProcessing(true);
+        setCheckOutError('');
+        router.put(route('logs.check-out', isCheckOutModalOpen), {
             notes: checkOutNotes,
         }, {
             onSuccess: () => {
                 setIsCheckOutModalOpen(null);
                 setCheckOutNotes('');
-            }
+            },
+            onError: () => {
+                setCheckOutError('Failed to check out visitor. The visitor may already be checked out.');
+            },
+            onFinish: () => setCheckOutProcessing(false),
         });
     };
 
@@ -96,7 +104,7 @@ export default function VisitorLogs({ logs }) {
                 </div>
                 <button
                     onClick={() => setIsCheckInModalOpen(true)}
-                    className="flex items-center gap-2 px-6 py-3 bg-green-600 text-white rounded-xl font-semibold hover:bg-green-700 transition shadow-md"
+                    className="flex items-center gap-2 px-6 py-3 bg-udom-700 text-white rounded-xl font-semibold hover:bg-udom-800 transition shadow-md"
                 >
                     <CheckIcon className="h-5 w-5" />
                     Check In Visitor
@@ -119,10 +127,10 @@ export default function VisitorLogs({ logs }) {
                         </thead>
                         <tbody className="bg-white divide-y divide-gray-100">
                             {logs.data?.map((log) => (
-                                <tr key={log.id} className="hover:bg-gradient-to-r from-gray-50 to-indigo-50 transition-all">
+                                <tr key={log.id} className="hover:bg-gradient-to-r from-slate-50 to-udom-50 transition-all">
                                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                                         <div className="flex items-center gap-3">
-                                            <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-indigo-100 shadow-sm">
+                                            <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-udom-100 shadow-sm">
                                                 {log.visit_request?.visitor?.avatar ? (
                                                     <img 
                                                         src={log.visit_request.visitor.avatar} 
@@ -131,7 +139,7 @@ export default function VisitorLogs({ logs }) {
                                                     />
                                                 ) : (
                                                     <img 
-                                                        src={`https://ui-avatars.com/api/?name=${encodeURIComponent(log.visit_request?.visitor?.name || 'Visitor')}&background=6366f1&color=fff&size=48`}
+                                                        src={`https://ui-avatars.com/api/?name=${encodeURIComponent(log.visit_request?.visitor?.name || 'Visitor')}&background=0a5c3c&color=fff&size=48`}
                                                         alt={log.visit_request.visitor?.name} 
                                                         className="w-full h-full object-cover"
                                                     />
@@ -147,7 +155,7 @@ export default function VisitorLogs({ logs }) {
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
                                         <div className="flex items-center gap-2">
-                                            <BuildingOfficeIcon className="w-5 h-5 text-indigo-500" />
+                                            <BuildingOfficeIcon className="w-5 h-5 text-udom-600" />
                                             {log.visit_request?.office?.name || '-'}
                                         </div>
                                     </td>
@@ -172,7 +180,7 @@ export default function VisitorLogs({ logs }) {
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
                                         <div className="flex items-center gap-2">
-                                            <ClockIcon className="w-5 h-5 text-indigo-500" />
+                                            <ClockIcon className="w-5 h-5 text-udom-600" />
                                             {log.duration || '-'}
                                         </div>
                                     </td>
@@ -214,7 +222,7 @@ export default function VisitorLogs({ logs }) {
             {isCheckInModalOpen && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
                     <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl">
-                        <div className="px-8 py-5 border-b border-gray-200 flex justify-between items-center bg-gradient-to-r from-indigo-50 to-white">
+                        <div className="px-8 py-5 border-b border-gray-200 flex justify-between items-center bg-gradient-to-r from-udom-50 to-white">
                             <h3 className="text-2xl font-bold text-gray-800">Check In Visitor</h3>
                             <button
                                 onClick={() => {
@@ -243,8 +251,8 @@ export default function VisitorLogs({ logs }) {
                                             type="text"
                                             value={verificationCode}
                                             onChange={handleCodeInput}
-                                            className={`w-full px-5 py-4 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-indigo-100 transition-all ${
-                                                errorMessage ? 'border-red-300 focus:ring-red-100' : 'border-gray-200 focus:border-indigo-500'
+                                            className={`w-full px-5 py-4 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-udom-100 transition-all ${
+                                                errorMessage ? 'border-red-300 focus:ring-red-100' : 'border-gray-200 focus:border-udom-500'
                                             } bg-white shadow-sm`}
                                             placeholder="Enter verification code (e.g. ABC123)"
                                             autoFocus
@@ -257,8 +265,8 @@ export default function VisitorLogs({ logs }) {
 
                                     {/* Visitor Preview */}
                                     {visitRequestPreview && (
-                                        <div className="bg-gradient-to-r from-indigo-50 to-blue-50 rounded-2xl p-6 border-2 border-indigo-100 shadow-sm">
-                                            <h4 className="text-sm font-bold text-indigo-800 mb-4 flex items-center gap-2">
+                                        <div className="bg-gradient-to-r from-udom-50 to-emerald-50 rounded-2xl p-6 border-2 border-udom-100 shadow-sm">
+                                            <h4 className="text-sm font-bold text-udom-800 mb-4 flex items-center gap-2">
                                                 <UserIcon className="w-5 h-5" />
                                                 Visitor Details
                                             </h4>
@@ -272,7 +280,7 @@ export default function VisitorLogs({ logs }) {
                                                         />
                                                     ) : (
                                                         <img 
-                                                            src={`https://ui-avatars.com/api/?name=${encodeURIComponent(visitRequestPreview.visitor?.name || 'Visitor')}&background=6366f1&color=fff&size=96`}
+                                                            src={`https://ui-avatars.com/api/?name=${encodeURIComponent(visitRequestPreview.visitor?.name || 'Visitor')}&background=0a5c3c&color=fff&size=96`}
                                                             alt={visitRequestPreview.visitor?.name} 
                                                             className="w-full h-full object-cover"
                                                         />
@@ -284,19 +292,19 @@ export default function VisitorLogs({ logs }) {
                                                 </div>
                                             </div>
                                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                                                <div className="bg-white p-4 rounded-xl border border-indigo-100">
+                                                <div className="bg-white p-4 rounded-xl border border-udom-100">
                                                     <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 block">Office</label>
                                                     <p className="text-base font-semibold text-gray-800">{visitRequestPreview.office?.name || '-'}</p>
                                                 </div>
-                                                <div className="bg-white p-4 rounded-xl border border-indigo-100">
+                                                <div className="bg-white p-4 rounded-xl border border-udom-100">
                                                     <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 block">Purpose</label>
                                                     <p className="text-base font-semibold text-gray-800">{visitRequestPreview.purpose}</p>
                                                 </div>
-                                                <div className="bg-white p-4 rounded-xl border border-indigo-100">
+                                                <div className="bg-white p-4 rounded-xl border border-udom-100">
                                                     <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 block">Visit Date</label>
                                                     <p className="text-base font-semibold text-gray-800">{new Date(visitRequestPreview.visit_date).toLocaleDateString()}</p>
                                                 </div>
-                                                <div className="bg-white p-4 rounded-xl border border-indigo-100">
+                                                <div className="bg-white p-4 rounded-xl border border-udom-100">
                                                     <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 block">Visit Time</label>
                                                     <p className="text-base font-semibold text-gray-800">{visitRequestPreview.visit_time || '-'}</p>
                                                 </div>
@@ -312,7 +320,7 @@ export default function VisitorLogs({ logs }) {
                                             value={checkInNotes}
                                             onChange={(e) => setCheckInNotes(e.target.value)}
                                             rows={3}
-                                            className="w-full px-5 py-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-indigo-100 focus:border-indigo-500 transition-all bg-white shadow-sm"
+                                            className="w-full px-5 py-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-udom-100 focus:border-udom-500 transition-all bg-white shadow-sm"
                                             placeholder="Add any notes about this check-in"
                                         />
                                     </div>
@@ -337,7 +345,7 @@ export default function VisitorLogs({ logs }) {
                                         disabled={!visitRequestPreview}
                                         className={`px-7 py-3 text-white rounded-xl font-semibold transition-all shadow-md ${
                                             visitRequestPreview 
-                                                ? 'bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800' 
+                                                ? 'bg-gradient-to-r from-udom-700 to-udom-600 hover:from-udom-800 hover:to-udom-700' 
                                                 : 'bg-gray-400 cursor-not-allowed'
                                         }`}
                                     >
@@ -360,6 +368,7 @@ export default function VisitorLogs({ logs }) {
                                 onClick={() => {
                                     setIsCheckOutModalOpen(null);
                                     setCheckOutNotes('');
+                                    setCheckOutError('');
                                 }}
                                 className="text-gray-500 hover:text-gray-700 transition"
                             >
@@ -371,6 +380,9 @@ export default function VisitorLogs({ logs }) {
                         
                         <div className="p-8">
                             <div className="space-y-6">
+                                {checkOutError && (
+                                    <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-xl px-4 py-3">{checkOutError}</p>
+                                )}
                                 <div>
                                     <label className="block text-sm font-semibold text-gray-700 mb-3">
                                         Notes (Optional)
@@ -391,6 +403,7 @@ export default function VisitorLogs({ logs }) {
                                     onClick={() => {
                                         setIsCheckOutModalOpen(null);
                                         setCheckOutNotes('');
+                                        setCheckOutError('');
                                     }}
                                     className="px-7 py-3 text-gray-700 bg-gray-100 rounded-xl hover:bg-gray-200 transition font-semibold shadow-sm"
                                 >
@@ -398,9 +411,10 @@ export default function VisitorLogs({ logs }) {
                                 </button>
                                 <button
                                     onClick={handleCheckOut}
-                                    className="px-7 py-3 text-white bg-gradient-to-r from-orange-600 to-orange-700 rounded-xl hover:from-orange-700 hover:to-orange-800 transition font-semibold shadow-md"
+                                    disabled={checkOutProcessing}
+                                    className="px-7 py-3 text-white bg-gradient-to-r from-orange-600 to-orange-700 rounded-xl hover:from-orange-700 hover:to-orange-800 transition font-semibold shadow-md disabled:opacity-60"
                                 >
-                                    Check Out
+                                    {checkOutProcessing ? 'Checking Out...' : 'Check Out'}
                                 </button>
                             </div>
                         </div>
@@ -428,8 +442,8 @@ export default function VisitorLogs({ logs }) {
                                 onClick={() => router.get(link.url, {}, { preserveState: true })}
                                 className={`px-5 py-3 rounded-xl font-semibold transition-all shadow-sm ${
                                     link.active
-                                        ? 'bg-gradient-to-r from-indigo-600 to-indigo-700 text-white'
-                                        : 'bg-white text-gray-700 border border-gray-200 hover:bg-gradient-to-r from-gray-50 to-indigo-50 hover:border-indigo-200'
+                                        ? 'bg-gradient-to-r from-udom-700 to-udom-600 text-white'
+                                        : 'bg-white text-gray-700 border border-gray-200 hover:bg-gradient-to-r from-slate-50 to-udom-50 hover:border-udom-200'
                                 }`}
                                 dangerouslySetInnerHTML={{ __html: link.label }}
                             />

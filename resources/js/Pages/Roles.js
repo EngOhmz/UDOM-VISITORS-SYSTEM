@@ -89,7 +89,7 @@ export default function Roles({ roles, allPermissions }) {
 
             {showSuccess && (
                 <div className="fixed top-4 right-4 z-50 animate-bounce">
-                    <div className="bg-green-600 text-white px-6 py-3 rounded-lg shadow-2xl flex items-center">
+                    <div className="bg-udom-700 text-white px-6 py-3 rounded-lg shadow-2xl flex items-center">
                         <CheckCircleIcon className="h-5 w-5 mr-2" />
                         <span className="font-bold mr-2">✓ Success:</span> {flash.success}
                     </div>
@@ -101,7 +101,7 @@ export default function Roles({ roles, allPermissions }) {
                     <h3 className="text-lg font-bold text-gray-800">System Roles</h3>
                     <button 
                         onClick={openCreateModal}
-                        className="inline-flex items-center px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 transition"
+                        className="inline-flex items-center px-4 py-2 bg-udom-700 text-white rounded-lg text-sm font-medium hover:bg-udom-800 transition"
                     >
                         <PlusIcon className="h-4 w-4 mr-2" />
                         Create New Role
@@ -122,7 +122,7 @@ export default function Roles({ roles, allPermissions }) {
                                 <tr key={role.id} className="hover:bg-gray-50 transition-colors">
                                     <td className="px-6 py-4 whitespace-nowrap">
                                         <div className="flex items-center">
-                                            <div className="h-10 w-10 rounded-lg bg-indigo-50 flex items-center justify-center text-indigo-600">
+                                            <div className="h-10 w-10 rounded-lg bg-udom-50 flex items-center justify-center text-udom-700">
                                                 <ShieldCheckIcon className="h-6 w-6" />
                                             </div>
                                             <div className="ml-4">
@@ -134,7 +134,7 @@ export default function Roles({ roles, allPermissions }) {
                                     <td className="px-6 py-4">
                                         <div className="flex flex-wrap gap-1">
                                             {role.permissions.slice(0, 3).map(p => (
-                                                <span key={p.id} className="px-2 py-0.5 bg-indigo-50 text-indigo-700 text-[10px] font-bold rounded-full uppercase">
+                                                <span key={p.id} className="px-2 py-0.5 bg-udom-50 text-udom-800 text-[10px] font-bold rounded-full uppercase">
                                                     {p.display_name}
                                                 </span>
                                             ))}
@@ -149,7 +149,7 @@ export default function Roles({ roles, allPermissions }) {
                                         <div className="flex justify-end gap-2">
                                             <button 
                                                 onClick={() => openEditModal(role)}
-                                                className="p-2 text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
+                                                className="p-2 text-udom-700 hover:bg-udom-50 rounded-lg transition-colors"
                                             >
                                                 <PencilIcon className="h-5 w-5" />
                                             </button>
@@ -173,8 +173,8 @@ export default function Roles({ roles, allPermissions }) {
             {showModal && (
                 <div className="fixed inset-0 z-50 overflow-y-auto bg-gray-900 bg-opacity-50 flex items-center justify-center p-4">
                     <div className="bg-white rounded-xl max-w-2xl w-full shadow-2xl overflow-hidden">
-                        <div className="px-6 py-4 border-b border-gray-100 bg-indigo-50 flex justify-between items-center">
-                            <h3 className="text-lg font-bold text-indigo-900 flex items-center">
+                        <div className="px-6 py-4 border-b border-gray-100 bg-udom-50 flex justify-between items-center">
+                            <h3 className="text-lg font-bold text-udom-900 flex items-center">
                                 <ShieldCheckIcon className="h-5 w-5 mr-2" />
                                 {editMode ? 'Edit Role Permissions' : 'Create New Role'}
                             </h3>
@@ -188,7 +188,7 @@ export default function Roles({ roles, allPermissions }) {
                                     <label className="block text-sm font-medium text-gray-700 mb-1">Role Display Name</label>
                                     <input 
                                         type="text" 
-                                        className="block w-full px-4 py-2.5 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-sm bg-white"
+                                        className="block w-full px-4 py-2.5 border border-gray-300 rounded-lg shadow-sm focus:ring-udom-500 focus:border-udom-500 text-sm bg-white"
                                         value={data.display_name}
                                         onChange={e => setData('display_name', e.target.value)}
                                         placeholder="e.g. Branch Manager"
@@ -199,7 +199,7 @@ export default function Roles({ roles, allPermissions }) {
                                     <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
                                     <input 
                                         type="text" 
-                                        className="block w-full px-4 py-2.5 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-sm bg-white"
+                                        className="block w-full px-4 py-2.5 border border-gray-300 rounded-lg shadow-sm focus:ring-udom-500 focus:border-udom-500 text-sm bg-white"
                                         value={data.description}
                                         onChange={e => setData('description', e.target.value)}
                                         placeholder="Brief description of the role"
@@ -212,20 +212,20 @@ export default function Roles({ roles, allPermissions }) {
                                 <div className="space-y-6 max-h-80 overflow-y-auto pr-2">
                                     {Object.keys(allPermissions).map(group => (
                                         <div key={group}>
-                                            <h5 className="text-xs font-black text-indigo-600 uppercase tracking-widest mb-3">{group} Management</h5>
+                                            <h5 className="text-xs font-black text-udom-700 uppercase tracking-widest mb-3">{group} Management</h5>
                                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                                 {allPermissions[group].map(permission => (
                                                     <label key={permission.id} className="relative flex items-start cursor-pointer group">
                                                         <div className="flex items-center h-5">
                                                             <input
                                                                 type="checkbox"
-                                                                className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded transition"
+                                                                className="focus:ring-udom-500 h-4 w-4 text-udom-700 border-gray-300 rounded transition"
                                                                 checked={data.permissions.includes(permission.id)}
                                                                 onChange={() => handlePermissionToggle(permission.id)}
                                                             />
                                                         </div>
                                                         <div className="ml-3 text-sm">
-                                                            <span className="font-medium text-gray-700 group-hover:text-indigo-600 transition-colors">
+                                                            <span className="font-medium text-gray-700 group-hover:text-udom-700 transition-colors">
                                                                 {permission.display_name}
                                                             </span>
                                                         </div>
@@ -248,7 +248,7 @@ export default function Roles({ roles, allPermissions }) {
                                 <button 
                                     type="submit"
                                     disabled={processing}
-                                    className="flex-1 px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 transition disabled:opacity-50"
+                                    className="flex-1 px-4 py-2 bg-udom-700 text-white rounded-lg text-sm font-medium hover:bg-udom-800 transition disabled:opacity-50"
                                 >
                                     {processing ? 'Saving...' : (editMode ? 'Update Role' : 'Create Role')}
                                 </button>

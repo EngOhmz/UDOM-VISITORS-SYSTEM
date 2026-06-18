@@ -37,7 +37,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 Route::middleware('auth')->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
-    
+
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::post('/profile', [ProfileController::class, 'update'])->name('profile.update');
 
@@ -61,21 +61,21 @@ Route::middleware('auth')->group(function () {
         $offices = \App\Models\Office::where('department_id', $departmentId)->get();
         return response()->json($offices);
     });
-    
+
     // Staff & Admin & Secretary routes
     Route::middleware('role:admin,staff,secretary')->group(function () {
         Route::get('/reports', [ReportController::class, 'index'],)->name('reports.index');
     });
-    
+
     // All authenticated users (admin, staff, secretary, visitor)
     Route::get('/requests', [VisitRequestController::class, 'index'])->name('requests.index');
-    
+
     // Only admin, staff, secretary can approve/reject requests, verify codes, and access logs
     Route::middleware('role:admin,staff,secretary')->group(function () {
         Route::post('/requests/verify', [VisitRequestController::class, 'verify'])->name('requests.verify');
         Route::put('/requests/{id}/approve', [VisitRequestController::class, 'approve'])->name('requests.approve');
         Route::put('/requests/{id}/reject', [VisitRequestController::class, 'reject'])->name('requests.reject');
-        
+
         Route::get('/logs', [VisitorLogController::class, 'index'])->name('logs.index');
         Route::post('/logs/check-in', [VisitorLogController::class, 'checkIn'])->name('logs.check-in');
         Route::put('/logs/{id}/check-out', [VisitorLogController::class, 'checkOut'])->name('logs.check-out');

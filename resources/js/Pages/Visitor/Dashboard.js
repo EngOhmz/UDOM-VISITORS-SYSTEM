@@ -39,7 +39,7 @@ export default function VisitorDashboard({ requests }) {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-gray-50 to-indigo-50">
+        <div className="min-h-screen bg-gradient-to-br from-slate-50 to-udom-50">
             <Head title="Visitor Dashboard" />
 
             {/* Header */}
@@ -47,14 +47,14 @@ export default function VisitorDashboard({ requests }) {
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between h-20 items-center">
                         <div className="flex items-center gap-3">
-                            <h1 className="text-3xl font-bold text-indigo-600">UDOM VMS</h1>
+                            <h1 className="text-3xl font-bold text-udom-700">UDOM VMS</h1>
                         </div>
                         <div className="flex items-center gap-6">
                             <span className="text-xl font-semibold text-gray-700">Hi, {auth?.visitor?.name}!</span>
                             <form method="post" action={route('visitor.logout')} as="button">
                                 <button
                                     type="submit"
-                                    className="px-6 py-3 bg-gradient-to-r from-gray-100 to-gray-200 text-gray-800 rounded-xl font-semibold hover:from-gray-200 hover:to-gray-300 transition shadow-md hover:shadow-lg"
+                                    className="px-6 py-3 bg-gradient-to-r from-udom-50 to-udom-100 text-gray-800 rounded-xl font-semibold hover:from-udom-100 hover:to-udom-200 transition shadow-md hover:shadow-lg"
                                 >
                                     Logout
                                 </button>
@@ -77,7 +77,7 @@ export default function VisitorDashboard({ requests }) {
                                 />
                             ) : (
                                 <img 
-                                    src={`https://ui-avatars.com/api/?name=${encodeURIComponent(auth.visitor?.name || 'Visitor')}&background=6366f1&color=fff&size=96`}
+                                    src={`https://ui-avatars.com/api/?name=${encodeURIComponent(auth.visitor?.name || 'Visitor')}&background=0a5c3c&color=fff&size=96`}
                                     alt={auth.visitor?.name} 
                                     className="w-full h-full object-cover"
                                 />
@@ -91,14 +91,14 @@ export default function VisitorDashboard({ requests }) {
                     <div className="flex gap-4">
                         <Link
                             href={route('profile.edit')}
-                            className="flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-gray-100 to-gray-200 text-gray-800 rounded-xl font-semibold hover:from-gray-200 hover:to-gray-300 transition shadow-md hover:shadow-lg"
+                            className="flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-udom-50 to-udom-100 text-gray-800 rounded-xl font-semibold hover:from-udom-100 hover:to-udom-200 transition shadow-md hover:shadow-lg"
                         >
                             <UserCircleIcon className="w-6 h-6" />
                             Edit Profile
                         </Link>
                         <Link
                             href={route('visitor.request.form')}
-                            className="flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-indigo-600 to-indigo-700 text-white rounded-xl font-semibold hover:from-indigo-700 hover:to-indigo-800 transition shadow-md hover:shadow-lg"
+                            className="flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-udom-700 to-udom-600 text-white rounded-xl font-semibold hover:from-udom-800 hover:to-udom-700 transition shadow-md hover:shadow-lg"
                         >
                             <PlusIcon className="w-6 h-6" />
                             New Request
@@ -115,7 +115,7 @@ export default function VisitorDashboard({ requests }) {
                             <p className="text-gray-600 mb-10 max-w-lg mx-auto text-lg">Submit your first visit request to get started with UDOM Visitor Management System.</p>
                             <Link
                                 href={route('visitor.request.form')}
-                                className="inline-flex items-center gap-3 px-10 py-4 bg-gradient-to-r from-indigo-600 to-indigo-700 text-white rounded-xl font-semibold hover:from-indigo-700 hover:to-indigo-800 transition shadow-md hover:shadow-lg"
+                                className="inline-flex items-center gap-3 px-10 py-4 bg-gradient-to-r from-udom-700 to-udom-600 text-white rounded-xl font-semibold hover:from-udom-800 hover:to-udom-700 transition shadow-md hover:shadow-lg"
                             >
                                 <PlusIcon className="w-6 h-6" />
                                 Create Request
@@ -155,9 +155,9 @@ export default function VisitorDashboard({ requests }) {
                                         </div>
 
                                         {request.verification_code && (
-                                            <div className="w-full sm:w-auto bg-gradient-to-r from-indigo-50 to-blue-50 rounded-xl p-8 border border-indigo-100">
-                                                <h4 className="text-base font-semibold text-indigo-800 mb-3">Verification Code</h4>
-                                                <p className="text-4xl font-mono font-bold text-indigo-700">{request.verification_code}</p>
+                                            <div className="w-full sm:w-auto bg-gradient-to-r from-udom-50 to-emerald-50 rounded-xl p-8 border border-udom-100">
+                                                <h4 className="text-base font-semibold text-udom-800 mb-3">Verification Code</h4>
+                                                <p className="text-4xl font-mono font-bold text-udom-800">{request.verification_code}</p>
                                             </div>
                                         )}
 
@@ -196,8 +196,8 @@ export default function VisitorDashboard({ requests }) {
                                         href={link.url}
                                         className={`px-6 py-3 rounded-xl font-semibold transition-all ${
                                             link.active
-                                                ? 'bg-gradient-to-r from-indigo-600 to-indigo-700 text-white shadow-md'
-                                                : 'bg-white text-gray-700 border border-gray-200 hover:bg-gradient-to-r from-gray-50 to-indigo-50 hover:shadow-sm'
+                                                ? 'bg-gradient-to-r from-udom-700 to-udom-600 text-white shadow-md'
+                                                : 'bg-white text-gray-700 border border-gray-200 hover:bg-gradient-to-r from-slate-50 to-udom-50 hover:shadow-sm'
                                         }`}
                                         dangerouslySetInnerHTML={{ __html: link.label }}
                                     />

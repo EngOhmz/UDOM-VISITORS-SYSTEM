@@ -32,7 +32,7 @@ export default function VisitorRequestForm({ offices, departments }) {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-white py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gradient-to-br from-udom-50 to-white py-12 px-4 sm:px-6 lg:px-8">
       <Head title="Request a Visit" />
       <div className="max-w-2xl mx-auto">
         <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-8">
@@ -54,7 +54,7 @@ export default function VisitorRequestForm({ offices, departments }) {
                     type="text"
                     value={data.name}
                     onChange={e => setData('name', e.target.value)}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-udom-500"
                     required
                   />
                   {errors.name && <p className="text-red-600 text-sm mt-1">{errors.name}</p>}
@@ -66,7 +66,7 @@ export default function VisitorRequestForm({ offices, departments }) {
                     type="text"
                     value={data.phone}
                     onChange={e => setData('phone', e.target.value)}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-udom-500"
                     required
                   />
                   {errors.phone && <p className="text-red-600 text-sm mt-1">{errors.phone}</p>}
@@ -78,7 +78,7 @@ export default function VisitorRequestForm({ offices, departments }) {
                     type="email"
                     value={data.email}
                     onChange={e => setData('email', e.target.value)}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-udom-500"
                   />
                   {errors.email && <p className="text-red-600 text-sm mt-1">{errors.email}</p>}
                 </div>
@@ -89,7 +89,7 @@ export default function VisitorRequestForm({ offices, departments }) {
                     type="text"
                     value={data.id_number}
                     onChange={e => setData('id_number', e.target.value)}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-udom-500"
                   />
                 </div>
 
@@ -99,7 +99,7 @@ export default function VisitorRequestForm({ offices, departments }) {
                     type="text"
                     value={data.organization}
                     onChange={e => setData('organization', e.target.value)}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-udom-500"
                   />
                 </div>
               </div>
@@ -117,7 +117,7 @@ export default function VisitorRequestForm({ offices, departments }) {
                       setSelectedDepartment(e.target.value);
                       setData('office_id', '');
                     }}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-udom-500"
                     required
                   >
                     <option value="">Select Department</option>
@@ -134,7 +134,7 @@ export default function VisitorRequestForm({ offices, departments }) {
                   <select
                     value={data.office_id}
                     onChange={e => setData('office_id', e.target.value)}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-udom-500"
                     disabled={!selectedDepartment}
                     required
                   >
@@ -155,7 +155,7 @@ export default function VisitorRequestForm({ offices, departments }) {
                       type="date"
                       value={data.visit_date}
                       onChange={e => setData('visit_date', e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-udom-500"
                       required
                     />
                     {errors.visit_date && <p className="text-red-600 text-sm mt-1">{errors.visit_date}</p>}
@@ -167,7 +167,7 @@ export default function VisitorRequestForm({ offices, departments }) {
                       type="time"
                       value={data.visit_time}
                       onChange={e => setData('visit_time', e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-udom-500"
                     />
                   </div>
                 </div>
@@ -178,7 +178,7 @@ export default function VisitorRequestForm({ offices, departments }) {
                     value={data.purpose}
                     onChange={e => setData('purpose', e.target.value)}
                     rows={4}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-udom-500"
                     required
                   />
                   {errors.purpose && <p className="text-red-600 text-sm mt-1">{errors.purpose}</p>}
@@ -190,7 +190,7 @@ export default function VisitorRequestForm({ offices, departments }) {
               <button
                 type="submit"
                 disabled={processing}
-                className="px-6 py-3 bg-indigo-600 text-white rounded-lg font-semibold hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition"
+                className="px-6 py-3 bg-udom-700 text-white rounded-lg font-semibold hover:bg-udom-800 disabled:opacity-50 disabled:cursor-not-allowed transition"
               >
                 {processing ? 'Submitting...' : 'Submit Request'}
               </button>
@@ -201,7 +201,7 @@ export default function VisitorRequestForm({ offices, departments }) {
         <div className="text-center mt-8">
           <a
             href={route('visitor.request.status')}
-            className="text-indigo-600 hover:text-indigo-800 font-medium"
+            className="text-udom-700 hover:text-udom-800 font-medium"
           >
             Check your request status →
           </a>

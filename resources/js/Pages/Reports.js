@@ -14,7 +14,7 @@ export default function Reports({ reportData }) {
                     <a 
                         href="/api/reports/export" 
                         target="_blank"
-                        className="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-lg text-sm font-medium hover:bg-green-700 transition"
+                        className="inline-flex items-center px-4 py-2 bg-udom-700 text-white rounded-lg text-sm font-medium hover:bg-udom-800 transition"
                     >
                         <ArrowDownTrayIcon className="h-4 w-4 mr-2" />
                         Export CSV

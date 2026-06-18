@@ -25,7 +25,7 @@ export default function VisitorRequestStatus({ request }) {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-white py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gradient-to-br from-udom-50 to-white py-12 px-4 sm:px-6 lg:px-8">
       <Head title="Check Request Status" />
       <div className="max-w-2xl mx-auto">
         <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-8">
@@ -45,7 +45,7 @@ export default function VisitorRequestStatus({ request }) {
                   type="text"
                   value={data.verification_code}
                   onChange={e => setData('verification_code', e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-udom-500"
                   placeholder="e.g. ABC123"
                 />
               </div>
@@ -56,7 +56,7 @@ export default function VisitorRequestStatus({ request }) {
                   type="email"
                   value={data.email}
                   onChange={e => setData('email', e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-udom-500"
                 />
               </div>
 
@@ -66,7 +66,7 @@ export default function VisitorRequestStatus({ request }) {
                   type="text"
                   value={data.phone}
                   onChange={e => setData('phone', e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-udom-500"
                 />
               </div>
             </div>
@@ -75,7 +75,7 @@ export default function VisitorRequestStatus({ request }) {
               <button
                 type="submit"
                 disabled={processing}
-                className="px-6 py-3 bg-indigo-600 text-white rounded-lg font-semibold hover:bg-indigo-700 disabled:opacity-50 transition"
+                className="px-6 py-3 bg-udom-700 text-white rounded-lg font-semibold hover:bg-udom-800 disabled:opacity-50 transition"
               >
                 {processing ? 'Checking...' : 'Check Status'}
               </button>
@@ -120,14 +120,14 @@ export default function VisitorRequestStatus({ request }) {
               </div>
 
               {request.verification_code && (
-                <div className="mt-6 p-4 bg-indigo-50 rounded-lg border border-indigo-200">
-                  <h3 className="text-sm font-semibold text-indigo-900 uppercase tracking-wider mb-1">
+                <div className="mt-6 p-4 bg-udom-50 rounded-lg border border-udom-200">
+                  <h3 className="text-sm font-semibold text-udom-900 uppercase tracking-wider mb-1">
                     Verification Code
                   </h3>
-                  <p className="text-2xl font-mono font-bold text-indigo-700">
+                  <p className="text-2xl font-mono font-bold text-udom-800">
                     {request.verification_code}
                   </p>
-                  <p className="text-sm text-indigo-600 mt-1">
+                  <p className="text-sm text-udom-700 mt-1">
                     Please bring this code with you to your visit.
                   </p>
                 </div>
@@ -147,7 +147,7 @@ export default function VisitorRequestStatus({ request }) {
           <div className="text-center mt-8 pt-6 border-t border-gray-200">
             <a
               href={route('visitor.request.form')}
-              className="text-indigo-600 hover:text-indigo-800 font-medium"
+              className="text-udom-700 hover:text-udom-800 font-medium"
             >
               ← Submit a new request
             </a>

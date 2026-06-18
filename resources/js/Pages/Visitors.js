@@ -3,6 +3,7 @@ import { Head } from '@inertiajs/react';
 import { router } from '@inertiajs/react';
 import AuthenticatedLayout from '../Layouts/AuthenticatedLayout';
 import { PlusIcon, PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
+import PasswordInput from '../Components/PasswordInput';
 
 export default function Visitors({ visitors }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -78,7 +79,7 @@ export default function Visitors({ visitors }) {
                         resetForm();
                         setIsModalOpen(true);
                     }}
-                    className="flex items-center px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
+                    className="flex items-center px-4 py-2 bg-udom-700 text-white rounded-lg hover:bg-udom-800 transition"
                 >
                     <PlusIcon className="h-5 w-5 mr-2" />
                     Add Visitor
@@ -120,7 +121,7 @@ export default function Visitors({ visitors }) {
                                         <div className="flex space-x-2">
                                             <button
                                                 onClick={() => handleEdit(visitor)}
-                                                className="text-indigo-600 hover:text-indigo-900"
+                                                className="text-udom-700 hover:text-udom-900"
                                             >
                                                 <PencilIcon className="h-5 w-5" />
                                             </button>
@@ -156,7 +157,7 @@ export default function Visitors({ visitors }) {
                                         type="text"
                                         value={formData.name}
                                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-udom-500"
                                         required
                                     />
                                 </div>
@@ -168,7 +169,7 @@ export default function Visitors({ visitors }) {
                                         type="email"
                                         value={formData.email}
                                         onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-udom-500"
                                     />
                                 </div>
                                 <div>
@@ -179,7 +180,7 @@ export default function Visitors({ visitors }) {
                                         type="text"
                                         value={formData.phone}
                                         onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-udom-500"
                                         required
                                     />
                                 </div>
@@ -191,7 +192,7 @@ export default function Visitors({ visitors }) {
                                         type="text"
                                         value={formData.id_number}
                                         onChange={(e) => setFormData({ ...formData, id_number: e.target.value })}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-udom-500"
                                     />
                                 </div>
                                 <div>
@@ -202,7 +203,7 @@ export default function Visitors({ visitors }) {
                                         type="text"
                                         value={formData.organization}
                                         onChange={(e) => setFormData({ ...formData, organization: e.target.value })}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-udom-500"
                                     />
                                 </div>
                                 {!editingVisitor && (
@@ -210,11 +211,10 @@ export default function Visitors({ visitors }) {
                                         <label className="block text-sm font-medium text-gray-700 mb-1">
                                             Password
                                         </label>
-                                        <input
-                                            type="password"
+                                        <PasswordInput
                                             value={formData.password}
                                             onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-udom-500"
                                             required
                                         />
                                     </div>
@@ -234,7 +234,7 @@ export default function Visitors({ visitors }) {
                                 </button>
                                 <button
                                     type="submit"
-                                    className="px-4 py-2 text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition"
+                                    className="px-4 py-2 text-white bg-udom-700 rounded-lg hover:bg-udom-800 transition"
                                 >
                                     {editingVisitor ? 'Update' : 'Create'}
                                 </button>
