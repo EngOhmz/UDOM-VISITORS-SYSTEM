@@ -23,7 +23,13 @@ class VisitRequestController extends Controller
     {
         $status = $request->input('status');
         $requests = $this->requestService->getAllRequests(10, $status);
-        return Inertia::render('VisitRequests', ['requests' => $requests]);
+
+        $props = ['requests' => $requests];
+        if ($request->user()->role === 'visitor') {
+            $props['stats'] = $this->requestService->getVisitorStats($request->user()->id);
+        }
+
+        return Inertia::render('VisitRequests', $props);
     }
 
     public function verify(Request $request)

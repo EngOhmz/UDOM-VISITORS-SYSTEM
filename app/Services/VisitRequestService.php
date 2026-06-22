@@ -36,6 +36,16 @@ class VisitRequestService
             ->paginate($perPage);
     }
 
+    public function getVisitorStats($visitorId)
+    {
+        return [
+            'total_requests' => VisitRequest::where('visitor_id', $visitorId)->count(),
+            'pending_requests' => VisitRequest::where('visitor_id', $visitorId)->where('status', 'pending')->count(),
+            'approved_requests' => VisitRequest::where('visitor_id', $visitorId)->where('status', 'approved')->count(),
+            'rejected_requests' => VisitRequest::where('visitor_id', $visitorId)->where('status', 'rejected')->count(),
+        ];
+    }
+
     public function getRequestById($id)
     {
         return VisitRequest::with(['visitor', 'office', 'user', 'visitorLog'])->findOrFail($id);
