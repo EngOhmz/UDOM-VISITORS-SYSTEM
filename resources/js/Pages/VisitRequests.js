@@ -397,7 +397,7 @@ export default function VisitRequests({ requests }) {
                         <div className="p-6">
                             <div className="bg-green-50 rounded-xl p-4 border border-green-200 mb-4">
                                 <p className="text-green-800 text-sm">
-                                    Are you sure you want to approve this visit request? This will generate a verification code for the visitor.
+                                    Approve this request? A verification code will be generated and emailed to the visitor.
                                 </p>
                             </div>
                             <div className="flex justify-end space-x-3">

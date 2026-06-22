@@ -32,20 +32,24 @@ class VisitRequestController extends Controller
             'code' => 'required|string',
         ]);
 
-        $visitRequest = $this->requestService->verifyCode($validated['code']);
+        $result = $this->requestService->validateVerificationCode($validated['code']);
         
-        if (!$visitRequest) {
-            return response()->json(['error' => 'Invalid or expired verification code.'], 404);
+        if (!$result['valid']) {
+            return response()->json(['error' => $result['error']], 422);
         }
 
-        $visitRequest->load(['visitor', 'office']);
-        return response()->json(['request' => $visitRequest]);
+        return response()->json(['request' => $result['request']]);
     }
 
     public function approve(Request $request, $id)
     {
-        $this->requestService->approveRequest($id, $request->user()->id);
-        return redirect()->route('requests.index')->with('success', 'Request approved successfully.');
+        $result = $this->requestService->approveRequest($id, $request->user()->id);
+
+        $message = $result['email_sent']
+            ? 'Request approved. Verification code sent to the visitor\'s email.'
+            : 'Request approved. Verification code generated (no email on file for this visitor).';
+
+        return redirect()->route('requests.index')->with('success', $message);
     }
 
     public function reject(Request $request, $id)

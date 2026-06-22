@@ -45,8 +45,12 @@ class VisitRequestController extends Controller
 
     public function approve(Request $request, $id)
     {
-        $visitRequest = $this->requestService->approveRequest($id, $request->user()->id);
-        return $this->sendResponse($visitRequest, 'Visit request approved successfully.');
+        $result = $this->requestService->approveRequest($id, $request->user()->id);
+        $message = $result['email_sent']
+            ? 'Visit request approved. Verification code sent to visitor email.'
+            : 'Visit request approved. Verification code generated (no visitor email on file).';
+
+        return $this->sendResponse($result['request'], $message);
     }
 
     public function reject(Request $request, $id)

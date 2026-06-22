@@ -34,17 +34,13 @@ class VisitorLogController extends Controller
             'notes' => 'nullable|string',
         ]);
 
-        $visitRequest = $this->requestService->verifyCode($validated['verification_code']);
+        $result = $this->requestService->validateVerificationCode($validated['verification_code']);
         
-        if (!$visitRequest) {
-            return redirect()->route('logs.index')->with('error', 'Invalid or expired verification code.');
+        if (!$result['valid']) {
+            return redirect()->route('logs.index')->with('error', $result['error']);
         }
 
-        if ($visitRequest->visitorLog && $visitRequest->visitorLog->check_in_at) {
-            return redirect()->route('logs.index')->with('error', 'Visitor already checked in.');
-        }
-
-        $this->logService->checkIn($visitRequest->id, $request->user()->name, $validated['notes'] ?? null);
+        $this->logService->checkIn($result['request']->id, $request->user()->name, $validated['notes'] ?? null);
         return redirect()->route('logs.index')->with('success', 'Visitor checked in successfully.');
     }
 

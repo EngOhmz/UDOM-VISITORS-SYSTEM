@@ -2,7 +2,107 @@ import React, { useState } from 'react';
 import { Head } from '@inertiajs/react';
 import { router } from '@inertiajs/react';
 import AuthenticatedLayout from '../Layouts/AuthenticatedLayout';
-import { CheckIcon, ArrowRightOnRectangleIcon, UserIcon, BuildingOfficeIcon, ClockIcon } from '@heroicons/react/24/outline';
+import {
+    CheckIcon,
+    ArrowRightOnRectangleIcon,
+    UserIcon,
+    BuildingOfficeIcon,
+    ClockIcon,
+    CalendarIcon,
+    XMarkIcon,
+    EnvelopeIcon,
+    CheckCircleIcon,
+} from '@heroicons/react/24/outline';
+
+function formatVisitTime(time) {
+    if (!time) return '-';
+    const clean = String(time).split('.')[0];
+    const [hours, minutes] = clean.split(':');
+    if (!hours || minutes === undefined) return clean;
+    const hour = parseInt(hours, 10);
+    const ampm = hour >= 12 ? 'PM' : 'AM';
+    const h12 = hour % 12 || 12;
+    return `${h12}:${minutes.padStart(2, '0')} ${ampm}`;
+}
+
+function closeCheckInModal(setters) {
+    setters.setIsCheckInModalOpen(false);
+    setters.setVerificationCode('');
+    setters.setCheckInNotes('');
+    setters.setVisitRequestPreview(null);
+    setters.setErrorMessage('');
+}
+
+function VisitorPreviewCard({ request }) {
+    const visitor = request.visitor;
+    const office = request.office;
+
+    return (
+        <div className="rounded-xl border border-udom-200 overflow-hidden shadow-sm">
+            <div className="bg-gradient-to-r from-udom-800 to-udom-700 px-4 py-2.5 flex items-center gap-2">
+                <CheckCircleIcon className="w-4 h-4 text-gold-400 shrink-0" />
+                <span className="text-xs font-semibold text-white tracking-wide uppercase">Verified Visitor</span>
+            </div>
+            <div className="bg-gradient-to-br from-udom-50 to-white p-4">
+                <div className="flex items-center gap-3 mb-4">
+                    <div className="w-14 h-14 rounded-full overflow-hidden ring-2 ring-udom-200 shrink-0">
+                        {visitor?.avatar ? (
+                            <img src={visitor.avatar} alt={visitor?.name} className="w-full h-full object-cover" />
+                        ) : (
+                            <img
+                                src={`https://ui-avatars.com/api/?name=${encodeURIComponent(visitor?.name || 'Visitor')}&background=0a5c3c&color=fff&size=56`}
+                                alt={visitor?.name}
+                                className="w-full h-full object-cover"
+                            />
+                        )}
+                    </div>
+                    <div className="min-w-0 flex-1">
+                        <p className="font-bold text-slate-900 truncate">{visitor?.name || '-'}</p>
+                        {visitor?.email && (
+                            <p className="text-xs text-slate-500 truncate flex items-center gap-1 mt-0.5">
+                                <EnvelopeIcon className="w-3.5 h-3.5 shrink-0" />
+                                {visitor.email}
+                            </p>
+                        )}
+                    </div>
+                </div>
+                <dl className="space-y-2.5 text-sm">
+                    <div className="flex items-start gap-2.5">
+                        <BuildingOfficeIcon className="w-4 h-4 text-udom-600 mt-0.5 shrink-0" />
+                        <div className="min-w-0">
+                            <dt className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Office</dt>
+                            <dd className="font-medium text-slate-800 truncate">{office?.name || '-'}</dd>
+                        </div>
+                    </div>
+                    <div className="flex items-start gap-2.5">
+                        <CalendarIcon className="w-4 h-4 text-udom-600 mt-0.5 shrink-0" />
+                        <div className="min-w-0">
+                            <dt className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Visit Date & Time</dt>
+                            <dd className="font-medium text-slate-800">
+                                {new Date(request.visit_date).toLocaleDateString(undefined, {
+                                    weekday: 'short',
+                                    month: 'short',
+                                    day: 'numeric',
+                                    year: 'numeric',
+                                })}
+                                {request.visit_time && (
+                                    <span className="text-udom-700"> · {formatVisitTime(request.visit_time)}</span>
+                                )}
+                            </dd>
+                        </div>
+                    </div>
+                    <div className="flex items-start gap-2.5">
+                        <UserIcon className="w-4 h-4 text-udom-600 mt-0.5 shrink-0" />
+                        <div className="min-w-0">
+                            <dt className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Purpose</dt>
+                            <dd className="font-medium text-slate-800 line-clamp-2">{request.purpose || '-'}</dd>
+                        </div>
+                    </div>
+                </dl>
+            </div>
+        </div>
+    );
+}
 
 export default function VisitorLogs({ logs }) {
     const [isCheckInModalOpen, setIsCheckInModalOpen] = useState(false);
@@ -16,7 +116,7 @@ export default function VisitorLogs({ logs }) {
     const [checkOutError, setCheckOutError] = useState('');
 
     const handleCodeInput = (e) => {
-        const code = e.target.value;
+        const code = e.target.value.toUpperCase();
         setVerificationCode(code);
         setErrorMessage('');
         setVisitRequestPreview(null);
@@ -43,8 +143,11 @@ export default function VisitorLogs({ logs }) {
                 }
             })
             .catch(error => {
-                if (error.error) {
+                setVisitRequestPreview(null);
+                if (error?.error) {
                     setErrorMessage(error.error);
+                } else {
+                    setErrorMessage('Unable to verify this code. Please try again.');
                 }
             });
         }
@@ -53,7 +156,7 @@ export default function VisitorLogs({ logs }) {
     const handleCheckIn = (e) => {
         e.preventDefault();
         if (!visitRequestPreview) {
-            setErrorMessage('Invalid or expired verification code.');
+            setErrorMessage('Please enter a valid verification code before checking in.');
             return;
         }
         router.post('/logs/check-in', {
@@ -220,140 +323,99 @@ export default function VisitorLogs({ logs }) {
 
             {/* Check In Modal */}
             {isCheckInModalOpen && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-                    <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl">
-                        <div className="px-8 py-5 border-b border-gray-200 flex justify-between items-center bg-gradient-to-r from-udom-50 to-white">
-                            <h3 className="text-2xl font-bold text-gray-800">Check In Visitor</h3>
+                <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+                    <div className="bg-white rounded-2xl shadow-udom-lg w-full max-w-md max-h-[90vh] flex flex-col border border-slate-200 overflow-hidden">
+                        <div className="px-5 py-4 border-b border-slate-100 flex justify-between items-center bg-gradient-to-r from-udom-50 to-white shrink-0">
+                            <div>
+                                <h3 className="text-lg font-bold text-slate-900">Check In Visitor</h3>
+                                <p className="text-xs text-slate-500 mt-0.5">Enter verification code to confirm identity</p>
+                            </div>
                             <button
-                                onClick={() => {
-                                    setIsCheckInModalOpen(false);
-                                    setVerificationCode('');
-                                    setCheckInNotes('');
-                                    setVisitRequestPreview(null);
-                                    setErrorMessage('');
-                                }}
-                                className="text-gray-500 hover:text-gray-700 transition"
+                                type="button"
+                                onClick={() => closeCheckInModal({
+                                    setIsCheckInModalOpen,
+                                    setVerificationCode,
+                                    setCheckInNotes,
+                                    setVisitRequestPreview,
+                                    setErrorMessage,
+                                })}
+                                className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition"
                             >
-                                <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                                </svg>
+                                <XMarkIcon className="w-5 h-5" />
                             </button>
                         </div>
-                        
-                        <div className="p-8">
-                            <form onSubmit={handleCheckIn}>
-                                <div className="space-y-6">
+
+                        <form onSubmit={handleCheckIn} className="flex flex-col flex-1 min-h-0">
+                            <div className="overflow-y-auto flex-1 p-5 space-y-4">
+                                    {errorMessage && (
+                                        <div className="flex gap-2.5 p-3 rounded-xl bg-amber-50 border border-amber-200 text-amber-900">
+                                            <ClockIcon className="w-5 h-5 shrink-0 mt-0.5 text-amber-600" />
+                                            <p className="text-sm leading-relaxed">{errorMessage}</p>
+                                        </div>
+                                    )}
+
                                     <div>
-                                        <label className="block text-sm font-semibold text-gray-700 mb-3">
+                                        <label className="block text-sm font-semibold text-slate-700 mb-1.5">
                                             Verification Code
                                         </label>
                                         <input
                                             type="text"
                                             value={verificationCode}
                                             onChange={handleCodeInput}
-                                            className={`w-full px-5 py-4 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-udom-100 transition-all ${
-                                                errorMessage ? 'border-red-300 focus:ring-red-100' : 'border-gray-200 focus:border-udom-500'
-                                            } bg-white shadow-sm`}
-                                            placeholder="Enter verification code (e.g. ABC123)"
+                                            className={`w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-udom-500/30 transition-all text-sm font-mono tracking-wider uppercase ${
+                                                errorMessage ? 'border-amber-300 bg-amber-50/50' : 'border-slate-200 focus:border-udom-500'
+                                            }`}
+                                            placeholder="e.g. ABC12345"
                                             autoFocus
                                             required
                                         />
-                                        {errorMessage && (
-                                            <p className="text-sm text-red-600 mt-3 font-medium">{errorMessage}</p>
-                                        )}
                                     </div>
 
-                                    {/* Visitor Preview */}
-                                    {visitRequestPreview && (
-                                        <div className="bg-gradient-to-r from-udom-50 to-emerald-50 rounded-2xl p-6 border-2 border-udom-100 shadow-sm">
-                                            <h4 className="text-sm font-bold text-udom-800 mb-4 flex items-center gap-2">
-                                                <UserIcon className="w-5 h-5" />
-                                                Visitor Details
-                                            </h4>
-                                            <div className="flex items-center gap-6 mb-6">
-                                                <div className="w-24 h-24 rounded-full overflow-hidden border-4 border-white shadow-md">
-                                                    {visitRequestPreview.visitor?.avatar ? (
-                                                        <img 
-                                                            src={visitRequestPreview.visitor.avatar} 
-                                                            alt={visitRequestPreview.visitor?.name} 
-                                                            className="w-full h-full object-cover"
-                                                        />
-                                                    ) : (
-                                                        <img 
-                                                            src={`https://ui-avatars.com/api/?name=${encodeURIComponent(visitRequestPreview.visitor?.name || 'Visitor')}&background=0a5c3c&color=fff&size=96`}
-                                                            alt={visitRequestPreview.visitor?.name} 
-                                                            className="w-full h-full object-cover"
-                                                        />
-                                                    )}
-                                                </div>
-                                                <div className="flex-1">
-                                                    <p className="text-xl font-bold text-gray-800">{visitRequestPreview.visitor?.name || '-'}</p>
-                                                    <p className="text-sm text-gray-600 mt-1">{visitRequestPreview.visitor?.email || '-'}</p>
-                                                </div>
-                                            </div>
-                                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                                                <div className="bg-white p-4 rounded-xl border border-udom-100">
-                                                    <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 block">Office</label>
-                                                    <p className="text-base font-semibold text-gray-800">{visitRequestPreview.office?.name || '-'}</p>
-                                                </div>
-                                                <div className="bg-white p-4 rounded-xl border border-udom-100">
-                                                    <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 block">Purpose</label>
-                                                    <p className="text-base font-semibold text-gray-800">{visitRequestPreview.purpose}</p>
-                                                </div>
-                                                <div className="bg-white p-4 rounded-xl border border-udom-100">
-                                                    <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 block">Visit Date</label>
-                                                    <p className="text-base font-semibold text-gray-800">{new Date(visitRequestPreview.visit_date).toLocaleDateString()}</p>
-                                                </div>
-                                                <div className="bg-white p-4 rounded-xl border border-udom-100">
-                                                    <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 block">Visit Time</label>
-                                                    <p className="text-base font-semibold text-gray-800">{visitRequestPreview.visit_time || '-'}</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    )}
+                                {visitRequestPreview && (
+                                    <VisitorPreviewCard request={visitRequestPreview} />
+                                )}
 
-                                    <div>
-                                        <label className="block text-sm font-semibold text-gray-700 mb-3">
-                                            Notes (Optional)
-                                        </label>
-                                        <textarea
-                                            value={checkInNotes}
-                                            onChange={(e) => setCheckInNotes(e.target.value)}
-                                            rows={3}
-                                            className="w-full px-5 py-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-udom-100 focus:border-udom-500 transition-all bg-white shadow-sm"
-                                            placeholder="Add any notes about this check-in"
-                                        />
-                                    </div>
+                                <div>
+                                    <label className="block text-sm font-semibold text-slate-700 mb-1.5">
+                                        Notes <span className="font-normal text-slate-400">(optional)</span>
+                                    </label>
+                                    <textarea
+                                        value={checkInNotes}
+                                        onChange={(e) => setCheckInNotes(e.target.value)}
+                                        rows={2}
+                                        className="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-udom-500/30 focus:border-udom-500 text-sm resize-none"
+                                        placeholder="Any notes for this check-in"
+                                    />
                                 </div>
+                            </div>
 
-                                <div className="flex justify-end space-x-4 mt-10">
-                                    <button
-                                        type="button"
-                                        onClick={() => {
-                                            setIsCheckInModalOpen(false);
-                                            setVerificationCode('');
-                                            setCheckInNotes('');
-                                            setVisitRequestPreview(null);
-                                            setErrorMessage('');
-                                        }}
-                                        className="px-7 py-3 text-gray-700 bg-gray-100 rounded-xl hover:bg-gray-200 transition font-semibold shadow-sm"
-                                    >
-                                        Cancel
-                                    </button>
-                                    <button
-                                        type="submit"
-                                        disabled={!visitRequestPreview}
-                                        className={`px-7 py-3 text-white rounded-xl font-semibold transition-all shadow-md ${
-                                            visitRequestPreview 
-                                                ? 'bg-gradient-to-r from-udom-700 to-udom-600 hover:from-udom-800 hover:to-udom-700' 
-                                                : 'bg-gray-400 cursor-not-allowed'
-                                        }`}
-                                    >
-                                        Check In
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
+                            <div className="px-5 py-4 border-t border-slate-100 bg-slate-50 flex gap-3 shrink-0">
+                                <button
+                                    type="button"
+                                    onClick={() => closeCheckInModal({
+                                        setIsCheckInModalOpen,
+                                        setVerificationCode,
+                                        setCheckInNotes,
+                                        setVisitRequestPreview,
+                                        setErrorMessage,
+                                    })}
+                                    className="flex-1 px-4 py-2.5 text-slate-700 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 transition font-semibold text-sm"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    type="submit"
+                                    disabled={!visitRequestPreview}
+                                    className={`flex-1 px-4 py-2.5 rounded-xl font-semibold text-sm transition-all ${
+                                        visitRequestPreview
+                                            ? 'udom-btn-primary py-2.5'
+                                            : 'bg-slate-300 text-slate-500 cursor-not-allowed'
+                                    }`}
+                                >
+                                    Check In
+                                </button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             )}

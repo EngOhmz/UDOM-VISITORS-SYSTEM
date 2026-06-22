@@ -2,7 +2,10 @@
 
 namespace App\Services;
 
+use App\Mail\VisitVerificationCodeMail;
 use App\Models\VisitRequest;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 
@@ -45,13 +48,36 @@ class VisitRequestService
 
     public function approveRequest($id, $userId)
     {
-        $request = VisitRequest::findOrFail($id);
+        $request = VisitRequest::with(['visitor', 'office'])->findOrFail($id);
         $request->update([
             'status' => 'approved',
             'user_id' => $userId,
             'verification_code' => strtoupper(Str::random(8)),
         ]);
-        return $request;
+        $request->refresh()->load(['visitor', 'office']);
+
+        $emailSent = $this->sendVerificationEmail($request);
+
+        return [
+            'request' => $request,
+            'email_sent' => $emailSent,
+        ];
+    }
+
+    protected function sendVerificationEmail(VisitRequest $request): bool
+    {
+        $visitor = $request->visitor;
+        if (!$visitor || empty($visitor->email)) {
+            return false;
+        }
+
+        try {
+            Mail::to($visitor->email)->send(new VisitVerificationCodeMail($request));
+            return true;
+        } catch (\Exception $e) {
+            Log::error('Failed to send verification email: ' . $e->getMessage());
+            return false;
+        }
     }
 
     public function rejectRequest($id, $userId, $reason)
@@ -65,11 +91,81 @@ class VisitRequestService
         return $request;
     }
 
+    public function validateVerificationCode(string $code): array
+    {
+        $normalizedCode = strtoupper(trim($code));
+
+        if ($normalizedCode === '') {
+            return [
+                'valid' => false,
+                'error' => 'Please enter a verification code.',
+            ];
+        }
+
+        $request = VisitRequest::with(['visitor', 'office', 'visitorLog'])
+            ->whereRaw('UPPER(verification_code) = ?', [$normalizedCode])
+            ->first();
+
+        if (!$request) {
+            return [
+                'valid' => false,
+                'error' => 'Invalid verification code. Please check the code and try again.',
+            ];
+        }
+
+        if ($request->status === 'pending') {
+            return [
+                'valid' => false,
+                'error' => 'This visit request is still pending approval. The visitor cannot be checked in yet.',
+            ];
+        }
+
+        if ($request->status === 'rejected') {
+            $reason = $request->rejection_reason
+                ? ' Reason: ' . $request->rejection_reason
+                : '';
+
+            return [
+                'valid' => false,
+                'error' => 'This visit request was rejected and cannot be used for check-in.' . $reason,
+            ];
+        }
+
+        $visitDate = $request->visit_date->format('Y-m-d');
+        $today = now()->toDateString();
+        $formattedDate = $request->visit_date->format('l, F j, Y');
+
+        if ($visitDate > $today) {
+            return [
+                'valid' => false,
+                'error' => "Check-in is not open yet. This visit is scheduled for {$formattedDate}.",
+            ];
+        }
+
+        if ($visitDate < $today) {
+            return [
+                'valid' => false,
+                'error' => "The visit date has passed. This visit was scheduled for {$formattedDate}. Please contact the office for assistance.",
+            ];
+        }
+
+        if ($request->visitorLog && $request->visitorLog->check_in_at) {
+            return [
+                'valid' => false,
+                'error' => 'This visitor has already been checked in.',
+            ];
+        }
+
+        return [
+            'valid' => true,
+            'request' => $request,
+        ];
+    }
+
     public function verifyCode($code)
     {
-        return VisitRequest::where('verification_code', $code)
-            ->where('status', 'approved')
-            ->whereDate('visit_date', '<=', now()->toDateString())
-            ->first();
+        $result = $this->validateVerificationCode($code);
+
+        return $result['valid'] ? $result['request'] : null;
     }
 }
