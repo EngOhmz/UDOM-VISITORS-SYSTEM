@@ -1,78 +1,146 @@
 import React, { useState } from 'react';
-import { Head } from '@inertiajs/react';
-import { router } from '@inertiajs/react';
+import { createPortal } from 'react-dom';
+import { Head, useForm } from '@inertiajs/react';
 import AuthenticatedLayout from '../Layouts/AuthenticatedLayout';
-import { PlusIcon, PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
+import { PlusIcon, PencilIcon, TrashIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import PasswordInput from '../Components/PasswordInput';
+
+function resolveDepartmentId(user, offices) {
+    if (user.office?.department_id != null) {
+        return Number(user.office.department_id);
+    }
+    if (user.office_id) {
+        const office = offices.find((o) => Number(o.id) === Number(user.office_id));
+        return office?.department_id != null ? Number(office.department_id) : null;
+    }
+    return null;
+}
 
 export default function Users({ users, roles, offices, departments }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingUser, setEditingUser] = useState(null);
-    const [formData, setFormData] = useState({
+    const [clientError, setClientError] = useState('');
+
+    const { data, setData, post, put, delete: destroy, processing, reset, errors, transform } = useForm({
         name: '',
         email: '',
         phone: '',
         password: '',
         role: 'staff',
         department_id: null,
-        office_id: null
+        office_id: null,
     });
-    
-    // Filter offices by selected department
-    const filteredOffices = formData.department_id 
-        ? offices.filter(office => office.department_id === formData.department_id)
+
+    const filteredOffices = data.department_id
+        ? offices.filter((office) => Number(office.department_id) === Number(data.department_id))
         : offices;
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        if (editingUser) {
-            router.put(`/users/${editingUser.id}`, formData, {
-                onSuccess: () => {
-                    setIsModalOpen(false);
-                    setEditingUser(null);
-                    resetForm();
-                },
-            });
-        } else {
-            router.post('/users', formData, {
-                onSuccess: () => {
-                    setIsModalOpen(false);
-                    resetForm();
-                },
-            });
+    const officeOptions = [...filteredOffices];
+    if (data.office_id && !officeOptions.some((o) => Number(o.id) === Number(data.office_id))) {
+        const currentOffice = offices.find((o) => Number(o.id) === Number(data.office_id));
+        if (currentOffice) {
+            officeOptions.push(currentOffice);
         }
+    }
+
+    transform((formData) => {
+        const payload = {
+            name: formData.name,
+            email: formData.email,
+            phone: formData.phone || null,
+            role: formData.role,
+            office_id: formData.role === 'staff' ? formData.office_id : null,
+        };
+
+        if (formData.password) {
+            payload.password = formData.password;
+        }
+
+        return payload;
+    });
+
+    const closeModal = () => {
+        setIsModalOpen(false);
+        setEditingUser(null);
+        setClientError('');
+        reset();
+    };
+
+    const openCreateModal = () => {
+        setEditingUser(null);
+        reset();
+        setIsModalOpen(true);
     };
 
     const handleEdit = (user) => {
+        setClientError('');
         setEditingUser(user);
-        setFormData({
+        setData({
             name: user.name,
             email: user.email,
             phone: user.phone || '',
             password: '',
             role: user.role || 'staff',
-            department_id: user.office?.department_id || null,
-            office_id: user.office_id || null
+            department_id: resolveDepartmentId(user, offices),
+            office_id: user.office_id != null ? Number(user.office_id) : null,
         });
         setIsModalOpen(true);
     };
 
-    const handleDelete = (id) => {
-        if (confirm('Are you sure you want to delete this user?')) {
-            router.delete(`/users/${id}`);
+    const handleSubmit = () => {
+        setClientError('');
+
+        if (!data.name?.trim()) {
+            setClientError('Name is required.');
+            return;
+        }
+        if (!data.email?.trim()) {
+            setClientError('Email is required.');
+            return;
+        }
+        if (data.role === 'staff' && !data.department_id) {
+            setClientError('Please select a department for staff users.');
+            return;
+        }
+        if (data.role === 'staff' && !data.office_id) {
+            setClientError('Please select an office for staff users.');
+            return;
+        }
+        if (!editingUser && !data.password) {
+            setClientError('Password is required for new users.');
+            return;
+        }
+
+        const options = {
+            preserveScroll: true,
+            onSuccess: () => closeModal(),
+            onError: () => setIsModalOpen(true),
+        };
+
+        if (editingUser) {
+            put(`/users/${editingUser.id}`, options);
+        } else {
+            post('/users', options);
         }
     };
 
-    const resetForm = () => {
-        setFormData({
-            name: '',
-            email: '',
-            phone: '',
-            password: '',
-            role: 'staff',
-            department_id: null,
-            office_id: null
-        });
+    const handleDelete = (id) => {
+        if (confirm('Are you sure you want to delete this user?')) {
+            destroy(`/users/${id}`);
+        }
+    };
+
+    const handleRoleChange = (role) => {
+        if (role === 'staff') {
+            setData('role', role);
+        } else {
+            setData({
+                ...data,
+                role,
+                department_id: null,
+                office_id: null,
+            });
+        }
     };
 
     const getRoleBadgeClass = (role) => {
@@ -88,6 +156,168 @@ export default function Users({ users, roles, offices, departments }) {
         }
     };
 
+    const showStaffFields = data.role === 'staff';
+    const officeSelectEnabled = Boolean(data.department_id);
+
+    const modal = isModalOpen ? createPortal(
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+            <button
+                type="button"
+                aria-label="Close modal"
+                className="absolute inset-0 bg-black/50"
+                onClick={closeModal}
+            />
+            <div
+                className="relative bg-white rounded-xl w-full max-w-md max-h-[90vh] flex flex-col shadow-2xl"
+                onClick={(e) => e.stopPropagation()}
+            >
+                <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 shrink-0">
+                    <h3 className="text-lg font-bold text-gray-800">
+                        {editingUser ? 'Edit User' : 'Add User'}
+                    </h3>
+                    <button
+                        type="button"
+                        onClick={closeModal}
+                        className="p-1.5 rounded-lg text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+                    >
+                        <XMarkIcon className="w-5 h-5" />
+                    </button>
+                </div>
+
+                <div className="px-6 py-4 overflow-y-auto flex-1">
+                    {(clientError || errors.office_id) && (
+                        <div className="mb-4 rounded-lg bg-red-50 border border-red-200 px-3 py-2 text-sm text-red-700">
+                            {clientError || errors.office_id}
+                        </div>
+                    )}
+
+                    <div className="space-y-4">
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
+                            <input
+                                type="text"
+                                value={data.name}
+                                onChange={(e) => setData('name', e.target.value)}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-udom-500"
+                            />
+                            {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name}</p>}
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                            <input
+                                type="email"
+                                value={data.email}
+                                onChange={(e) => setData('email', e.target.value)}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-udom-500"
+                            />
+                            {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+                            <input
+                                type="text"
+                                value={data.phone}
+                                onChange={(e) => setData('phone', e.target.value)}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-udom-500"
+                            />
+                            {errors.phone && <p className="text-red-500 text-xs mt-1">{errors.phone}</p>}
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Role</label>
+                            <select
+                                value={data.role}
+                                onChange={(e) => handleRoleChange(e.target.value)}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-udom-500"
+                            >
+                                <option value="staff">Staff</option>
+                                <option value="secretary">Secretary</option>
+                                <option value="admin">Admin</option>
+                            </select>
+                            {errors.role && <p className="text-red-500 text-xs mt-1">{errors.role}</p>}
+                        </div>
+
+                        {showStaffFields && (
+                            <>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Department</label>
+                                    <select
+                                        value={data.department_id ?? ''}
+                                        onChange={(e) => {
+                                            const deptId = e.target.value ? Number(e.target.value) : null;
+                                            setData({
+                                                ...data,
+                                                department_id: deptId,
+                                                office_id: null,
+                                            });
+                                        }}
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-udom-500"
+                                    >
+                                        <option value="">Select Department</option>
+                                        {departments.map((department) => (
+                                            <option key={department.id} value={department.id}>
+                                                {department.name}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Office</label>
+                                    <select
+                                        value={data.office_id ?? ''}
+                                        onChange={(e) => setData('office_id', e.target.value ? Number(e.target.value) : null)}
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-udom-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
+                                        disabled={!officeSelectEnabled}
+                                    >
+                                        <option value="">
+                                            {officeSelectEnabled ? 'Select Office' : 'Select department first'}
+                                        </option>
+                                        {officeOptions.map((office) => (
+                                            <option key={office.id} value={office.id}>
+                                                {office.name}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+                            </>
+                        )}
+
+                        {!editingUser && (
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                                <PasswordInput
+                                    value={data.password}
+                                    onChange={(e) => setData('password', e.target.value)}
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-udom-500"
+                                />
+                                {errors.password && <p className="text-red-500 text-xs mt-1">{errors.password}</p>}
+                            </div>
+                        )}
+                    </div>
+                </div>
+
+                <div className="flex justify-end gap-3 px-6 py-4 border-t border-gray-100 bg-gray-50 rounded-b-xl shrink-0">
+                    <button
+                        type="button"
+                        onClick={closeModal}
+                        className="px-4 py-2 text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition"
+                        disabled={processing}
+                    >
+                        Cancel
+                    </button>
+                    <button
+                        type="button"
+                        onClick={handleSubmit}
+                        className="px-4 py-2 text-white bg-udom-700 rounded-lg hover:bg-udom-800 transition disabled:opacity-60 cursor-pointer"
+                        disabled={processing}
+                    >
+                        {processing ? 'Saving...' : editingUser ? 'Update' : 'Create'}
+                    </button>
+                </div>
+            </div>
+        </div>,
+        document.body
+    ) : null;
+
     return (
         <AuthenticatedLayout title="Users">
             <Head title="Users" />
@@ -95,11 +325,7 @@ export default function Users({ users, roles, offices, departments }) {
             <div className="mb-6 flex justify-between items-center">
                 <h2 className="text-xl font-bold text-gray-800">System Users</h2>
                 <button
-                    onClick={() => {
-                        setEditingUser(null);
-                        resetForm();
-                        setIsModalOpen(true);
-                    }}
+                    onClick={openCreateModal}
                     className="flex items-center px-4 py-2 bg-udom-700 text-white rounded-lg hover:bg-udom-800 transition"
                 >
                     <PlusIcon className="h-5 w-5 mr-2" />
@@ -147,12 +373,14 @@ export default function Users({ users, roles, offices, departments }) {
                                     <td className="px-6 py-4 whitespace-nowrap text-sm">
                                         <div className="flex space-x-2">
                                             <button
+                                                type="button"
                                                 onClick={() => handleEdit(user)}
                                                 className="text-udom-700 hover:text-udom-900"
                                             >
                                                 <PencilIcon className="h-5 w-5" />
                                             </button>
                                             <button
+                                                type="button"
                                                 onClick={() => handleDelete(user.id)}
                                                 className="text-red-600 hover:text-red-900"
                                             >
@@ -167,150 +395,7 @@ export default function Users({ users, roles, offices, departments }) {
                 </div>
             </div>
 
-            {/* Modal */}
-            {isModalOpen && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                    <div className="bg-white rounded-xl p-6 w-full max-w-md">
-                        <h3 className="text-lg font-bold text-gray-800 mb-4">
-                            {editingUser ? 'Edit User' : 'Add User'}
-                        </h3>
-                        <form onSubmit={handleSubmit}>
-                            <div className="space-y-4">
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                                        Name
-                                    </label>
-                                    <input
-                                        type="text"
-                                        value={formData.name}
-                                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-udom-500"
-                                        required
-                                    />
-                                </div>
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                                        Email
-                                    </label>
-                                    <input
-                                        type="email"
-                                        value={formData.email}
-                                        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-udom-500"
-                                        required
-                                    />
-                                </div>
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                                        Phone
-                                    </label>
-                                    <input
-                                        type="text"
-                                        value={formData.phone}
-                                        onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-udom-500"
-                                    />
-                                </div>
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                                        Role
-                                    </label>
-                                    <select
-                                        value={formData.role}
-                                        onChange={(e) => setFormData({ ...formData, role: e.target.value })}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-udom-500"
-                                        required
-                                    >
-                                        <option value="staff">Staff</option>
-                                        <option value="secretary">Secretary</option>
-                                        <option value="admin">Admin</option>
-                                    </select>
-                                </div>
-                                {formData.role === 'staff' && (
-                                    <>
-                                        <div>
-                                            <label className="block text-sm font-medium text-gray-700 mb-1">
-                                                Department
-                                            </label>
-                                            <select
-                                                value={formData.department_id || ''}
-                                                onChange={(e) => {
-                                                    const deptId = e.target.value ? Number(e.target.value) : null;
-                                                    setFormData({ 
-                                                        ...formData, 
-                                                        department_id: deptId, 
-                                                        office_id: null // Reset office when department changes
-                                                    });
-                                                }}
-                                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-udom-500"
-                                                required
-                                            >
-                                                <option value="">Select Department</option>
-                                                {departments.map(department => (
-                                                    <option key={department.id} value={department.id}>
-                                                        {department.name}
-                                                    </option>
-                                                ))}
-                                            </select>
-                                        </div>
-                                        <div>
-                                            <label className="block text-sm font-medium text-gray-700 mb-1">
-                                                Office
-                                            </label>
-                                            <select
-                                                value={formData.office_id || ''}
-                                                onChange={(e) => setFormData({ ...formData, office_id: e.target.value ? Number(e.target.value) : null })}
-                                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-udom-500"
-                                                disabled={!formData.department_id && departments.length > 0}
-                                                required
-                                            >
-                                                <option value="">Select Office</option>
-                                                {filteredOffices.map(office => (
-                                                    <option key={office.id} value={office.id}>
-                                                        {office.name}
-                                                    </option>
-                                                ))}
-                                            </select>
-                                        </div>
-                                    </>
-                                )}
-                                {!editingUser && (
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                                            Password
-                                        </label>
-                                        <PasswordInput
-                                            value={formData.password}
-                                            onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-udom-500"
-                                            required
-                                        />
-                                    </div>
-                                )}
-                            </div>
-                            <div className="flex justify-end space-x-3 mt-6">
-                                <button
-                                    type="button"
-                                    onClick={() => {
-                                        setIsModalOpen(false);
-                                        setEditingUser(null);
-                                        resetForm();
-                                    }}
-                                    className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition"
-                                >
-                                    Cancel
-                                </button>
-                                <button
-                                    type="submit"
-                                    className="px-4 py-2 text-white bg-udom-700 rounded-lg hover:bg-udom-800 transition"
-                                >
-                                    {editingUser ? 'Update' : 'Create'}
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            )}
+            {modal}
         </AuthenticatedLayout>
     );
 }

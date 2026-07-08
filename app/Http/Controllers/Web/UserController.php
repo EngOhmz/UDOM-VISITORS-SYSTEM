@@ -31,7 +31,7 @@ class UserController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email:rfc,dns|unique:users,email',
+            'email' => 'required|email|unique:users,email',
             'phone' => 'nullable|string|max:20',
             'password' => 'required|string|min:6',
             'role' => 'required|in:admin,staff,secretary',
@@ -64,7 +64,7 @@ class UserController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email:rfc,dns|unique:users,email,' . $id,
+            'email' => 'required|email|unique:users,email,' . $id,
             'phone' => 'nullable|string|max:20',
             'password' => 'nullable|string|min:6',
             'role' => 'required|in:admin,staff,secretary',
@@ -82,7 +82,7 @@ class UserController extends Controller
             'email' => $request->email,
             'phone' => $request->phone,
             'role' => $request->role,
-            'office_id' => $request->office_id
+            'office_id' => $request->role === 'staff' ? $request->office_id : null,
         ];
 
         if ($request->has('password') && !empty($request->password)) {
