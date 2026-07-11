@@ -24,6 +24,7 @@ use App\Http\Controllers\Web\RoleController;
 use App\Http\Controllers\Web\ProfileController;
 use App\Http\Controllers\Web\ReportController;
 use App\Http\Controllers\Web\UserController;
+use App\Http\Controllers\Web\PasswordResetController;
 
 // Visitor auth routes
 Route::get('/visitor/login', [App\Http\Controllers\Web\VisitorAuthController::class, 'showLogin'])->name('visitor.login');
@@ -31,6 +32,13 @@ Route::get('/visitor/register', [App\Http\Controllers\Web\VisitorAuthController:
 Route::post('/visitor/register', [App\Http\Controllers\Web\VisitorAuthController::class, 'register']);
 
 // Admin/Staff auth routes
+Route::middleware('guest')->group(function () {
+    Route::get('/forgot-password', [PasswordResetController::class, 'showForgotForm'])->name('password.request');
+    Route::post('/forgot-password', [PasswordResetController::class, 'sendResetLink'])->name('password.email');
+    Route::get('/reset-password/{token}', [PasswordResetController::class, 'showResetForm'])->name('password.reset');
+    Route::post('/reset-password', [PasswordResetController::class, 'reset'])->name('password.update');
+});
+
 Route::match(['get', 'put'], '/login', [AuthController::class, 'showLogin'])->name('login')->middleware('guest');
 Route::post('/login', [AuthController::class, 'login'])->middleware('guest');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
@@ -65,6 +73,7 @@ Route::middleware('auth')->group(function () {
     // Staff & Admin & Secretary routes
     Route::middleware('role:admin,staff,secretary')->group(function () {
         Route::get('/reports', [ReportController::class, 'index'],)->name('reports.index');
+        Route::get('/reports/export', [ReportController::class, 'export'])->name('reports.export');
     });
 
     // All authenticated users (admin, staff, secretary, visitor)

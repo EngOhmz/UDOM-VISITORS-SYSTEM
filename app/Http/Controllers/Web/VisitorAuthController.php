@@ -4,9 +4,11 @@ namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Support\PasswordRules;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 
 class VisitorAuthController extends Controller
@@ -23,14 +25,25 @@ class VisitorAuthController extends Controller
 
     public function register(Request $request)
     {
+        $request->merge([
+            'email' => $request->filled('email') ? $request->email : null,
+            'phone' => trim((string) $request->phone),
+        ]);
+
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'nullable|email:rfc,dns|max:255',
-            'phone' => 'required|string|max:20|unique:users,phone',
+            'email' => ['nullable', 'email', 'max:255', Rule::unique('users', 'email')],
+            'phone' => ['required', 'string', 'max:20', Rule::unique('users', 'phone')],
             'id_number' => 'nullable|string|max:50',
             'organization' => 'nullable|string|max:255',
-            'password' => 'required|string|min:6|confirmed',
-        ]);
+            'password' => PasswordRules::required(),
+        ], array_merge(PasswordRules::messages(), [
+            'name.required' => 'Please enter your full name.',
+            'phone.required' => 'Please enter your phone number.',
+            'phone.unique' => 'This phone number is already registered. Please sign in or use a different number.',
+            'email.email' => 'Please enter a valid email address.',
+            'email.unique' => 'This email address is already registered. Please sign in or use a different email.',
+        ]));
 
         User::create([
             'name' => $validated['name'],

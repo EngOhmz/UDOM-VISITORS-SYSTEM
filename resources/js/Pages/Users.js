@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { createPortal } from 'react-dom';
-import { Head, useForm } from '@inertiajs/react';
+import { Head, Link, useForm } from '@inertiajs/react';
 import AuthenticatedLayout from '../Layouts/AuthenticatedLayout';
 import { PlusIcon, PencilIcon, TrashIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import PasswordInput from '../Components/PasswordInput';
+import PasswordRequirements from '../Components/PasswordRequirements';
 
 function resolveDepartmentId(user, offices) {
     if (user.office?.department_id != null) {
@@ -112,9 +113,11 @@ export default function Users({ users, roles, offices, departments }) {
         }
 
         const options = {
-            preserveScroll: true,
             onSuccess: () => closeModal(),
-            onError: () => setIsModalOpen(true),
+            onError: () => {
+                setIsModalOpen(true);
+                setClientError('');
+            },
         };
 
         if (editingUser) {
@@ -158,6 +161,50 @@ export default function Users({ users, roles, offices, departments }) {
 
     const showStaffFields = data.role === 'staff';
     const officeSelectEnabled = Boolean(data.department_id);
+    const serverError = Object.values(errors).find(Boolean);
+
+    const pagination = users?.total > 0 ? (
+        <div className="px-6 py-4 border-t border-gray-100 bg-gray-50 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <p className="text-sm text-slate-600">
+                Showing <span className="font-semibold text-slate-800">{users.from ?? 0}</span>
+                {' '}to <span className="font-semibold text-slate-800">{users.to ?? 0}</span>
+                {' '}of <span className="font-semibold text-slate-800">{users.total}</span> users
+                {users.last_page > 1 && (
+                    <span className="text-slate-400"> · Page {users.current_page} of {users.last_page}</span>
+                )}
+            </p>
+
+            {users.last_page > 1 && users.links?.length > 0 && (
+                <div className="flex flex-wrap gap-2">
+                    {users.links.map((link, index) => {
+                        if (link.url === null) {
+                            return (
+                                <button
+                                    key={index}
+                                    disabled
+                                    className="px-3 py-1.5 bg-slate-100 text-slate-400 rounded-lg cursor-not-allowed text-sm font-medium"
+                                    dangerouslySetInnerHTML={{ __html: link.label }}
+                                />
+                            );
+                        }
+                        return (
+                            <Link
+                                key={index}
+                                href={link.url}
+                                preserveScroll
+                                className={`px-3 py-1.5 rounded-lg text-sm font-medium transition ${
+                                    link.active
+                                        ? 'bg-udom-700 text-white shadow-sm'
+                                        : 'bg-white text-slate-700 border border-slate-200 hover:bg-udom-50'
+                                }`}
+                                dangerouslySetInnerHTML={{ __html: link.label }}
+                            />
+                        );
+                    })}
+                </div>
+            )}
+        </div>
+    ) : null;
 
     const modal = isModalOpen ? createPortal(
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
@@ -185,9 +232,9 @@ export default function Users({ users, roles, offices, departments }) {
                 </div>
 
                 <div className="px-6 py-4 overflow-y-auto flex-1">
-                    {(clientError || errors.office_id) && (
+                    {(clientError || serverError || errors.office_id) && (
                         <div className="mb-4 rounded-lg bg-red-50 border border-red-200 px-3 py-2 text-sm text-red-700">
-                            {clientError || errors.office_id}
+                            {clientError || errors.office_id || serverError}
                         </div>
                     )}
 
@@ -198,7 +245,9 @@ export default function Users({ users, roles, offices, departments }) {
                                 type="text"
                                 value={data.name}
                                 onChange={(e) => setData('name', e.target.value)}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-udom-500"
+                                className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-udom-500 ${
+                                    errors.name ? 'border-red-300' : 'border-gray-300'
+                                }`}
                             />
                             {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name}</p>}
                         </div>
@@ -208,7 +257,9 @@ export default function Users({ users, roles, offices, departments }) {
                                 type="email"
                                 value={data.email}
                                 onChange={(e) => setData('email', e.target.value)}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-udom-500"
+                                className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-udom-500 ${
+                                    errors.email ? 'border-red-300' : 'border-gray-300'
+                                }`}
                             />
                             {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
                         </div>
@@ -218,7 +269,9 @@ export default function Users({ users, roles, offices, departments }) {
                                 type="text"
                                 value={data.phone}
                                 onChange={(e) => setData('phone', e.target.value)}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-udom-500"
+                                className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-udom-500 ${
+                                    errors.phone ? 'border-red-300' : 'border-gray-300'
+                                }`}
                             />
                             {errors.phone && <p className="text-red-500 text-xs mt-1">{errors.phone}</p>}
                         </div>
@@ -284,11 +337,12 @@ export default function Users({ users, roles, offices, departments }) {
                         {!editingUser && (
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
-                                <PasswordInput
-                                    value={data.password}
-                                    onChange={(e) => setData('password', e.target.value)}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-udom-500"
-                                />
+                                        <PasswordInput
+                                            value={data.password}
+                                            onChange={(e) => setData('password', e.target.value)}
+                                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-udom-500"
+                                        />
+                                        <PasswordRequirements />
                                 {errors.password && <p className="text-red-500 text-xs mt-1">{errors.password}</p>}
                             </div>
                         )}
@@ -323,7 +377,14 @@ export default function Users({ users, roles, offices, departments }) {
             <Head title="Users" />
 
             <div className="mb-6 flex justify-between items-center">
-                <h2 className="text-xl font-bold text-gray-800">System Users</h2>
+                <div>
+                    <h2 className="text-xl font-bold text-gray-800">System Users</h2>
+                    {users.total != null && (
+                        <p className="text-sm text-slate-500 mt-1">
+                            {users.total} staff and admin accounts
+                        </p>
+                    )}
+                </div>
                 <button
                     onClick={openCreateModal}
                     className="flex items-center px-4 py-2 bg-udom-700 text-white rounded-lg hover:bg-udom-800 transition"
@@ -348,7 +409,14 @@ export default function Users({ users, roles, offices, departments }) {
                             </tr>
                         </thead>
                         <tbody className="bg-white divide-y divide-gray-100">
-                            {users.data?.map((user) => (
+                            {users.data?.length === 0 ? (
+                                <tr>
+                                    <td colSpan={7} className="px-6 py-12 text-center text-sm text-slate-500">
+                                        No system users yet. Click <strong>Add User</strong> to create one.
+                                    </td>
+                                </tr>
+                            ) : (
+                                users.data.map((user) => (
                                 <tr key={user.id} className="hover:bg-gray-50">
                                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                                         {user.name}
@@ -389,10 +457,12 @@ export default function Users({ users, roles, offices, departments }) {
                                         </div>
                                     </td>
                                 </tr>
-                            ))}
+                                ))
+                            )}
                         </tbody>
                     </table>
                 </div>
+                {pagination}
             </div>
 
             {modal}

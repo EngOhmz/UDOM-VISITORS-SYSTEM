@@ -3,8 +3,11 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use App\Services\AuthService;
+use App\Support\PasswordRules;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
@@ -22,7 +25,7 @@ class AuthController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'phone' => 'nullable|string|unique:users',
-            'password' => 'required|string|min:8',
+            'password' => PasswordRules::required(false),
             'role' => 'nullable|string|in:admin,staff,secretary',
         ]);
 
@@ -70,7 +73,12 @@ class AuthController extends Controller
             return $this->sendError('Validation Error.', $validator->errors(), 422);
         }
 
-        // In a real app, you'd send a reset link. For now, we'll just return success.
-        return $this->sendResponse([], 'Password reset link sent to your email.');
+        $status = Password::sendResetLink($request->only('email'));
+
+        if ($status === Password::RESET_LINK_SENT) {
+            return $this->sendResponse([], 'Password reset link sent to your email.');
+        }
+
+        return $this->sendError(__($status), [], 422);
     }
 }

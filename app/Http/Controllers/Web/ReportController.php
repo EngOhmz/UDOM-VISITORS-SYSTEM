@@ -24,4 +24,15 @@ class ReportController extends Controller
             'filters' => $request->all()
         ]);
     }
+
+    public function export(Request $request)
+    {
+        $data = $this->reportService->getReportData($request->all());
+        $csv = $this->reportService->generateCsv($data);
+
+        return response($csv['content'], 200, [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="' . $csv['filename'] . '"',
+        ]);
+    }
 }

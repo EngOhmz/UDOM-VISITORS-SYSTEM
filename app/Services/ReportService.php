@@ -3,7 +3,6 @@
 namespace App\Services;
 
 use App\Models\VisitorLog;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class ReportService
@@ -38,22 +37,17 @@ class ReportService
 
     public function generateCsv($data)
     {
-        $filename = "visitor_report_" . date('Y-m-d_H-i-s') . ".csv";
+        $filename = 'visitor_report_' . date('Y-m-d_H-i-s') . '.csv';
         $handle = fopen('php://temp', 'w+');
-        
-        // Add headers
+
+        if ($handle === false) {
+            throw new \RuntimeException('Unable to create export file.');
+        }
+
         fputcsv($handle, ['ID', 'Visitor Name', 'Office', 'Check In', 'Check Out', 'Duration', 'Created At']);
 
         foreach ($data as $row) {
-            fputcsv($handle, [
-                $row->id,
-                $row->visitRequest->visitor->name,
-                $row->visitRequest->office->name,
-                $row->check_in_at,
-                $row->check_out_at,
-                $row->duration,
-                $row->created_at,
-            ]);
+            fputcsv($handle, $this->formatCsvRow($row));
         }
 
         rewind($handle);
@@ -61,9 +55,54 @@ class ReportService
         fclose($handle);
 
         return [
-            'content' => $content,
-            'filename' => $filename
+            'content' => $content !== false ? $content : '',
+            'filename' => $filename,
         ];
+    }
+
+    protected function formatCsvRow($row): array
+    {
+        $visitRequest = $row->visitRequest;
+        $visitorName = '-';
+        $officeName = '-';
+
+        if ($visitRequest) {
+            if ($visitRequest->relationLoaded('visitor') && $visitRequest->visitor) {
+                $visitorName = $visitRequest->visitor->name ?: '-';
+            }
+
+            if ($visitRequest->relationLoaded('office') && $visitRequest->office) {
+                $officeName = $visitRequest->office->name ?: '-';
+            }
+        }
+
+        $duration = null;
+        if ($row->check_in_at && $row->check_out_at) {
+            $duration = $row->check_in_at->diffForHumans($row->check_out_at, true);
+        }
+
+        return [
+            $row->id,
+            $visitorName,
+            $officeName,
+            $this->formatDateTime($row->check_in_at),
+            $this->formatDateTime($row->check_out_at),
+            $duration ?: '-',
+            $this->formatDateTime($row->created_at),
+        ];
+    }
+
+    protected function formatDateTime($value): string
+    {
+        if (empty($value)) {
+            return '-';
+        }
+
+        if ($value instanceof \DateTimeInterface) {
+            return $value->format('Y-m-d H:i:s');
+        }
+
+        return (string) $value;
     }
 }
 

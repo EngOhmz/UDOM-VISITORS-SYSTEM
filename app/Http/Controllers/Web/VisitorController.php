@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
 use App\Services\VisitorService;
+use App\Support\PasswordRules;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -30,8 +31,8 @@ class VisitorController extends Controller
             'phone' => 'required|string|max:20|unique:users,phone',
             'id_number' => 'nullable|string|max:50',
             'organization' => 'nullable|string|max:255',
-            'password' => 'required|string|min:6',
-        ]);
+            'password' => PasswordRules::required(false),
+        ], PasswordRules::messages());
 
         $this->visitorService->createVisitor($validated);
         return redirect()->route('visitors.index')->with('success', 'Visitor created successfully.');
@@ -45,8 +46,8 @@ class VisitorController extends Controller
             'phone' => 'required|string|max:20|unique:users,phone,' . $id,
             'id_number' => 'nullable|string|max:50',
             'organization' => 'nullable|string|max:255',
-            'password' => 'nullable|string|min:6',
-        ]);
+            'password' => PasswordRules::optional(false),
+        ], PasswordRules::messages());
 
         $this->visitorService->updateVisitor($id, $validated);
         return redirect()->route('visitors.index')->with('success', 'Visitor updated successfully.');

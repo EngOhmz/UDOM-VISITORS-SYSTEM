@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Services\VisitorService;
+use App\Support\PasswordRules;
 use Illuminate\Http\Request;
 
 class VisitorController extends Controller
@@ -29,8 +30,8 @@ class VisitorController extends Controller
             'phone' => 'required|string|max:20',
             'id_number' => 'nullable|string|max:50',
             'organization' => 'nullable|string|max:255',
-            'password' => 'required|string|min:6',
-        ]);
+            'password' => PasswordRules::required(false),
+        ], PasswordRules::messages());
 
         $visitor = $this->visitorService->createVisitor($validated);
         return $this->sendResponse($visitor, 'Visitor created successfully.');
@@ -50,8 +51,8 @@ class VisitorController extends Controller
             'phone' => 'required|string|max:20',
             'id_number' => 'nullable|string|max:50',
             'organization' => 'nullable|string|max:255',
-            'password' => 'nullable|string|min:6',
-        ]);
+            'password' => PasswordRules::optional(false),
+        ], PasswordRules::messages());
 
         $visitor = $this->visitorService->updateVisitor($id, $validated);
         return $this->sendResponse($visitor, 'Visitor updated successfully.');

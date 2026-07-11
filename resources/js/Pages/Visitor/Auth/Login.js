@@ -1,5 +1,5 @@
 import React from 'react';
-import { Head, useForm, usePage } from '@inertiajs/react';
+import { Head, Link, useForm, usePage } from '@inertiajs/react';
 import { PhoneIcon, LockClosedIcon, CheckCircleIcon, XCircleIcon, AcademicCapIcon } from '@heroicons/react/24/outline';
 import PasswordInput from '../../../Components/PasswordInput';
 
@@ -94,6 +94,12 @@ export default function VisitorLogin() {
                                     required
                                 />
                                 {errors.password && <p className="mt-1.5 text-sm text-red-600">{errors.password}</p>}
+                            </div>
+
+                            <div className="flex items-center justify-end">
+                                <Link href={route('password.request')} className="text-sm font-medium text-udom-600 hover:text-udom-700">
+                                    Forgot password?
+                                </Link>
                             </div>
 
                             <button type="submit" disabled={processing} className="udom-btn-primary w-full py-3">

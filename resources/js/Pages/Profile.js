@@ -3,6 +3,7 @@ import { Head, useForm, usePage } from '@inertiajs/react';
 import AuthenticatedLayout from '../Layouts/AuthenticatedLayout';
 import { UserCircleIcon, CheckCircleIcon, KeyIcon, EnvelopeIcon, PhoneIcon, CameraIcon } from '@heroicons/react/24/outline';
 import PasswordInput from '../Components/PasswordInput';
+import PasswordRequirements from '../Components/PasswordRequirements';
 
 export default function Profile({ user }) {
     const { props } = usePage();
@@ -172,6 +173,7 @@ export default function Profile({ user }) {
                                             onChange={e => setData('password', e.target.value)}
                                             placeholder="Leave blank to keep current"
                                         />
+                                        <PasswordRequirements />
                                         {errors.password && <div className="text-red-500 text-xs mt-1">{errors.password}</div>}
                                     </div>
                                     <div>

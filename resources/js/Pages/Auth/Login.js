@@ -1,5 +1,5 @@
 import React from 'react';
-import { Head, useForm, usePage } from '@inertiajs/react';
+import { Head, Link, useForm, usePage } from '@inertiajs/react';
 import { CheckCircleIcon, XCircleIcon, AcademicCapIcon } from '@heroicons/react/24/outline';
 import PasswordInput from '../../Components/PasswordInput';
 
@@ -128,9 +128,9 @@ export default function Login() {
                                     />
                                     <span className="text-sm text-slate-600">Remember me</span>
                                 </label>
-                                <a href="#" className="text-sm font-medium text-udom-600 hover:text-udom-700">
+                                <Link href={route('password.request')} className="text-sm font-medium text-udom-600 hover:text-udom-700">
                                     Forgot password?
-                                </a>
+                                </Link>
                             </div>
 
                             <button type="submit" disabled={processing} className="udom-btn-primary w-full py-3">

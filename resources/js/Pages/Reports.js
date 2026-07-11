@@ -1,9 +1,15 @@
 import React from 'react';
 import { Head } from '@inertiajs/react';
 import AuthenticatedLayout from '../Layouts/AuthenticatedLayout';
-import { DocumentChartBarIcon, ArrowDownTrayIcon } from '@heroicons/react/24/outline';
+import { ArrowDownTrayIcon } from '@heroicons/react/24/outline';
 
-export default function Reports({ reportData }) {
+export default function Reports({ reportData, filters = {} }) {
+    const exportParams = new URLSearchParams();
+    if (filters.date_from) exportParams.set('date_from', filters.date_from);
+    if (filters.date_to) exportParams.set('date_to', filters.date_to);
+    if (filters.office_id) exportParams.set('office_id', filters.office_id);
+    const exportUrl = `/reports/export${exportParams.toString() ? `?${exportParams.toString()}` : ''}`;
+
     return (
         <AuthenticatedLayout title="Reports">
             <Head title="Reports" />
@@ -11,9 +17,8 @@ export default function Reports({ reportData }) {
             <div className="bg-white shadow-sm border border-gray-200 rounded-xl overflow-hidden">
                 <div className="px-6 py-4 border-b border-gray-100 bg-gray-50 flex justify-between items-center">
                     <h3 className="text-lg font-bold text-gray-800">Visitor Reports</h3>
-                    <a 
-                        href="/api/reports/export" 
-                        target="_blank"
+                    <a
+                        href={exportUrl}
                         className="inline-flex items-center px-4 py-2 bg-udom-700 text-white rounded-lg text-sm font-medium hover:bg-udom-800 transition"
                     >
                         <ArrowDownTrayIcon className="h-4 w-4 mr-2" />

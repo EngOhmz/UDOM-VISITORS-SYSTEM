@@ -2,8 +2,14 @@ import React from 'react';
 import { Head, useForm, usePage } from '@inertiajs/react';
 import { CheckCircleIcon, XCircleIcon, AcademicCapIcon } from '@heroicons/react/24/outline';
 import PasswordInput from '../../../Components/PasswordInput';
+import PasswordRequirements from '../../../Components/PasswordRequirements';
 
 const inputClass = 'block w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-udom-500 focus:border-udom-500 text-sm';
+const inputErrorClass = 'block w-full px-4 py-2.5 border border-red-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-400 focus:border-red-400 text-sm bg-red-50/30';
+
+function fieldClass(hasError) {
+    return hasError ? inputErrorClass : inputClass;
+}
 
 export default function VisitorRegister() {
     const { data, setData, post, processing, errors } = useForm({
@@ -19,8 +25,13 @@ export default function VisitorRegister() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        post(route('visitor.register'));
+        post(route('visitor.register'), {
+            preserveScroll: true,
+        });
     };
+
+    const serverError = Object.values(errors).find(Boolean);
+    const isExistingMember = Boolean(errors.phone || errors.email);
 
     return (
         <div className="min-h-screen bg-slate-50 py-12 px-4 sm:px-6 lg:px-8">
@@ -56,22 +67,36 @@ export default function VisitorRegister() {
                         <p className="mt-1 text-sm text-slate-500">Register to request campus visits</p>
                     </div>
 
+                    {serverError && (
+                        <div className="mb-6 rounded-xl bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700">
+                            <p className="font-semibold mb-1">
+                                {isExistingMember ? 'Account already exists' : 'Please fix the following'}
+                            </p>
+                            <p>{serverError}</p>
+                            {isExistingMember && (
+                                <a href={route('visitor.login')} className="inline-block mt-2 font-semibold text-udom-700 hover:text-udom-800">
+                                    Sign in instead →
+                                </a>
+                            )}
+                        </div>
+                    )}
+
                     <form className="space-y-4" onSubmit={handleSubmit}>
                         <div>
                             <label className="block text-sm font-semibold text-slate-700 mb-1.5">Full Name *</label>
-                            <input type="text" value={data.name} onChange={e => setData('name', e.target.value)} className={inputClass} required />
+                            <input type="text" value={data.name} onChange={e => setData('name', e.target.value)} className={fieldClass(errors.name)} />
                             {errors.name && <p className="mt-1.5 text-sm text-red-600">{errors.name}</p>}
                         </div>
 
                         <div>
                             <label className="block text-sm font-semibold text-slate-700 mb-1.5">Phone Number *</label>
-                            <input type="text" value={data.phone} onChange={e => setData('phone', e.target.value)} className={inputClass} required />
+                            <input type="text" value={data.phone} onChange={e => setData('phone', e.target.value)} className={fieldClass(errors.phone)} />
                             {errors.phone && <p className="mt-1.5 text-sm text-red-600">{errors.phone}</p>}
                         </div>
 
                         <div>
                             <label className="block text-sm font-semibold text-slate-700 mb-1.5">Email Address</label>
-                            <input type="email" value={data.email} onChange={e => setData('email', e.target.value)} className={inputClass} />
+                            <input type="email" value={data.email} onChange={e => setData('email', e.target.value)} className={fieldClass(errors.email)} />
                             {errors.email && <p className="mt-1.5 text-sm text-red-600">{errors.email}</p>}
                         </div>
 
@@ -88,13 +113,15 @@ export default function VisitorRegister() {
 
                         <div>
                             <label className="block text-sm font-semibold text-slate-700 mb-1.5">Password *</label>
-                            <PasswordInput value={data.password} onChange={e => setData('password', e.target.value)} className={inputClass} required />
+                            <PasswordInput value={data.password} onChange={e => setData('password', e.target.value)} className={fieldClass(errors.password)} />
+                            <PasswordRequirements />
                             {errors.password && <p className="mt-1.5 text-sm text-red-600">{errors.password}</p>}
                         </div>
 
                         <div>
                             <label className="block text-sm font-semibold text-slate-700 mb-1.5">Confirm Password *</label>
-                            <PasswordInput value={data.password_confirmation} onChange={e => setData('password_confirmation', e.target.value)} className={inputClass} required />
+                            <PasswordInput value={data.password_confirmation} onChange={e => setData('password_confirmation', e.target.value)} className={fieldClass(errors.password_confirmation)} />
+                            {errors.password_confirmation && <p className="mt-1.5 text-sm text-red-600">{errors.password_confirmation}</p>}
                         </div>
 
                         <button type="submit" disabled={processing} className="udom-btn-primary w-full py-3 mt-2">
