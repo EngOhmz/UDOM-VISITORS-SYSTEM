@@ -76,18 +76,13 @@ class ReportService
             }
         }
 
-        $duration = null;
-        if ($row->check_in_at && $row->check_out_at) {
-            $duration = $row->check_in_at->diffForHumans($row->check_out_at, true);
-        }
-
         return [
             $row->id,
             $visitorName,
             $officeName,
             $this->formatDateTime($row->check_in_at),
             $this->formatDateTime($row->check_out_at),
-            $duration ?: '-',
+            $row->duration ?: '-',
             $this->formatDateTime($row->created_at),
         ];
     }

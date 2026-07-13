@@ -25,6 +25,26 @@ function formatVisitTime(time) {
     return `${h12}:${minutes.padStart(2, '0')} ${ampm}`;
 }
 
+function formatDuration(log) {
+    if (log.duration) return log.duration;
+    if (!log.check_in_at || !log.check_out_at) return 'Still on campus';
+
+    const start = new Date(log.check_in_at);
+    const end = new Date(log.check_out_at);
+    const totalMinutes = Math.max(0, Math.floor((end - start) / 60000));
+
+    if (totalMinutes < 1) return 'Less than 1 min';
+
+    const hours = Math.floor(totalMinutes / 60);
+    const minutes = totalMinutes % 60;
+
+    if (hours > 0 && minutes > 0) {
+        return `${hours} hr${hours > 1 ? 's' : ''} ${minutes} min${minutes > 1 ? 's' : ''}`;
+    }
+    if (hours > 0) return `${hours} hr${hours > 1 ? 's' : ''}`;
+    return `${minutes} min${minutes > 1 ? 's' : ''}`;
+}
+
 function closeCheckInModal(setters) {
     setters.setIsCheckInModalOpen(false);
     setters.setVerificationCode('');
@@ -281,10 +301,10 @@ export default function VisitorLogs({ logs }) {
                                             </div>
                                         ) : '-'}
                                     </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700 font-medium">
                                         <div className="flex items-center gap-2">
-                                            <ClockIcon className="w-5 h-5 text-udom-600" />
-                                            {log.duration || '-'}
+                                            <ClockIcon className="w-5 h-5 text-udom-600 shrink-0" />
+                                            {formatDuration(log)}
                                         </div>
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm">
@@ -297,14 +317,21 @@ export default function VisitorLogs({ logs }) {
                                         </span>
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm">
-                                        {log.check_in_at && !log.check_out_at && (
+                                        {log.check_in_at && !log.check_out_at ? (
                                             <button
-                                                onClick={() => setIsCheckOutModalOpen(log.id)}
+                                                type="button"
+                                                onClick={() => {
+                                                    setIsCheckOutModalOpen(log.id);
+                                                    setCheckOutNotes('');
+                                                    setCheckOutError('');
+                                                }}
                                                 className="flex items-center gap-2 px-4 py-2 text-orange-700 bg-orange-50 rounded-xl hover:bg-orange-100 transition border border-orange-200 font-medium shadow-sm"
                                             >
                                                 <ArrowRightOnRectangleIcon className="h-5 w-5" />
                                                 Check Out
                                             </button>
+                                        ) : (
+                                            <span className="text-sm text-slate-400">—</span>
                                         )}
                                     </td>
                                 </tr>

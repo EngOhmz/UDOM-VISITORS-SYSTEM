@@ -24,6 +24,10 @@ class VisitorLog extends Model
         'check_out_at' => 'datetime',
     ];
 
+    protected $appends = [
+        'duration',
+    ];
+
     public function visitRequest()
     {
         return $this->belongsTo(VisitRequest::class);
@@ -31,9 +35,27 @@ class VisitorLog extends Model
 
     public function getDurationAttribute()
     {
-        if ($this->check_in_at && $this->check_out_at) {
-            return $this->check_in_at->diffForHumans($this->check_out_at, true);
+        if (!$this->check_in_at || !$this->check_out_at) {
+            return null;
         }
-        return null;
+
+        $totalMinutes = $this->check_in_at->diffInMinutes($this->check_out_at);
+
+        if ($totalMinutes < 1) {
+            return 'Less than 1 min';
+        }
+
+        $hours = intdiv($totalMinutes, 60);
+        $minutes = $totalMinutes % 60;
+
+        if ($hours > 0 && $minutes > 0) {
+            return $hours . ' hr' . ($hours > 1 ? 's' : '') . ' ' . $minutes . ' min' . ($minutes > 1 ? 's' : '');
+        }
+
+        if ($hours > 0) {
+            return $hours . ' hr' . ($hours > 1 ? 's' : '');
+        }
+
+        return $minutes . ' min' . ($minutes > 1 ? 's' : '');
     }
 }
