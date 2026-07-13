@@ -10,9 +10,10 @@ class ReportService
     public function getReportData(array $filters)
     {
         $user = Auth::user();
-        $query = VisitorLog::with(['visitRequest.visitor', 'visitRequest.office']);
+        $query = VisitorLog::with(['visitRequest.visitor', 'visitRequest.office'])
+            ->whereNotNull('check_in_at');
 
-        if ($user->role !== 'admin' && $user->office_id) {
+        if ($user->appliesOfficeScope()) {
             $query->whereHas('visitRequest', function ($q) use ($user) {
                 $q->where('office_id', $user->office_id);
             });

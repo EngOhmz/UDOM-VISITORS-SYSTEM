@@ -66,6 +66,11 @@ class User extends Authenticatable
         return $this->hasMany(VisitRequest::class, 'visitor_id');
     }
 
+    public function appliesOfficeScope()
+    {
+        return in_array($this->role, ['staff', 'secretary'], true) && !empty($this->office_id);
+    }
+
     public function sendPasswordResetNotification($token)
     {
         Mail::to($this->email)->send(new ResetPasswordMail($this, $token));

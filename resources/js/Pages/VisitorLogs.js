@@ -309,11 +309,13 @@ export default function VisitorLogs({ logs }) {
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm">
                                         <span className={`px-4 py-1.5 text-xs font-semibold rounded-full border ${
-                                            log.check_out_at 
-                                                ? 'bg-gray-100 text-gray-700 border-gray-300' 
-                                                : 'bg-green-100 text-green-700 border-green-300'
+                                            log.check_out_at
+                                                ? 'bg-gray-100 text-gray-700 border-gray-300'
+                                                : log.check_in_at
+                                                    ? 'bg-green-100 text-green-700 border-green-300'
+                                                    : 'bg-amber-100 text-amber-700 border-amber-300'
                                         }`}>
-                                            {log.check_out_at ? 'Completed' : 'Checked In'}
+                                            {log.check_out_at ? 'Completed' : log.check_in_at ? 'Checked In' : 'Pending'}
                                         </span>
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm">
@@ -330,8 +332,13 @@ export default function VisitorLogs({ logs }) {
                                                 <ArrowRightOnRectangleIcon className="h-5 w-5" />
                                                 Check Out
                                             </button>
+                                        ) : log.check_out_at ? (
+                                            <span className="inline-flex items-center gap-1.5 text-xs font-medium text-slate-500">
+                                                <CheckCircleIcon className="w-4 h-4 text-emerald-500" />
+                                                Done
+                                            </span>
                                         ) : (
-                                            <span className="text-sm text-slate-400">—</span>
+                                            <span className="text-xs text-slate-400">No action</span>
                                         )}
                                     </td>
                                 </tr>

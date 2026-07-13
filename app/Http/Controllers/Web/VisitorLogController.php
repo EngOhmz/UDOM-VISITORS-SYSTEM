@@ -40,6 +40,11 @@ class VisitorLogController extends Controller
             return redirect()->route('logs.index')->with('error', $result['error']);
         }
 
+        $user = $request->user();
+        if ($user->appliesOfficeScope() && (int) $result['request']->office_id !== (int) $user->office_id) {
+            return redirect()->route('logs.index')->with('error', 'This visitor is not scheduled for your office.');
+        }
+
         $this->logService->checkIn($result['request']->id, $request->user()->name, $validated['notes'] ?? null);
         return redirect()->route('logs.index')->with('success', 'Visitor checked in successfully.');
     }

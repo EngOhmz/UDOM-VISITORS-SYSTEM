@@ -11,14 +11,15 @@ class VisitorLogService
     public function getAllLogs($perPage = 10)
     {
         $user = Auth::user();
-        $query = VisitorLog::with(['visitRequest.visitor', 'visitRequest.office']);
-        
-        if ($user->role === 'staff' && $user->office_id) {
+        $query = VisitorLog::with(['visitRequest.visitor', 'visitRequest.office'])
+            ->whereNotNull('check_in_at');
+
+        if ($user->appliesOfficeScope()) {
             $query->whereHas('visitRequest', function ($q) use ($user) {
                 $q->where('office_id', $user->office_id);
             });
         }
-        
+
         return $query->latest()->paginate($perPage);
     }
 
