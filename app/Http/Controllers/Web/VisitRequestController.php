@@ -35,7 +35,7 @@ class VisitRequestController extends Controller
     public function verify(Request $request)
     {
         $validated = $request->validate([
-            'code' => 'required|string',
+            'code' => 'required|string|max:32',
         ]);
 
         $result = $this->requestService->validateVerificationCode($validated['code'], $request->user());

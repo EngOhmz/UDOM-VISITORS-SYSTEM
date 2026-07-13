@@ -164,7 +164,8 @@ export default function VisitorLogs({ logs }) {
         setVisitRequestPreview(null);
 
         if (code.length === 8) {
-            window.axios.post(route('requests.verify'), { code })
+            // GET + relative URL: avoids CSRF mismatch (localhost vs 127.0.0.1)
+            window.axios.get('/requests/verify', { params: { code } })
                 .then(({ data }) => {
                     if (data.request) {
                         setVisitRequestPreview(data.request);

@@ -81,7 +81,7 @@ Route::middleware('auth')->group(function () {
 
     // Only admin, staff, secretary can approve/reject requests, verify codes, and access logs
     Route::middleware('role:admin,staff,secretary')->group(function () {
-        Route::post('/requests/verify', [VisitRequestController::class, 'verify'])->name('requests.verify');
+        Route::match(['get', 'post'], '/requests/verify', [VisitRequestController::class, 'verify'])->name('requests.verify');
         Route::put('/requests/{id}/approve', [VisitRequestController::class, 'approve'])->name('requests.approve');
         Route::put('/requests/{id}/reject', [VisitRequestController::class, 'reject'])->name('requests.reject');
 
