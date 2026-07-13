@@ -38,13 +38,42 @@ class VisitRequestController extends Controller
             'code' => 'required|string',
         ]);
 
-        $result = $this->requestService->validateVerificationCode($validated['code']);
-        
+        $result = $this->requestService->validateVerificationCode($validated['code'], $request->user());
+
         if (!$result['valid']) {
-            return response()->json(['error' => $result['error']], 422);
+            return response()->json([
+                'error' => $result['error'],
+                'message' => $result['error'],
+            ], 422);
         }
 
-        return response()->json(['request' => $result['request']]);
+        $visitRequest = $result['request'];
+        $visitRequest->loadMissing(['visitor', 'office']);
+
+        return response()->json([
+            'request' => [
+                'id' => $visitRequest->id,
+                'purpose' => $visitRequest->purpose,
+                'visit_date' => $visitRequest->visit_date
+                    ? $visitRequest->visit_date->format('Y-m-d')
+                    : null,
+                'visit_time' => $visitRequest->visit_time,
+                'status' => $visitRequest->status,
+                'visitor' => $visitRequest->visitor ? [
+                    'id' => $visitRequest->visitor->id,
+                    'name' => $visitRequest->visitor->name,
+                    'email' => $visitRequest->visitor->email,
+                    'phone' => $visitRequest->visitor->phone,
+                    'avatar' => $visitRequest->visitor->avatar,
+                    'organization' => $visitRequest->visitor->organization,
+                ] : null,
+                'office' => $visitRequest->office ? [
+                    'id' => $visitRequest->office->id,
+                    'name' => $visitRequest->office->name,
+                    'building' => $visitRequest->office->building,
+                ] : null,
+            ],
+        ]);
     }
 
     public function approve(Request $request, $id)

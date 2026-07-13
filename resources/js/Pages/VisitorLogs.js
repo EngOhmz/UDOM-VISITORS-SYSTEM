@@ -53,6 +53,28 @@ function closeCheckInModal(setters) {
     setters.setErrorMessage('');
 }
 
+function extractApiError(payload) {
+    if (!payload) {
+        return 'Unable to verify this code. Please try again.';
+    }
+    if (typeof payload === 'string') {
+        return payload;
+    }
+    if (payload.error) {
+        return payload.error;
+    }
+    if (payload.message) {
+        return payload.message;
+    }
+    if (payload.errors) {
+        const first = Object.values(payload.errors).flat()[0];
+        if (first) {
+            return first;
+        }
+    }
+    return 'Unable to verify this code. Please try again.';
+}
+
 function VisitorPreviewCard({ request }) {
     const visitor = request.visitor;
     const office = request.office;
@@ -136,40 +158,23 @@ export default function VisitorLogs({ logs }) {
     const [checkOutError, setCheckOutError] = useState('');
 
     const handleCodeInput = (e) => {
-        const code = e.target.value.toUpperCase();
+        const code = e.target.value.toUpperCase().replace(/\s/g, '');
         setVerificationCode(code);
         setErrorMessage('');
         setVisitRequestPreview(null);
 
-        if (code.length >= 4) {
-            fetch(route('requests.verify'), {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content
-                },
-                body: JSON.stringify({ code: code })
-            })
-            .then(response => {
-                if (response.ok) {
-                    return response.json();
-                }
-                return response.json().then(err => { throw err; });
-            })
-            .then(data => {
-                if (data.request) {
-                    setVisitRequestPreview(data.request);
-                }
-            })
-            .catch(error => {
-                setVisitRequestPreview(null);
-                if (error?.error) {
-                    setErrorMessage(error.error);
-                } else {
-                    setErrorMessage('Unable to verify this code. Please try again.');
-                }
-            });
+        if (code.length === 8) {
+            window.axios.post(route('requests.verify'), { code })
+                .then(({ data }) => {
+                    if (data.request) {
+                        setVisitRequestPreview(data.request);
+                        setErrorMessage('');
+                    }
+                })
+                .catch((error) => {
+                    setVisitRequestPreview(null);
+                    setErrorMessage(extractApiError(error.response?.data));
+                });
         }
     };
 
@@ -396,13 +401,15 @@ export default function VisitorLogs({ logs }) {
                                             type="text"
                                             value={verificationCode}
                                             onChange={handleCodeInput}
+                                            maxLength={8}
                                             className={`w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-udom-500/30 transition-all text-sm font-mono tracking-wider uppercase ${
                                                 errorMessage ? 'border-amber-300 bg-amber-50/50' : 'border-slate-200 focus:border-udom-500'
                                             }`}
-                                            placeholder="e.g. ABC12345"
+                                            placeholder="8-character code (e.g. ABC12345)"
                                             autoFocus
                                             required
                                         />
+                                        <p className="text-xs text-slate-500 mt-1.5">Enter the full 8-character code from the visitor&apos;s approval email.</p>
                                     </div>
 
                                 {visitRequestPreview && (

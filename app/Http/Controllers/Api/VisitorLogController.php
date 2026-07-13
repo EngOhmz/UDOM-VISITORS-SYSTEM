@@ -31,7 +31,7 @@ class VisitorLogController extends Controller
             'notes' => 'nullable|string',
         ]);
 
-        $result = $this->requestService->validateVerificationCode($validated['verification_code']);
+        $result = $this->requestService->validateVerificationCode($validated['verification_code'], $request->user());
         
         if (!$result['valid']) {
             return $this->sendError($result['error'], [], 422);

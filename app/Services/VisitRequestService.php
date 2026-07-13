@@ -101,7 +101,7 @@ class VisitRequestService
         return $request;
     }
 
-    public function validateVerificationCode(string $code): array
+    public function validateVerificationCode(string $code, $user = null): array
     {
         $normalizedCode = strtoupper(trim($code));
 
@@ -113,7 +113,7 @@ class VisitRequestService
         }
 
         $request = VisitRequest::with(['visitor', 'office', 'visitorLog'])
-            ->whereRaw('UPPER(verification_code) = ?', [$normalizedCode])
+            ->whereRaw('UPPER(TRIM(verification_code)) = ?', [$normalizedCode])
             ->first();
 
         if (!$request) {
@@ -126,7 +126,7 @@ class VisitRequestService
         if ($request->status === 'pending') {
             return [
                 'valid' => false,
-                'error' => 'This visit request is still pending approval. The visitor cannot be checked in yet.',
+                'error' => 'This visit request is still pending approval. The visitor cannot be checked in until it is approved.',
             ];
         }
 
@@ -141,6 +141,22 @@ class VisitRequestService
             ];
         }
 
+        if ($request->status !== 'approved') {
+            return [
+                'valid' => false,
+                'error' => 'This visit request is not approved. The visitor cannot be checked in until it is approved.',
+            ];
+        }
+
+        if ($user && method_exists($user, 'appliesOfficeScope') && $user->appliesOfficeScope()) {
+            if ((int) $request->office_id !== (int) $user->office_id) {
+                return [
+                    'valid' => false,
+                    'error' => 'This visitor is scheduled for a different office. Only visitors for your office can be checked in here.',
+                ];
+            }
+        }
+
         $visitDate = $request->visit_date->format('Y-m-d');
         $today = now()->toDateString();
         $formattedDate = $request->visit_date->format('l, F j, Y');
@@ -148,14 +164,14 @@ class VisitRequestService
         if ($visitDate > $today) {
             return [
                 'valid' => false,
-                'error' => "Check-in is not open yet. This visit is scheduled for {$formattedDate}.",
+                'error' => "Check-in is not open yet. This visit is scheduled for {$formattedDate}. Check-in is only allowed on the visit date.",
             ];
         }
 
         if ($visitDate < $today) {
             return [
                 'valid' => false,
-                'error' => "The visit date has passed. This visit was scheduled for {$formattedDate}. Please contact the office for assistance.",
+                'error' => "The visit date has passed ({$formattedDate}). Check-in is only allowed on the scheduled visit date. Please contact the office for assistance.",
             ];
         }
 
