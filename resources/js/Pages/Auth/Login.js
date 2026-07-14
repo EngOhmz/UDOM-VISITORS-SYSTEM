@@ -18,12 +18,8 @@ export default function Login() {
     };
 
     return (
-        <div className="min-h-screen bg-white font-['Ropa_Sans',_'Segoe_UI',_sans-serif]">
+        <div className="min-h-screen bg-white">
             <Head title="Sign In" />
-            <link
-                href="https://fonts.googleapis.com/css2?family=Ropa+Sans:ital,wght@0,400;1,400&display=swap"
-                rel="stylesheet"
-            />
 
             <div className="min-h-screen grid lg:grid-cols-[7fr_5fr]">
                 {/* Left media panel — matches UDOM SRMS cover */}

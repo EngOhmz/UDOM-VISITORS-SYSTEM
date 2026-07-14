@@ -31,8 +31,8 @@ module.exports = {
         },
       },
       fontFamily: {
-        sans: ['Source Sans 3', 'Segoe UI', 'system-ui', 'sans-serif'],
-        display: ['Source Serif 4', 'Georgia', 'serif'],
+        sans: ['"Ropa Sans"', 'Segoe UI', 'system-ui', 'sans-serif'],
+        display: ['"Ropa Sans"', 'Segoe UI', 'system-ui', 'sans-serif'],
       },
       boxShadow: {
         'udom': '0 4px 24px -4px rgba(0, 96, 204, 0.15)',
