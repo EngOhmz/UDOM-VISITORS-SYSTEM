@@ -28,11 +28,11 @@ export default function Login() {
             <div className="min-h-screen grid lg:grid-cols-[7fr_5fr]">
                 {/* Left media panel — matches UDOM SRMS cover */}
                 <div className="hidden lg:flex items-center justify-center p-8 pr-0">
-                    <div className="relative w-full h-[calc(100vh-4rem)] rounded-[1.125rem] overflow-hidden border border-[#02569d] bg-[#02569d] flex items-center justify-center">
+                    <div className="relative w-full h-[calc(100vh-4rem)] rounded-[1.125rem] overflow-hidden border border-[#02569d] bg-[#02569d] flex items-center justify-center p-3">
                         <img
                             src="/images/auth/campus-banner.png"
                             alt="UDOM Visitor Management System"
-                            className="w-full h-full object-cover object-center"
+                            className="max-w-full max-h-full w-auto h-auto object-contain"
                         />
                     </div>
                 </div>

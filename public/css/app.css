@@ -1168,6 +1168,9 @@ body{
 .h-\[calc\(100vh-4rem\)\]{
   height: calc(100vh - 4rem);
 }
+.h-auto{
+  height: auto;
+}
 .h-full{
   height: 100%;
 }
@@ -1179,6 +1182,9 @@ body{
 }
 .max-h-\[90vh\]{
   max-height: 90vh;
+}
+.max-h-full{
+  max-height: 100%;
 }
 .min-h-0{
   min-height: 0px;
@@ -1243,6 +1249,9 @@ body{
 .w-\[150px\]{
   width: 150px;
 }
+.w-auto{
+  width: auto;
+}
 .w-full{
   width: 100%;
 }
@@ -1272,6 +1281,9 @@ body{
 }
 .max-w-\[400px\]{
   max-width: 400px;
+}
+.max-w-full{
+  max-width: 100%;
 }
 .max-w-lg{
   max-width: 32rem;
@@ -1946,10 +1958,6 @@ body{
 .object-cover{
   -o-object-fit: cover;
      object-fit: cover;
-}
-.object-center{
-  -o-object-position: center;
-     object-position: center;
 }
 .p-0\.5{
   padding: 0.125rem;
