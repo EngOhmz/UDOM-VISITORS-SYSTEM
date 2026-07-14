@@ -1,12 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Head, Link, useForm, usePage } from '@inertiajs/react';
 import { CheckCircleIcon, XCircleIcon, ArrowRightOnRectangleIcon } from '@heroicons/react/24/outline';
 import UdomLogo from '../../Components/UdomLogo';
-
-const SLIDES = [
-    '/images/auth/campus-1.jpg',
-    '/images/auth/campus-2.jpg',
-];
 
 export default function Login() {
     const { data, setData, post, processing, errors } = useForm({
@@ -16,14 +11,6 @@ export default function Login() {
     });
     const { props } = usePage();
     const [showPassword, setShowPassword] = useState(false);
-    const [slide, setSlide] = useState(0);
-
-    useEffect(() => {
-        const timer = setInterval(() => {
-            setSlide((current) => (current + 1) % SLIDES.length);
-        }, 5000);
-        return () => clearInterval(timer);
-    }, []);
 
     const submit = (e) => {
         e.preventDefault();
@@ -41,39 +28,12 @@ export default function Login() {
             <div className="min-h-screen grid lg:grid-cols-[7fr_5fr]">
                 {/* Left media panel — matches UDOM SRMS cover */}
                 <div className="hidden lg:flex items-center justify-center p-8 pr-0">
-                    <div className="relative w-full h-[calc(100vh-4rem)] rounded-[1.125rem] overflow-hidden border border-[#02569d] bg-[#02569d]">
-                        {SLIDES.map((src, index) => (
-                            <img
-                                key={src}
-                                src={src}
-                                alt="University of Dodoma campus"
-                                className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${
-                                    index === slide ? 'opacity-100' : 'opacity-0'
-                                }`}
-                            />
-                        ))}
-
-                        <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-[#02569d]/90 via-[#02569d]/40 to-transparent px-8 py-8">
-                            <p className="text-[#f2a900] text-sm font-semibold tracking-wide mb-1">
-                                Embracing Knowledge
-                            </p>
-                            <h2 className="text-white text-2xl font-bold">University of Dodoma</h2>
-                            <p className="text-sky-100/80 text-sm mt-1">Visitor Management System</p>
-                        </div>
-
-                        <div className="absolute bottom-5 left-1/2 -translate-x-1/2 flex gap-1.5">
-                            {SLIDES.map((_, index) => (
-                                <button
-                                    key={index}
-                                    type="button"
-                                    aria-label={`Go to slide ${index + 1}`}
-                                    onClick={() => setSlide(index)}
-                                    className={`h-[5px] w-[34px] rounded-sm transition ${
-                                        index === slide ? 'bg-white' : 'bg-white/40'
-                                    }`}
-                                />
-                            ))}
-                        </div>
+                    <div className="relative w-full h-[calc(100vh-4rem)] rounded-[1.125rem] overflow-hidden border border-[#02569d] bg-[#02569d] flex items-center justify-center">
+                        <img
+                            src="/images/auth/campus-banner.png"
+                            alt="UDOM Visitor Management System"
+                            className="w-full h-full object-cover object-center"
+                        />
                     </div>
                 </div>
 
