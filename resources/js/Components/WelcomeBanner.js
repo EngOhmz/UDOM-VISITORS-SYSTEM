@@ -1,5 +1,5 @@
 import React from 'react';
-import { AcademicCapIcon } from '@heroicons/react/24/outline';
+import UdomLogo from './UdomLogo';
 
 const roleLabels = {
     admin: 'System Administrator',
@@ -10,9 +10,9 @@ const roleLabels = {
 
 const roleBadgeStyles = {
     admin: 'bg-gold-500/20 text-gold-400 border-gold-400/40',
-    staff: 'bg-white/10 text-emerald-100 border-white/20',
-    secretary: 'bg-white/10 text-emerald-100 border-white/20',
-    visitor: 'bg-white/10 text-emerald-100 border-white/20',
+    staff: 'bg-white/10 text-sky-100 border-white/20',
+    secretary: 'bg-white/10 text-sky-100 border-white/20',
+    visitor: 'bg-white/10 text-sky-100 border-white/20',
 };
 
 export default function WelcomeBanner({ name, role, subtitle }) {
@@ -29,15 +29,15 @@ export default function WelcomeBanner({ name, role, subtitle }) {
 
             <div className="relative flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
                 <div className="flex items-start gap-5">
-                    <div className="hidden sm:flex w-14 h-14 rounded-2xl bg-white/10 backdrop-blur-sm items-center justify-center border border-white/20 shrink-0">
-                        <AcademicCapIcon className="w-8 h-8 text-gold-400" />
+                    <div className="hidden sm:flex w-16 h-16 rounded-full bg-white items-center justify-center shadow-lg shrink-0 p-1">
+                        <UdomLogo className="w-full h-full" />
                     </div>
                     <div>
-                        <p className="text-emerald-200/80 text-sm font-medium mb-1">University of Dodoma</p>
+                        <p className="text-sky-200/80 text-sm font-medium mb-1">University of Dodoma</p>
                         <h2 className="text-2xl sm:text-3xl font-bold text-white">
                             Welcome, {name?.split(' ')[0] || 'User'}
                         </h2>
-                        <p className="mt-2 text-emerald-100/70 text-sm sm:text-base max-w-xl">
+                        <p className="mt-2 text-sky-100/70 text-sm sm:text-base max-w-xl">
                             {subtitle || 'Visitor Management System — manage campus visits securely and efficiently.'}
                         </p>
                     </div>

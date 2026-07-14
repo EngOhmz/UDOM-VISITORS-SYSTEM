@@ -1,7 +1,12 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Head, Link, useForm, usePage } from '@inertiajs/react';
-import { CheckCircleIcon, XCircleIcon, AcademicCapIcon } from '@heroicons/react/24/outline';
-import PasswordInput from '../../Components/PasswordInput';
+import { CheckCircleIcon, XCircleIcon, ArrowRightOnRectangleIcon } from '@heroicons/react/24/outline';
+import UdomLogo from '../../Components/UdomLogo';
+
+const SLIDES = [
+    '/images/auth/campus-1.jpg',
+    '/images/auth/campus-2.jpg',
+];
 
 export default function Login() {
     const { data, setData, post, processing, errors } = useForm({
@@ -10,6 +15,15 @@ export default function Login() {
         remember: false,
     });
     const { props } = usePage();
+    const [showPassword, setShowPassword] = useState(false);
+    const [slide, setSlide] = useState(0);
+
+    useEffect(() => {
+        const timer = setInterval(() => {
+            setSlide((current) => (current + 1) % SLIDES.length);
+        }, 5000);
+        return () => clearInterval(timer);
+    }, []);
 
     const submit = (e) => {
         e.preventDefault();
@@ -17,134 +31,168 @@ export default function Login() {
     };
 
     return (
-        <div className="min-h-screen flex">
+        <div className="min-h-screen bg-white font-['Ropa_Sans',_'Segoe_UI',_sans-serif]">
             <Head title="Sign In" />
+            <link
+                href="https://fonts.googleapis.com/css2?family=Ropa+Sans:ital,wght@0,400;1,400&display=swap"
+                rel="stylesheet"
+            />
 
-            {/* Left branding panel */}
-            <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-udom-900 via-udom-800 to-udom-950 relative overflow-hidden">
-                <div className="absolute inset-0 opacity-10">
-                    <div className="absolute top-20 right-20 w-72 h-72 rounded-full bg-gold-400" />
-                    <div className="absolute bottom-10 left-10 w-96 h-96 rounded-full bg-white" />
+            <div className="min-h-screen grid lg:grid-cols-[7fr_5fr]">
+                {/* Left media panel — matches UDOM SRMS cover */}
+                <div className="hidden lg:flex items-center justify-center p-8 pr-0">
+                    <div className="relative w-full h-[calc(100vh-4rem)] rounded-[1.125rem] overflow-hidden border border-[#02569d] bg-[#02569d]">
+                        {SLIDES.map((src, index) => (
+                            <img
+                                key={src}
+                                src={src}
+                                alt="University of Dodoma campus"
+                                className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${
+                                    index === slide ? 'opacity-100' : 'opacity-0'
+                                }`}
+                            />
+                        ))}
+
+                        <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-[#02569d]/90 via-[#02569d]/40 to-transparent px-8 py-8">
+                            <p className="text-[#f2a900] text-sm font-semibold tracking-wide mb-1">
+                                Embracing Knowledge
+                            </p>
+                            <h2 className="text-white text-2xl font-bold">University of Dodoma</h2>
+                            <p className="text-sky-100/80 text-sm mt-1">Visitor Management System</p>
+                        </div>
+
+                        <div className="absolute bottom-5 left-1/2 -translate-x-1/2 flex gap-1.5">
+                            {SLIDES.map((_, index) => (
+                                <button
+                                    key={index}
+                                    type="button"
+                                    aria-label={`Go to slide ${index + 1}`}
+                                    onClick={() => setSlide(index)}
+                                    className={`h-[5px] w-[34px] rounded-sm transition ${
+                                        index === slide ? 'bg-white' : 'bg-white/40'
+                                    }`}
+                                />
+                            ))}
+                        </div>
+                    </div>
                 </div>
-                <div className="relative flex flex-col justify-center px-16 text-white">
-                    <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-gold-400 to-gold-600 flex items-center justify-center shadow-xl mb-8">
-                        <AcademicCapIcon className="w-9 h-9 text-white" />
-                    </div>
-                    <h1 className="text-4xl font-bold leading-tight mb-4">
-                        University of Dodoma
-                    </h1>
-                    <p className="text-xl text-emerald-100/80 font-medium mb-6">Visitor Management System</p>
-                    <p className="text-emerald-200/60 text-base leading-relaxed max-w-md">
-                        A secure platform for managing campus visits, visitor registrations, and office access across all university departments.
-                    </p>
-                    <div className="mt-12 flex gap-8">
-                        <div>
-                            <p className="text-3xl font-bold text-gold-400">UDOM</p>
-                            <p className="text-xs text-emerald-200/50 mt-1">Est. 2007</p>
-                        </div>
-                        <div className="w-px bg-white/20" />
-                        <div>
-                            <p className="text-sm text-emerald-200/70">Secure · Professional · Efficient</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
 
-            {/* Right login form */}
-            <div className="flex-1 flex items-center justify-center bg-slate-50 py-12 px-4 sm:px-6 lg:px-8">
-                <div className="max-w-md w-full">
-                    <div className="lg:hidden flex items-center gap-3 mb-8 justify-center">
-                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-gold-400 to-gold-600 flex items-center justify-center">
-                            <AcademicCapIcon className="w-6 h-6 text-white" />
+                {/* Right form column */}
+                <div className="flex items-center justify-center px-6 py-10 sm:px-12">
+                    <div className="w-full max-w-[400px]">
+                        <div className="flex justify-center mb-6">
+                            <Link href="/" className="inline-flex">
+                                <UdomLogo className="w-[150px] h-[150px]" />
+                            </Link>
                         </div>
-                        <div>
-                            <h2 className="text-lg font-bold text-udom-800">UDOM VMS</h2>
-                            <p className="text-xs text-slate-500">University of Dodoma</p>
-                        </div>
-                    </div>
 
-                    <div className="bg-white p-8 sm:p-10 rounded-2xl shadow-udom-lg border border-slate-200/80">
+                        <div className="text-center mb-6">
+                            <h1 className="text-[1.35rem] font-bold text-[#5d596c] leading-snug mb-1">
+                                Welcome to Visitor Management System (VMS)
+                            </h1>
+                            <p className="text-[#a5a3ae] text-[0.95rem]">
+                                Please sign-in to your account and start the session
+                            </p>
+                        </div>
+
                         {props.flash?.success && (
-                            <div className="mb-6 flex items-center gap-3 bg-emerald-50 border border-emerald-200 text-emerald-800 px-4 py-3 rounded-xl text-sm">
+                            <div className="mb-4 flex items-center gap-2 bg-emerald-50 border border-emerald-200 text-emerald-800 px-3 py-2.5 rounded-md text-sm">
                                 <CheckCircleIcon className="w-5 h-5 shrink-0" />
                                 <p>{props.flash.success}</p>
                             </div>
                         )}
                         {props.flash?.error && (
-                            <div className="mb-6 flex items-center gap-3 bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-xl text-sm">
+                            <div className="mb-4 flex items-center gap-2 bg-red-50 border border-red-200 text-red-800 px-3 py-2.5 rounded-md text-sm">
                                 <XCircleIcon className="w-5 h-5 shrink-0" />
                                 <p>{props.flash.error}</p>
                             </div>
                         )}
 
-                        <div className="mb-8">
-                            <h2 className="text-2xl font-bold text-slate-900">Welcome Back</h2>
-                            <p className="mt-1 text-sm text-slate-500">
-                                Sign in with your email or phone number to access the UDOM Visitor Management System.
-                            </p>
-
-                        </div>
-
-                        <form className="space-y-5" onSubmit={submit}>
+                        <form onSubmit={submit} className="space-y-4">
                             <div>
-                                <label htmlFor="login" className="block text-sm font-semibold text-slate-700 mb-1.5">
-                                    Email or Phone Number
+                                <label htmlFor="login" className="block text-[13px] text-[#5d596c] mb-1">
+                                    Email or Phone
                                 </label>
                                 <input
                                     id="login"
                                     type="text"
+                                    autoFocus
                                     required
-                                    className="block w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-udom-500 focus:border-udom-500 text-sm bg-white transition"
+                                    className="block w-full px-3.5 py-2 text-[0.9375rem] text-[#6f6b7d] bg-white border border-[#dbdade] rounded-md placeholder:text-[#b7b5be] focus:outline-none focus:border-[#0066cc] focus:shadow-[0_0.125rem_0.25rem_rgba(165,163,174,0.3)]"
                                     placeholder="Enter your email or phone"
                                     value={data.login}
                                     onChange={(e) => setData('login', e.target.value)}
                                 />
-                                {errors.login && <p className="text-red-500 text-xs mt-1.5">{errors.login}</p>}
+                                {errors.login && <p className="text-[#ea5455] text-xs mt-1">{errors.login}</p>}
                             </div>
 
                             <div>
-                                <label htmlFor="password" className="block text-sm font-semibold text-slate-700 mb-1.5">
+                                <label htmlFor="password" className="block text-[13px] text-[#5d596c] mb-1">
                                     Password
                                 </label>
-                                <PasswordInput
+                                <input
                                     id="password"
+                                    type={showPassword ? 'text' : 'password'}
                                     autoComplete="current-password"
                                     required
-                                    className="block w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-udom-500 focus:border-udom-500 text-sm bg-white transition"
+                                    className="block w-full px-3.5 py-2 text-[0.9375rem] text-[#6f6b7d] bg-white border border-[#dbdade] rounded-md placeholder:text-[#b7b5be] focus:outline-none focus:border-[#0066cc] focus:shadow-[0_0.125rem_0.25rem_rgba(165,163,174,0.3)]"
                                     placeholder="Enter your password"
                                     value={data.password}
                                     onChange={(e) => setData('password', e.target.value)}
                                 />
-                                {errors.password && <p className="text-red-500 text-xs mt-1.5">{errors.password}</p>}
+                                {errors.password && <p className="text-[#ea5455] text-xs mt-1">{errors.password}</p>}
                             </div>
 
-                            <div className="flex items-center justify-between">
-                                <label className="flex items-center gap-2 cursor-pointer">
-                                    <input
-                                        type="checkbox"
-                                        className="h-4 w-4 text-udom-600 focus:ring-udom-500 border-slate-300 rounded"
-                                        checked={data.remember}
-                                        onChange={(e) => setData('remember', e.target.checked)}
-                                    />
-                                    <span className="text-sm text-slate-600">Remember me</span>
-                                </label>
-                                <Link href={route('password.request')} className="text-sm font-medium text-udom-600 hover:text-udom-700">
-                                    Forgot password?
-                                </Link>
-                            </div>
+                            <label className="flex items-center gap-2 cursor-pointer select-none">
+                                <input
+                                    type="checkbox"
+                                    checked={showPassword}
+                                    onChange={(e) => setShowPassword(e.target.checked)}
+                                    className="h-4 w-4 rounded border-[#dbdade] text-[#0066cc] focus:ring-[#0066cc]"
+                                />
+                                <span className="text-[0.9375rem] text-[#6f6b7d]">Show Password</span>
+                            </label>
 
-                            <button type="submit" disabled={processing} className="udom-btn-primary w-full py-3">
-                                {processing ? 'Signing in...' : 'Sign In'}
+                            <label className="flex items-center gap-2 cursor-pointer select-none">
+                                <input
+                                    type="checkbox"
+                                    checked={data.remember}
+                                    onChange={(e) => setData('remember', e.target.checked)}
+                                    className="h-4 w-4 rounded border-[#dbdade] text-[#0066cc] focus:ring-[#0066cc]"
+                                />
+                                <span className="text-[0.9375rem] text-[#6f6b7d]">Remember me</span>
+                            </label>
+
+                            <button
+                                type="submit"
+                                disabled={processing}
+                                className="w-full inline-flex items-center justify-center gap-3 bg-[#0066cc] hover:bg-[#02569d] text-white text-[0.9375rem] font-medium py-2.5 px-5 rounded-md transition disabled:opacity-70"
+                            >
+                                {processing ? 'Loading...' : 'Sign in'}
+                                {!processing && <ArrowRightOnRectangleIcon className="w-5 h-5" />}
                             </button>
                         </form>
 
-                        <div className="mt-8 pt-6 border-t border-slate-100 text-center space-y-2">
-                            <p className="text-sm text-slate-500">
-                                New to UDOM VMS?{' '}
-                                <a href={route('visitor.register')} className="font-semibold text-udom-600 hover:text-udom-700">
-                                    Create a visitor account
-                                </a>
+                        <p className="text-center mt-4 text-[0.9375rem] text-[#6f6b7d]">
+                            Forgot Password{' '}
+                            <Link href={route('password.request')} className="text-[#0066cc] hover:text-[#02569d] font-medium">
+                                Click Here ?
+                            </Link>
+                        </p>
+
+                        <p className="text-center mt-3 text-[0.9375rem] text-[#6f6b7d]">
+                            New visitor?{' '}
+                            <a href={route('visitor.register')} className="text-[#0066cc] hover:text-[#02569d] font-medium">
+                                Create account
+                            </a>
+                        </p>
+
+                        <div className="my-6 flex items-center gap-3">
+                            <div className="flex-1 h-px bg-[rgba(0,102,204,0.2)]" />
+                            <p className="text-[0.8rem] text-[#6f6b7d] whitespace-nowrap px-1">
+                                Copyright © {new Date().getFullYear()} UDOM VMS
                             </p>
+                            <div className="flex-1 h-px bg-[rgba(0,102,204,0.2)]" />
                         </div>
                     </div>
                 </div>

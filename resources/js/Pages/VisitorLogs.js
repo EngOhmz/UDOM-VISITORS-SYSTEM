@@ -92,7 +92,7 @@ function VisitorPreviewCard({ request }) {
                             <img src={visitor.avatar} alt={visitor?.name} className="w-full h-full object-cover" />
                         ) : (
                             <img
-                                src={`https://ui-avatars.com/api/?name=${encodeURIComponent(visitor?.name || 'Visitor')}&background=0a5c3c&color=fff&size=56`}
+                                src={`https://ui-avatars.com/api/?name=${encodeURIComponent(visitor?.name || 'Visitor')}&background=0060cc&color=fff&size=56`}
                                 alt={visitor?.name}
                                 className="w-full h-full object-cover"
                             />
@@ -268,7 +268,7 @@ export default function VisitorLogs({ logs }) {
                                                     />
                                                 ) : (
                                                     <img 
-                                                        src={`https://ui-avatars.com/api/?name=${encodeURIComponent(log.visit_request?.visitor?.name || 'Visitor')}&background=0a5c3c&color=fff&size=48`}
+                                                        src={`https://ui-avatars.com/api/?name=${encodeURIComponent(log.visit_request?.visitor?.name || 'Visitor')}&background=0060cc&color=fff&size=48`}
                                                         alt={log.visit_request.visitor?.name} 
                                                         className="w-full h-full object-cover"
                                                     />

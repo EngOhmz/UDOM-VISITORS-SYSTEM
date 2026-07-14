@@ -1,8 +1,8 @@
 import React from 'react';
 import { Head, useForm } from '@inertiajs/react';
-import { AcademicCapIcon } from '@heroicons/react/24/outline';
 import PasswordInput from '../../Components/PasswordInput';
 import PasswordRequirements from '../../Components/PasswordRequirements';
+import UdomLogo from '../../Components/UdomLogo';
 
 export default function ResetPassword({ token, email }) {
     const { data, setData, post, processing, errors } = useForm({
@@ -20,11 +20,11 @@ export default function ResetPassword({ token, email }) {
     return (
         <div className="min-h-screen flex items-center justify-center bg-slate-50 py-12 px-4 sm:px-6">
             <div className="w-full max-w-md">
-                <div className="flex items-center gap-3 mb-8 justify-center">
-                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-gold-400 to-gold-600 flex items-center justify-center">
-                        <AcademicCapIcon className="w-6 h-6 text-white" />
+                <div className="flex flex-col items-center gap-3 mb-8">
+                    <div className="w-16 h-16 rounded-full bg-white shadow-md p-1 flex items-center justify-center border border-slate-100">
+                        <UdomLogo className="w-full h-full" />
                     </div>
-                    <div>
+                    <div className="text-center">
                         <h2 className="text-lg font-bold text-udom-800">UDOM VMS</h2>
                         <p className="text-xs text-slate-500">University of Dodoma</p>
                     </div>

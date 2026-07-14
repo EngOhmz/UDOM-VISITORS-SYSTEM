@@ -1,8 +1,9 @@
 import React from 'react';
 import { Head, useForm, usePage } from '@inertiajs/react';
-import { CheckCircleIcon, XCircleIcon, AcademicCapIcon } from '@heroicons/react/24/outline';
+import { CheckCircleIcon, XCircleIcon } from '@heroicons/react/24/outline';
 import PasswordInput from '../../../Components/PasswordInput';
 import PasswordRequirements from '../../../Components/PasswordRequirements';
+import UdomLogo from '../../../Components/UdomLogo';
 
 const inputClass = 'block w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-udom-500 focus:border-udom-500 text-sm';
 const inputErrorClass = 'block w-full px-4 py-2.5 border border-red-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-400 focus:border-red-400 text-sm bg-red-50/30';
@@ -38,11 +39,11 @@ export default function VisitorRegister() {
             <Head title="Visitor Registration" />
 
             <div className="max-w-lg mx-auto">
-                <div className="flex items-center gap-3 mb-8 justify-center">
-                    <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-gold-400 to-gold-600 flex items-center justify-center shadow-lg">
-                        <AcademicCapIcon className="w-7 h-7 text-white" />
+                <div className="flex flex-col items-center gap-3 mb-8">
+                    <div className="w-20 h-20 rounded-full bg-white shadow-lg p-1 flex items-center justify-center border border-slate-100">
+                        <UdomLogo className="w-full h-full" />
                     </div>
-                    <div>
+                    <div className="text-center">
                         <h1 className="text-xl font-bold text-udom-800">UDOM VMS</h1>
                         <p className="text-xs text-slate-500">University of Dodoma — Visitor Registration</p>
                     </div>

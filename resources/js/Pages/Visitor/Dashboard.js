@@ -1,6 +1,7 @@
 import React from 'react';
 import { Head, Link, usePage } from '@inertiajs/react';
 import { CalendarIcon, PlusIcon, CheckCircleIcon, XCircleIcon, ClockIcon, UserCircleIcon } from '@heroicons/react/24/outline';
+import UdomLogo from '../../Components/UdomLogo';
 
 export default function VisitorDashboard({ requests }) {
     const { auth } = usePage().props;
@@ -47,7 +48,11 @@ export default function VisitorDashboard({ requests }) {
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between h-20 items-center">
                         <div className="flex items-center gap-3">
-                            <h1 className="text-3xl font-bold text-udom-700">UDOM VMS</h1>
+                            <UdomLogo className="w-12 h-12" />
+                            <div>
+                                <h1 className="text-xl font-bold text-udom-700 leading-tight">UDOM VMS</h1>
+                                <p className="text-xs text-slate-500">University of Dodoma</p>
+                            </div>
                         </div>
                         <div className="flex items-center gap-6">
                             <span className="text-xl font-semibold text-gray-700">Hi, {auth?.visitor?.name}!</span>
@@ -77,7 +82,7 @@ export default function VisitorDashboard({ requests }) {
                                 />
                             ) : (
                                 <img 
-                                    src={`https://ui-avatars.com/api/?name=${encodeURIComponent(auth.visitor?.name || 'Visitor')}&background=0a5c3c&color=fff&size=96`}
+                                    src={`https://ui-avatars.com/api/?name=${encodeURIComponent(auth.visitor?.name || 'Visitor')}&background=0060cc&color=fff&size=96`}
                                     alt={auth.visitor?.name} 
                                     className="w-full h-full object-cover"
                                 />

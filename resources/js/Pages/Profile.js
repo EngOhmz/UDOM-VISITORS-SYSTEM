@@ -89,7 +89,7 @@ export default function Profile({ user }) {
                                         />
                                     ) : (
                                         <img 
-                                            src={`https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=0a5c3c&color=fff&size=128`}
+                                            src={`https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=0060cc&color=fff&size=128`}
                                             alt={user.name} 
                                             className="w-full h-full object-cover"
                                         />

@@ -142,7 +142,7 @@ function VisitorAvatar({ visitor, size = 'md' }) {
                 <img src={visitor.avatar} alt={visitor?.name} className="w-full h-full object-cover" />
             ) : (
                 <img
-                    src={`https://ui-avatars.com/api/?name=${encodeURIComponent(visitor?.name || 'Visitor')}&background=0a5c3c&color=fff&size=${px}`}
+                    src={`https://ui-avatars.com/api/?name=${encodeURIComponent(visitor?.name || 'Visitor')}&background=0060cc&color=fff&size=${px}`}
                     alt={visitor?.name}
                     className="w-full h-full object-cover"
                 />

@@ -19,9 +19,9 @@ import {
     PlusIcon,
     CheckCircleIcon,
     XCircleIcon,
-    AcademicCapIcon,
 } from '@heroicons/react/24/outline';
 import { Menu } from '@headlessui/react';
+import UdomLogo from '../Components/UdomLogo';
 
 const roleLabels = {
     admin: 'Administrator',
@@ -68,13 +68,13 @@ function isActive(url, href) {
 function SidebarBrand({ collapsed }) {
     return (
         <div className={`flex items-center gap-3 ${collapsed ? 'justify-center' : ''}`}>
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-gold-400 to-gold-600 flex items-center justify-center shadow-lg shrink-0">
-                <AcademicCapIcon className="w-6 h-6 text-white" />
+            <div className="w-11 h-11 rounded-full bg-white shadow-lg shrink-0 p-0.5 flex items-center justify-center">
+                <UdomLogo className="w-10 h-10" />
             </div>
             {!collapsed && (
                 <div className="min-w-0">
                     <h1 className="text-white font-bold text-base leading-tight tracking-wide">UDOM VMS</h1>
-                    <p className="text-emerald-200/60 text-[11px] font-medium truncate">University of Dodoma</p>
+                    <p className="text-sky-200/70 text-[11px] font-medium truncate">University of Dodoma</p>
                 </div>
             )}
         </div>
@@ -85,7 +85,7 @@ function NavLinks({ navigation, url, collapsed, onNavigate }) {
     return (
         <nav className="space-y-1 px-3">
             {!collapsed && (
-                <p className="px-3 pt-2 pb-2 text-[10px] font-bold uppercase tracking-widest text-emerald-200/40">
+                <p className="px-3 pt-2 pb-2 text-[10px] font-bold uppercase tracking-widest text-sky-200/40">
                     Navigation
                 </p>
             )}
@@ -103,7 +103,7 @@ function NavLinks({ navigation, url, collapsed, onNavigate }) {
                     >
                         <item.icon
                             className={`flex-shrink-0 h-5 w-5 ${
-                                active ? 'text-gold-400' : 'text-emerald-200/70 group-hover:text-white'
+                                active ? 'text-gold-400' : 'text-sky-200/70 group-hover:text-white'
                             } ${collapsed ? '' : 'mr-3'}`}
                         />
                         {!collapsed && <span className="truncate">{item.name}</span>}
@@ -161,7 +161,7 @@ export default function AuthenticatedLayout({ children, title }) {
                         <UserAvatar user={user} size="md" />
                         <div className="min-w-0 flex-1">
                             <p className="text-sm font-semibold text-white truncate">{user.name}</p>
-                            <p className="text-xs text-emerald-200/60">{roleLabels[user.role] || user.role}</p>
+                            <p className="text-xs text-sky-200/60">{roleLabels[user.role] || user.role}</p>
                         </div>
                     </div>
                 )}
@@ -169,7 +169,7 @@ export default function AuthenticatedLayout({ children, title }) {
                     href="/logout"
                     method="post"
                     as="button"
-                    className={`flex items-center w-full px-3 py-2.5 text-sm font-medium text-emerald-100/80 hover:text-white hover:bg-white/10 rounded-xl transition-all ${
+                    className={`flex items-center w-full px-3 py-2.5 text-sm font-medium text-sky-100/80 hover:text-white hover:bg-white/10 rounded-xl transition-all ${
                         collapsed ? 'justify-center' : ''
                     }`}
                 >

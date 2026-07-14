@@ -11,8 +11,9 @@
             <td align="center">
                 <table width="100%" cellpadding="0" cellspacing="0" style="max-width:520px;background:#ffffff;border-radius:12px;overflow:hidden;border:1px solid #e2e8f0;">
                     <tr>
-                        <td style="background:#0a5c3c;padding:24px 28px;text-align:center;">
-                            <p style="margin:0;color:#d4af37;font-size:11px;font-weight:bold;letter-spacing:2px;text-transform:uppercase;">University of Dodoma</p>
+                        <td style="background:#0060cc;padding:24px 28px;text-align:center;">
+                            <img src="{{ asset('images/udom-logo.png') }}" alt="University of Dodoma" width="72" height="72" style="display:block;margin:0 auto 12px;border-radius:50%;background:#ffffff;padding:4px;">
+                            <p style="margin:0;color:#f2a900;font-size:11px;font-weight:bold;letter-spacing:2px;text-transform:uppercase;">University of Dodoma</p>
                             <h1 style="margin:8px 0 0;color:#ffffff;font-size:20px;font-weight:bold;">Password Reset</h1>
                         </td>
                     </tr>
@@ -26,7 +27,7 @@
                             <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:24px;">
                                 <tr>
                                     <td align="center">
-                                        <a href="{{ $url }}" style="display:inline-block;background:#0a5c3c;color:#ffffff;text-decoration:none;padding:14px 28px;border-radius:8px;font-size:14px;font-weight:bold;">
+                                        <a href="{{ $url }}" style="display:inline-block;background:#0060cc;color:#ffffff;text-decoration:none;padding:14px 28px;border-radius:8px;font-size:14px;font-weight:bold;">
                                             Reset Password
                                         </a>
                                     </td>

@@ -1,7 +1,8 @@
 import React from 'react';
 import { Head, Link, useForm, usePage } from '@inertiajs/react';
-import { PhoneIcon, LockClosedIcon, CheckCircleIcon, XCircleIcon, AcademicCapIcon } from '@heroicons/react/24/outline';
+import { PhoneIcon, LockClosedIcon, CheckCircleIcon, XCircleIcon } from '@heroicons/react/24/outline';
 import PasswordInput from '../../../Components/PasswordInput';
+import UdomLogo from '../../../Components/UdomLogo';
 
 export default function VisitorLogin() {
     const { data, setData, post, processing, errors } = useForm({
@@ -24,11 +25,12 @@ export default function VisitorLogin() {
                     <div className="absolute top-20 right-10 w-64 h-64 rounded-full bg-gold-400" />
                 </div>
                 <div className="relative flex flex-col justify-center px-12 text-white">
-                    <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-gold-400 to-gold-600 flex items-center justify-center shadow-xl mb-6">
-                        <AcademicCapIcon className="w-8 h-8 text-white" />
+                    <div className="w-20 h-20 rounded-full bg-white shadow-xl mb-6 p-1 flex items-center justify-center">
+                        <UdomLogo className="w-full h-full" />
                     </div>
+                    <p className="text-gold-400 text-sm font-semibold mb-2">Embracing Knowledge</p>
                     <h1 className="text-3xl font-bold mb-3">Visitor Portal</h1>
-                    <p className="text-emerald-100/70 leading-relaxed">
+                    <p className="text-sky-100/70 leading-relaxed">
                         Sign in to manage your campus visit requests at the University of Dodoma.
                     </p>
                 </div>
@@ -36,11 +38,11 @@ export default function VisitorLogin() {
 
             <div className="flex-1 flex items-center justify-center bg-slate-50 py-12 px-4 sm:px-6">
                 <div className="w-full max-w-md">
-                    <div className="lg:hidden flex items-center gap-3 mb-8 justify-center">
-                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-gold-400 to-gold-600 flex items-center justify-center">
-                            <AcademicCapIcon className="w-6 h-6 text-white" />
+                    <div className="lg:hidden flex flex-col items-center gap-3 mb-8">
+                        <div className="w-16 h-16 rounded-full bg-white shadow-md p-1 flex items-center justify-center">
+                            <UdomLogo className="w-full h-full" />
                         </div>
-                        <div>
+                        <div className="text-center">
                             <h2 className="text-lg font-bold text-udom-800">UDOM VMS</h2>
                             <p className="text-xs text-slate-500">Visitor Portal</p>
                         </div>

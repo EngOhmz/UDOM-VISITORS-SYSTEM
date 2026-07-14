@@ -1,8 +1,8 @@
 import { jsPDF } from 'jspdf';
 
-const UDOM_GREEN = [10, 92, 60];
-const UDOM_DARK = [8, 74, 49];
-const UDOM_GOLD = [212, 175, 55];
+const UDOM_BLUE = [0, 96, 204];
+const UDOM_DARK = [0, 46, 99];
+const UDOM_GOLD = [242, 169, 0];
 const PASS_WIDTH = 85;
 const PASS_HEIGHT = 118;
 
@@ -29,7 +29,7 @@ function getAvatarUrl(visitor) {
             : `${window.location.origin}${visitor.avatar}`;
     }
     const name = encodeURIComponent(visitor?.name || 'Visitor');
-    return `https://ui-avatars.com/api/?name=${name}&background=0a5c3c&color=fff&size=200&bold=true`;
+    return `https://ui-avatars.com/api/?name=${name}&background=0060cc&color=fff&size=200&bold=true`;
 }
 
 function truncate(text, max = 24) {
@@ -67,7 +67,7 @@ export async function generateVisitPass(request) {
     doc.text('UDOM VISITOR PASS', w / 2, 11, { align: 'center' });
     doc.setFontSize(6.5);
     doc.setFont('helvetica', 'normal');
-    doc.setTextColor(210, 230, 218);
+    doc.setTextColor(200, 220, 245);
     doc.text('University of Dodoma', w / 2, 16, { align: 'center' });
     doc.setFontSize(5.5);
     doc.text('Visitor Management System', w / 2, 20.5, { align: 'center' });
@@ -78,7 +78,7 @@ export async function generateVisitPass(request) {
     const photoSize = 22;
     const imageData = await loadImageData(getAvatarUrl(request.visitor));
 
-    doc.setFillColor(240, 247, 243);
+    doc.setFillColor(239, 246, 255);
     doc.roundedRect(photoX, photoY, photoSize, photoSize, 2, 2, 'F');
     doc.setDrawColor(...UDOM_GOLD);
     doc.setLineWidth(0.5);
@@ -115,7 +115,7 @@ export async function generateVisitPass(request) {
 
     details.forEach(([label, value]) => {
         doc.setFont('helvetica', 'bold');
-        doc.setTextColor(...UDOM_GREEN);
+        doc.setTextColor(...UDOM_BLUE);
         doc.text(`${label}:`, textX, y);
         doc.setFont('helvetica', 'normal');
         doc.setTextColor(60, 60, 60);
@@ -125,12 +125,12 @@ export async function generateVisitPass(request) {
 
     // Purpose block
     const purposeY = 58;
-    doc.setFillColor(245, 250, 247);
-    doc.setDrawColor(220, 235, 228);
+    doc.setFillColor(239, 246, 255);
+    doc.setDrawColor(191, 219, 254);
     doc.setLineWidth(0.2);
     doc.roundedRect(6, purposeY, w - 12, 13, 1.5, 1.5, 'FD');
     doc.setFontSize(5);
-    doc.setTextColor(...UDOM_GREEN);
+    doc.setTextColor(...UDOM_BLUE);
     doc.setFont('helvetica', 'bold');
     doc.text('PURPOSE OF VISIT', 8, purposeY + 4);
     doc.setFont('helvetica', 'normal');
@@ -141,7 +141,7 @@ export async function generateVisitPass(request) {
 
     // Verification code
     const codeY = 74;
-    doc.setFillColor(...UDOM_GREEN);
+    doc.setFillColor(...UDOM_BLUE);
     doc.roundedRect(6, codeY, w - 12, 22, 2.5, 2.5, 'F');
     doc.setFillColor(...UDOM_GOLD);
     doc.rect(6, codeY, w - 12, 1.2, 'F');
@@ -159,7 +159,7 @@ export async function generateVisitPass(request) {
     doc.setFontSize(5);
     doc.setTextColor(110, 110, 110);
     doc.text('Present this pass at campus reception upon arrival', w / 2, h - 9, { align: 'center' });
-    doc.setTextColor(...UDOM_GREEN);
+    doc.setTextColor(...UDOM_BLUE);
     doc.text(`Issued ${new Date().toLocaleDateString()} · Valid for scheduled visit only`, w / 2, h - 5, { align: 'center' });
 
     doc.save(`UDOM-Visit-Pass-${request.verification_code}.pdf`);
